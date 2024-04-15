@@ -26,7 +26,7 @@ class AppRouter {
           print("logeooo");
           switch (settings.name) {
             default:
-              return MaterialPageRoute(builder: (_) => NotFoundPage());
+              return MaterialPageRoute(builder: (_) => LoginScreen());
           }
         } else {
           print("no logeoo");
