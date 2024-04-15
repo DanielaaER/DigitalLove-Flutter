@@ -1,3 +1,4 @@
+import 'package:digital_love/presentation/Login/components/LoginError.dart';
 import 'package:digital_love/shared/widgets/Button.dart';
 import 'package:flutter/material.dart';
 import 'package:digital_love/config/theme/app_colors.dart';
@@ -106,6 +107,11 @@ class _LoginView extends StatelessWidget {
                           onPressed: () {
                             final email = _emailController.text.trim();
                             final password = _passwordController.text.trim();
+                            Navigator.pushAndRemoveUntil(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => LoginErrorScreen(),
+                                ));
                           },
                         ),
                         SizedBox(height: height * .01),
