@@ -1,12 +1,10 @@
-
+import 'package:digital_love/presentation/Login/Login.dart';
 import 'package:flutter/material.dart';
 
 import '../../presentation/NotFound/NotFoundPage.dart';
 import '../../shared/services/AuthServices.dart';
 
-
 class AppRouter {
-
   static const String login = '/login';
   static const String register = '/register';
   static const String search = '/search';
@@ -19,23 +17,21 @@ class AppRouter {
     AuthService().checkLoginStatus();
 
     switch (settings.name) {
-
+      case login:
+        return MaterialPageRoute(builder: (_) => LoginScreen());
+      case register:
+        return MaterialPageRoute(builder: (_) => LoginScreen());
       default:
-        print(AuthService().isLoggedIn);
-        print(AuthService.userEmail);
         if (AuthService().isLoggedIn) {
           print("logeooo");
           switch (settings.name) {
-
             default:
-              return MaterialPageRoute(
-                  builder: (_) => NotFoundPage());
+              return MaterialPageRoute(builder: (_) => NotFoundPage());
           }
         } else {
           print("no logeoo");
 
-          print(AuthService().isLoggedIn);
-          return MaterialPageRoute(builder: (_) => NotFoundPage());
+          return MaterialPageRoute(builder: (_) => LoginScreen());
         }
     }
   }
