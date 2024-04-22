@@ -39,31 +39,35 @@ class _CustomTextFieldEmailState extends State<CustomTextFieldEmail> {
           controller: widget.controller,
           onChanged: (value) {
             setState(() {
-              _isEmailValid = RegExp(
-                  r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$')
-                  .hasMatch(value);
+              _isEmailValid =
+                  RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(value);
             });
           },
           decoration: InputDecoration(
-            contentPadding: EdgeInsets.fromLTRB(width * .05, 0, 10, width * .05),
-            hintText: 'Ingresa tu ${widget.textValue}',
-            hintStyle: TextStyle(
-              color: AppColors.shadeColor,
-              fontWeight: FontWeight.normal,
-              fontSize: text * 0.8,
-            ),
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(15.0),
-              borderSide: BorderSide(color: AppColors.backColor),
-            ),
-            focusedBorder: OutlineInputBorder(
-              borderSide: BorderSide(color: AppColors.accentColor),
-              borderRadius: BorderRadius.circular(15.0),
-            ),
-            errorText: _isEmailValid
-                ? null
-                : 'Por favor, ingresa un correo electrónico válido',
-          ),
+              contentPadding:
+                  EdgeInsets.fromLTRB(width * .05, 0, 10, width * .05),
+              hintText: 'Ingresa tu ${widget.textValue}',
+              hintStyle: TextStyle(
+                color: AppColors.shadeColor,
+                fontWeight: FontWeight.normal,
+                fontSize: text * 0.8,
+              ),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(15.0),
+                borderSide: BorderSide(color: AppColors.backColor),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderSide: BorderSide(color: AppColors.accentColor),
+                borderRadius: BorderRadius.circular(15.0),
+              ),
+              errorText: _isEmailValid
+                  ? null
+                  : 'Por favor, ingresa un correo electrónico válido',
+              errorStyle: TextStyle(color: AppColors.primaryColor),
+              errorBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(15.0),
+                borderSide: BorderSide(color: AppColors.primaryColor),
+              )),
         ),
       ],
     );

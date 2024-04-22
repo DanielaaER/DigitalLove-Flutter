@@ -107,7 +107,7 @@ class _LoginView extends StatelessWidget {
                           onPressed: () {
                             final email = _emailController.text.trim();
                             final password = _passwordController.text.trim();
-                            Navigator.pushAndRemoveUntil(
+                            Navigator.push(
                                 context,
                                 MaterialPageRoute(
                                   builder: (context) => LoginErrorScreen(),

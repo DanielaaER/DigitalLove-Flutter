@@ -21,6 +21,7 @@ class CustomText extends StatelessWidget {
         color: color,
         fontWeight: FontWeight.normal,
       ),
+      // textAlign: TextAlign.justify,
     );
   }
 }
