@@ -42,6 +42,7 @@ dependencies:
   shared_preferences: ^2.2.0
   provider: ^6.0.5
   dio: ^5.3.0
+  camera: ^0.10.5+9
 
 dev_dependencies:
   flutter_test:
@@ -71,6 +72,11 @@ flutter:
   #   - images/a_dot_ham.jpeg
   assets:
     - assets/images/banner.png
+    - assets/images/credential.png
+    - assets/images/information.png
+    - assets/images/selfie.png
+    - assets/images/repeat.png
+    - assets/images/credentialBack.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

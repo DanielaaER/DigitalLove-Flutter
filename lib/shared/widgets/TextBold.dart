@@ -21,6 +21,7 @@ class CustomTextBold extends StatelessWidget {
         color: color,
         fontWeight: FontWeight.bold,
       ),
+      // textAlign: TextAlign.justify,
     );
   }
 }

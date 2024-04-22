@@ -8,6 +8,7 @@ class AppColors {
   static const Color complementaryColor = Color(0xffDE6830);
   static const Color errorColor = Color(0xffFF7171);
   static const Color shadeColor = Color(0xff6C6D6D);
+  static const Color greyColor = Color(0xff9c9f9f);
   static const Color whiteColor = Color(0xffFFFFFF);
   static const Color backColor = Color(0xff27262C);
 
