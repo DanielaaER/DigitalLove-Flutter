@@ -11,6 +11,9 @@ class AppColors {
   static const Color greyColor = Color(0xff9c9f9f);
   static const Color whiteColor = Color(0xffFFFFFF);
   static const Color backColor = Color(0xff27262C);
+  static const Color yellowColor = Color(0xffE4FE45);
+
+  static Color blackColor = Color(0xff212121);
 
   static final ThemeData lightTheme = ThemeData(
     primaryColor: primaryColor,
