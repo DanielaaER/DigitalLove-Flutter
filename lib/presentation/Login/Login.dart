@@ -1,3 +1,4 @@
+import 'package:digital_love/presentation/Home/Home.dart';
 import 'package:digital_love/presentation/Login/components/LoginError.dart';
 import 'package:digital_love/shared/widgets/Button.dart';
 import 'package:flutter/material.dart';
@@ -9,6 +10,7 @@ import 'package:digital_love/shared/widgets/TextFieldEmail.dart';
 
 import '../../shared/widgets/Gesture.dart';
 import '../../shared/widgets/TextBold.dart';
+import '../Home/NavBar.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -110,7 +112,7 @@ class _LoginView extends StatelessWidget {
                             Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) => LoginErrorScreen(),
+                                  builder: (context) => NavBar(),
                                 ));
                           },
                         ),
