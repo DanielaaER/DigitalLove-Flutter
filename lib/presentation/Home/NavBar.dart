@@ -1,5 +1,6 @@
 import 'package:digital_love/config/theme/app_colors.dart';
 import 'package:digital_love/presentation/Home/Home.dart';
+import 'package:digital_love/presentation/Home/Pages/Chat/chat.dart';
 import 'package:digital_love/presentation/Register/Register.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -28,6 +29,7 @@ class _NavBarState extends State<NavBar> {
 
   final List<Widget> _pages = [
     HomeScreen(),
+    ChatScreen(),
   ];
 
   void _openDrawer(BuildContext context) {
@@ -63,54 +65,61 @@ class _NavBarState extends State<NavBar> {
       child: Scaffold(
         backgroundColor: AppColors.primaryColor,
         appBar: PreferredSize(
-          preferredSize: const Size.fromHeight(kToolbarHeight),
-          child: Column(
-            children: [
-              Container(
-                height: MediaQuery.of(context).padding.top,
+          preferredSize: Size.fromHeight(kToolbarHeight),
+          child: Container(
+            decoration: const BoxDecoration(
+              border: Border(
+                bottom: BorderSide(color: Colors.white, width: 1),
               ),
-              Container(
-                margin: EdgeInsets.symmetric(horizontal: width * 0.1),
-                height: kToolbarHeight,
-                alignment: Alignment.center,
-                transformAlignment: Alignment.center,
-                decoration: const BoxDecoration(
-                  border: Border(
-                    bottom: BorderSide(color: Colors.transparent, width: 1.0),
-                  ),
+            ),
+            child: Column(
+              children: [
+                Container(
+                  height: MediaQuery.of(context).padding.top,
                 ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    GestureDetector(
-                      // onTap: () => onTap(),
-                      child: const Text(
-                        "Logo",
-                        style: TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
+                Container(
+                  margin: EdgeInsets.symmetric(horizontal: width * 0.1),
+                  height: kToolbarHeight - 1,
+                  alignment: Alignment.center,
+                  transformAlignment: Alignment.center,
+                  decoration: const BoxDecoration(
+                    border: Border(
+                      bottom: BorderSide(color: Colors.transparent, width: 1.0),
+                    ),
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      GestureDetector(
+                        // onTap: () => onTap(),
+                        child: const Text(
+                          "Logo",
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                          ),
                         ),
                       ),
-                    ),
-                    GestureDetector(
-                      onTap: onNotificationTap,
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Icon(
-                            Icons.notifications_none_rounded,
-                            size: height * 0.03,
-                            // Ajusta el tamaño según sea necesario
-                            color: AppColors.whiteColor,
-                          ),
-                        ],
+                      GestureDetector(
+                        onTap: onNotificationTap,
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(
+                              Icons.notifications_none_rounded,
+                              size: height * 0.03,
+                              // Ajusta el tamaño según sea necesario
+                              color: AppColors.whiteColor,
+                            ),
+                          ],
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
         body: Stack(
