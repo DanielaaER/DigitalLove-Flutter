@@ -65,7 +65,7 @@ class _HomeScreenState extends State<HomeScreen> {
         body: Stack(children: [
           Container(
             color: AppColors.primaryColor,
-            height: MediaQuery.of(context).size.height * .8,
+            height: MediaQuery.of(context).size.height * .79,
             width: width,
             child: nextProfileWidget,
           ),

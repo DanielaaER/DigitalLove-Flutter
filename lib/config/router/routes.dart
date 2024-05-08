@@ -1,4 +1,5 @@
 import 'package:digital_love/presentation/Login/Login.dart';
+import 'package:digital_love/presentation/Wifi/wifi.dart';
 import 'package:flutter/material.dart';
 
 import '../../presentation/NotFound/NotFoundPage.dart';
@@ -13,6 +14,7 @@ class AppRouter {
   static const String upload = '/upload';
   static const String pdf = '/pdf';
   static const String txt = '/txt';
+  static const String wifi = '/wifi';
 
   static Route<dynamic> generateRoute(RouteSettings settings) {
     AuthService().checkLoginStatus();
@@ -22,6 +24,9 @@ class AppRouter {
         return MaterialPageRoute(builder: (_) => LoginScreen());
       case register:
         return MaterialPageRoute(builder: (_) => RegisterScreen());
+
+      case wifi:
+        return MaterialPageRoute(builder: (_) => WifiScreen());
       default:
         if (AuthService().isLoggedIn) {
           print("logeooo");
