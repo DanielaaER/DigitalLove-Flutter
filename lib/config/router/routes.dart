@@ -1,12 +1,12 @@
-
+import 'package:digital_love/presentation/Login/Login.dart';
+import 'package:digital_love/presentation/Wifi/wifi.dart';
 import 'package:flutter/material.dart';
 
 import '../../presentation/NotFound/NotFoundPage.dart';
+import '../../presentation/Register/Register.dart';
 import '../../shared/services/AuthServices.dart';
 
-
 class AppRouter {
-
   static const String login = '/login';
   static const String register = '/register';
   static const String search = '/search';
@@ -14,28 +14,30 @@ class AppRouter {
   static const String upload = '/upload';
   static const String pdf = '/pdf';
   static const String txt = '/txt';
+  static const String wifi = '/wifi';
 
   static Route<dynamic> generateRoute(RouteSettings settings) {
     AuthService().checkLoginStatus();
 
     switch (settings.name) {
+      case login:
+        return MaterialPageRoute(builder: (_) => LoginScreen());
+      case register:
+        return MaterialPageRoute(builder: (_) => RegisterScreen());
 
+      case wifi:
+        return MaterialPageRoute(builder: (_) => WifiScreen());
       default:
-        print(AuthService().isLoggedIn);
-        print(AuthService.userEmail);
         if (AuthService().isLoggedIn) {
           print("logeooo");
           switch (settings.name) {
-
             default:
-              return MaterialPageRoute(
-                  builder: (_) => NotFoundPage());
+              return MaterialPageRoute(builder: (_) => LoginScreen());
           }
         } else {
           print("no logeoo");
 
-          print(AuthService().isLoggedIn);
-          return MaterialPageRoute(builder: (_) => NotFoundPage());
+          return MaterialPageRoute(builder: (_) => LoginScreen());
         }
     }
   }

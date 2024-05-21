@@ -4,12 +4,17 @@ class AppColors {
   static const Color backgroundColor = Color(0xffF6F6F6);
   static const Color primaryColor = Color(0xffA771F0);
   static const Color accentColor = Color(0xff7D53B6);
-  static const Color secondaryColor = Color(0xffE4FE45);
+  static const Color secondaryColor = Color(0xffb384f3);
   static const Color complementaryColor = Color(0xffDE6830);
   static const Color errorColor = Color(0xffFF7171);
   static const Color shadeColor = Color(0xff6C6D6D);
+  static const Color chatColor = Color(0xffcdd0d0);
+  static const Color greyColor = Color(0xff9c9f9f);
   static const Color whiteColor = Color(0xffFFFFFF);
   static const Color backColor = Color(0xff27262C);
+  static const Color yellowColor = Color(0xffE4FE45);
+
+  static Color blackColor = Color(0xff212121);
 
   static final ThemeData lightTheme = ThemeData(
     primaryColor: primaryColor,
