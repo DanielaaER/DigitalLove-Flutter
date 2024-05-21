@@ -23,7 +23,6 @@ if (flutterVersionName == null) {
 }
 
 android {
-
     namespace "com.digital_love.digital_love"
     compileSdk flutter.compileSdkVersion
     ndkVersion flutter.ndkVersion
@@ -46,7 +45,7 @@ android {
         applicationId "com.digital_love.digital_love"
         // You can update the following values to match your application needs.
         // For more information, see: https://docs.flutter.dev/deployment/android#reviewing-the-gradle-build-configuration.
-        minSdkVersion 21
+        minSdkVersion flutter.minSdkVersion
         targetSdkVersion flutter.targetSdkVersion
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
