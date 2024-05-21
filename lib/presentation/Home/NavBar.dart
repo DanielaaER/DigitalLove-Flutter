@@ -1,5 +1,6 @@
 import 'package:digital_love/config/theme/app_colors.dart';
 import 'package:digital_love/presentation/Home/Home.dart';
+import 'package:digital_love/presentation/Home/Pages/Account/account.dart';
 import 'package:digital_love/presentation/Home/Pages/Chat/chat.dart';
 import 'package:digital_love/presentation/Register/Register.dart';
 import 'package:flutter/material.dart';
@@ -27,10 +28,7 @@ class _NavBarState extends State<NavBar> {
     Icons.settings_outlined,
   ];
 
-  final List<Widget> _pages = [
-    HomeScreen(),
-    ChatScreen(),
-  ];
+  final List<Widget> _pages = [HomeScreen(), ChatScreen(), AccountScreen()];
 
   void _openDrawer(BuildContext context) {
     _scaffoldKey.currentState!.openDrawer();
