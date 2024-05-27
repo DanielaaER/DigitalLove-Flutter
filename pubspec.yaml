@@ -48,6 +48,7 @@ dependencies:
   connectivity: ^3.0.6
   mqtt_client: ^10.2.1
   network_info_plus: ^5.0.3
+  flutter_local_notifications: ^17.1.2
 
 dev_dependencies:
   flutter_test:

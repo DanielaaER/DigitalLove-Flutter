@@ -2,8 +2,10 @@ import 'package:digital_love/config/theme/app_colors.dart';
 import 'package:digital_love/presentation/Home/Home.dart';
 import 'package:digital_love/presentation/Home/Pages/Account/account.dart';
 import 'package:digital_love/presentation/Home/Pages/Chat/chat.dart';
+import 'package:digital_love/presentation/Home/Pages/Notifications/NotificationScreen.dart';
 import 'package:digital_love/presentation/Home/Pages/Settings/settings.dart';
 import 'package:digital_love/presentation/Register/Register.dart';
+import 'package:digital_love/shared/services/ApiService.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:animated_bottom_navigation_bar/animated_bottom_navigation_bar.dart';
@@ -55,7 +57,15 @@ class _NavBarState extends State<NavBar> {
     super.initState();
   }
 
-  void onNotificationTap() {}
+  void onNotificationTap() {
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => NotificationsPage(
+            apiServiceapiService: ApiService(),
+          ),
+        ));
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -97,7 +107,7 @@ class _NavBarState extends State<NavBar> {
                       GestureDetector(
                         // onTap: () => onTap(),
                         child: const Text(
-                          "Logo",
+                          "DigitalLove",
                           style: TextStyle(
                             fontSize: 20,
                             fontWeight: FontWeight.bold,
