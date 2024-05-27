@@ -1,9 +1,14 @@
+import 'dart:io';
+
+import 'package:digital_love/presentation/Home/Home.dart';
 import 'package:digital_love/presentation/Register/pages/CredentialBackConfirmacion.dart';
 import 'package:digital_love/presentation/Register/pages/PhotoError.dart';
 import 'package:digital_love/shared/widgets/Button.dart';
 import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
 import 'dart:async';
+
+import '../../../shared/services/AuthServices.dart';
 
 Future<List<CameraDescription>> obtenerCamaras() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -72,12 +77,26 @@ class _CameraSelfieState extends State<CameraSelfie> {
                   await _initializeControllerFuture;
                   final image = await _controller.takePicture();
                   print("image");
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => PhotoErrorScreen(),
-                    ),
-                  );
+                  File picture = File(image.path);
+
+                  AuthService().saveFrontCredential(picture);
+                  var response = await AuthService().register();
+                  if (response) {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => HomeScreen(),
+                      ),
+                    );
+                  } else{
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => PhotoErrorScreen(),
+                      ),
+                    );
+                  }
+
                   // Aquí puedes manejar la imagen capturada, como guardarla o mostrarla en otro widget.
                 } catch (e) {
                   print(e);

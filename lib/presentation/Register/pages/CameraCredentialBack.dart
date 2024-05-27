@@ -1,9 +1,16 @@
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:digital_love/presentation/Register/pages/CredentialBackConfirmacion.dart';
 import 'package:digital_love/presentation/Register/pages/SelfieConfirmation.dart';
 import 'package:digital_love/shared/widgets/Button.dart';
 import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
 import 'dart:async';
+
+import 'package:shared_preferences/shared_preferences.dart';
+
+import '../../../shared/services/AuthServices.dart';
 
 Future<List<CameraDescription>> obtenerCamaras() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -72,6 +79,13 @@ class _CameraCredentialBackState extends State<CameraCredentialBack> {
                   await _initializeControllerFuture;
                   final image = await _controller.takePicture();
                   print("image");
+
+                  File picture = File(image.path);
+
+                  AuthService().saveFrontCredential(picture);
+
+
+                  print("credential back?");
                   Navigator.push(
                     context,
                     MaterialPageRoute(
@@ -89,5 +103,11 @@ class _CameraCredentialBackState extends State<CameraCredentialBack> {
         ),
       ]),
     );
+  }
+
+
+  Future<void> saveImageAsBase64(String base64Image) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('credential_back', base64Image);
   }
 }

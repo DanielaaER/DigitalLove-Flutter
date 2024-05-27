@@ -1,6 +1,10 @@
 import 'package:digital_love/presentation/Home/Home.dart';
 import 'package:digital_love/presentation/Login/components/LoginError.dart';
+import 'package:digital_love/presentation/Register/Register.dart';
+import 'package:digital_love/shared/services/AuthServices.dart';
 import 'package:digital_love/shared/widgets/Button.dart';
+import 'package:digital_love/shared/widgets/TextSpan.dart';
+import 'package:digital_love/shared/widgets/TextSpanlight.dart';
 import 'package:flutter/material.dart';
 import 'package:digital_love/config/theme/app_colors.dart';
 import 'package:digital_love/shared/widgets/Text.dart';
@@ -18,6 +22,10 @@ class LoginScreen extends StatefulWidget {
   @override
   State<LoginScreen> createState() => _LoginScreenState();
 }
+
+TextEditingController _emailController = TextEditingController();
+
+TextEditingController _passwordController = TextEditingController();
 
 class _LoginScreenState extends State<LoginScreen> {
   @override
@@ -41,9 +49,12 @@ class _LoginScreenState extends State<LoginScreen> {
 class _LoginView extends StatelessWidget {
   _LoginView();
 
-  TextEditingController _emailController = TextEditingController();
+  Future<bool> _login(String email, String password) async {
+    print("login");
+    var log = await AuthService().login(email, password);
 
-  TextEditingController _passwordController = TextEditingController();
+    return log;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -61,7 +72,7 @@ class _LoginView extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             CustomText(
-              textValue: "Inicio de Sesión",
+              textValue: "Inicio de sesión",
               size: title,
               color: AppColors.primaryColor,
             ),
@@ -70,16 +81,11 @@ class _LoginView extends StatelessWidget {
             ),
             Row(
               children: [
-                CustomText(
-                  textValue: "Inicia sesión con tu cuenta ",
-                  size: text,
-                  color: AppColors.backColor,
-                ),
-                CustomTextBold(
-                  textValue: "DigitalLove",
-                  size: text,
-                  color: AppColors.primaryColor,
-                ),
+                CustomTextSpanLight(
+                    textValue: "Inicia sesión con tu cuenta DigitalLove",
+                    size: text * .9,
+                    color: AppColors.backColor,
+                    highlightedWords: ["DigitalLove"]),
               ],
             ),
 
@@ -90,8 +96,8 @@ class _LoginView extends StatelessWidget {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  CustomTextFieldEmail(
-                    textValue: 'Email',
+                  CustomTextField(
+                    textValue: 'Usuario',
                     controller: _emailController,
                   ),
                   SizedBox(height: height * .03),
@@ -105,17 +111,29 @@ class _LoginView extends StatelessWidget {
                     child: Column(
                       children: [
                         CustomButton(
-                          textValue: "Iniciar Sesión",
-                          onPressed: () {
-                            final email = _emailController.text.trim();
-                            final password = _passwordController.text.trim();
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => NavBar(),
-                                ));
-                          },
-                        ),
+                            textValue: "Iniciar Sesión",
+                            onPressed: () async {
+                              final email = _emailController.text.trim();
+                              final password = _passwordController.text.trim();
+                              print("email");
+                              print(email);
+                              print("password");
+                              print(password);
+                              bool log = await _login(email, password);
+                              if (log == true) {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => NavBar(),
+                                    ));
+                              } else {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => LoginErrorScreen(),
+                                    ));
+                              }
+                            }),
                         SizedBox(height: height * .01),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
@@ -125,9 +143,13 @@ class _LoginView extends StatelessWidget {
                                 size: text * .8,
                                 color: AppColors.backColor),
                             CustomGesture(
-                              textValue: "Registrarse",
-                              onPressed: () {
-                                Navigator.pushNamed(context, '/register');
+                              textValue: "Registrate",
+                              onPressed: () {     Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => RegisterScreen(),
+                                  ));
+
                               },
                             )
                           ],

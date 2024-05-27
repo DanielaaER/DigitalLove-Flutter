@@ -1,7 +1,9 @@
 import 'package:digital_love/presentation/Register/pages/CameraCredentialBack.dart';
+import 'package:digital_love/shared/services/AuthServices.dart';
 import 'package:digital_love/shared/widgets/Button.dart';
 import 'package:flutter/material.dart';
 import 'package:digital_love/config/theme/app_colors.dart';
+import '../../../shared/services/UserData.dart';
 import '../../../shared/widgets/TextBold.dart';
 import '../../../shared/widgets/TextSpan.dart';
 import 'SelfieConfirmation.dart';
@@ -37,6 +39,10 @@ class _CredentialBackConfirmationView extends StatelessWidget {
     var height = MediaQuery.of(context).size.height;
     var title = width * 0.09;
     var text = width * 0.05;
+    print("fill name000000");
+    UserData userData = UserData();
+    print(userData.username);
+
     return Stack(alignment: Alignment.bottomCenter, children: [
       Container(
           alignment: Alignment.topCenter,

@@ -1,5 +1,7 @@
+import 'package:digital_love/presentation/Login/Login.dart';
 import 'package:digital_love/presentation/Login/components/LoginError.dart';
 import 'package:digital_love/presentation/Register/pages/RegisterConfirmacion.dart';
+import 'package:digital_love/shared/services/AuthServices.dart';
 import 'package:digital_love/shared/widgets/Button.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -9,7 +11,9 @@ import 'package:digital_love/shared/widgets/TextFieldPassword.dart';
 import 'package:digital_love/shared/widgets/TextField.dart';
 import 'package:digital_love/shared/widgets/TextFieldEmail.dart';
 
+import '../../shared/models/user_model.dart';
 import '../../shared/widgets/Gesture.dart';
+import '../../shared/widgets/SexDrop.dart';
 import '../../shared/widgets/TextBold.dart';
 import '../../shared/widgets/TextFieldPasswordVerify.dart';
 
@@ -32,10 +36,23 @@ class _RegisterScreenState extends State<RegisterScreen> {
 class _RegisterView extends StatelessWidget {
   _RegisterView();
 
-  TextEditingController _emailController = TextEditingController();
+  Future<bool> _register(User user) async {
+    var response = await AuthService().saveTemporal(user);
+    print(response);
+    return response;
+  }
 
+  TextEditingController _nombreController = TextEditingController();
+  TextEditingController _primerApellidoController = TextEditingController();
+  TextEditingController _segundoApellidoController = TextEditingController();
+  TextEditingController _emailController = TextEditingController();
   TextEditingController _passwordController = TextEditingController();
   TextEditingController _passwordverifyController = TextEditingController();
+  TextEditingController _edadController = TextEditingController();
+  TextEditingController _sexoController = TextEditingController();
+  TextEditingController _telefonoController = TextEditingController();
+  TextEditingController _ubicacionController = TextEditingController();
+  TextEditingController _usuarioController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -65,21 +82,55 @@ class _RegisterView extends StatelessWidget {
             ),
             CustomTextField(
               textValue: 'Nombre',
-              controller: _emailController,
+              controller: _nombreController,
             ),
             SizedBox(
               height: height * .02,
             ),
             CustomTextField(
               textValue: 'Primer apellido',
-              controller: _emailController,
+              controller: _primerApellidoController,
             ),
             SizedBox(
               height: height * .02,
             ),
             CustomTextField(
               textValue: 'Segundo Apellido',
-              controller: _emailController,
+              controller: _segundoApellidoController,
+            ),
+            SizedBox(
+              height: height * .02,
+            ),
+            CustomTextField(
+              textValue: 'Edad',
+              controller: _edadController,
+            ),
+            SizedBox(
+              height: height * .02,
+            ),
+            CustomSexAutocomplete(onSelected: (String value) {
+              _sexoController.text = value;
+            }),
+            SizedBox(
+              height: height * .02,
+            ),
+            CustomTextField(
+              textValue: 'Telefono',
+              controller: _telefonoController,
+            ),
+            SizedBox(
+              height: height * .02,
+            ),
+            CustomTextField(
+              textValue: 'Ubicacion',
+              controller: _ubicacionController,
+            ),
+            SizedBox(
+              height: height * .02,
+            ),
+            CustomTextField(
+              textValue: 'Usuario',
+              controller: _usuarioController,
             ),
             SizedBox(
               height: height * .02,
@@ -122,14 +173,29 @@ class _RegisterView extends StatelessWidget {
                 children: [
                   CustomButton(
                     textValue: "Siguiente",
-                    onPressed: () {
-                      final email = _emailController.text.trim();
-                      final password = _passwordController.text.trim();
+                    onPressed: () async {
+                      User user = User(
+                        nombre: _nombreController.text.trim(),
+                        apellidoPaterno: _primerApellidoController.text.trim(),
+                        apellidoMaterno: _segundoApellidoController.text.trim(),
+                        correo: _emailController.text.trim(),
+                        password: _passwordController.text.trim(),
+                        tipoUsuario: "USUARIO",
+                        edad: int.parse(_edadController.text.trim()),
+                        estado: "ACTIVO",
+                        sexo: _sexoController.text.trim(),
+                        telefono: _telefonoController.text.trim(),
+                        ubicacion: _ubicacionController.text.trim(),
+                        usuario: _usuarioController.text.trim(),
+                      );
+
+                      var response = await _register(user);
                       Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => RegisterConfirmationScreen(),
-                          ));
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => RegisterConfirmationScreen(),
+                        ),
+                      );
                     },
                   ),
                   SizedBox(height: height * .01),
@@ -143,7 +209,12 @@ class _RegisterView extends StatelessWidget {
                       CustomGesture(
                         textValue: "Inicia Sesion",
                         onPressed: () {
-                          Navigator.pushNamed(context, '/login');
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => LoginScreen(),
+                            ),
+                          );
                         },
                       )
                     ],
