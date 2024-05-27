@@ -1,3 +1,4 @@
+import 'package:digital_love/presentation/Login/Login.dart';
 import 'package:digital_love/shared/widgets/Button.dart';
 import 'package:flutter/material.dart';
 import 'package:digital_love/config/theme/app_colors.dart';
@@ -55,7 +56,7 @@ class _LoginErrorView extends StatelessWidget {
                 ),
                 CustomTextBold(
                     textValue:
-                        "Ooops! Parece que ha habido un error al iniciar sesión, por favor intentalo más tarde.",
+                        "Ooops! Parece que ha habido un error al iniciar sesión, por favor verifica tus credenciales o intentalo más tarde.",
                     size: text,
                     color: AppColors.backColor),
                 SizedBox(
@@ -64,7 +65,11 @@ class _LoginErrorView extends StatelessWidget {
                 CustomButton(
                     textValue: "Reintentar",
                     onPressed: () {
-                      Navigator.pushReplacementNamed(context, '/login');
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => LoginScreen(),
+                          ));
                     })
               ],
             )));

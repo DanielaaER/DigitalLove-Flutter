@@ -8,6 +8,8 @@ import 'package:digital_love/presentation/Home/Pages/Settings/Pages/cookies.dart
 import 'package:digital_love/presentation/Home/Pages/Settings/Pages/email.dart';
 import 'package:digital_love/presentation/Home/Pages/Settings/Pages/preferences.dart';
 import 'package:digital_love/presentation/Home/Pages/Settings/Pages/privacity.dart';
+import 'package:digital_love/presentation/Login/Login.dart';
+import 'package:digital_love/shared/services/AuthServices.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 
@@ -115,6 +117,17 @@ class _SettingsScreenState extends State<SettingsScreen> {
                               context,
                               MaterialPageRoute(
                                 builder: (context) => PasswordScreen(),
+                              ));
+                        },
+                      ),
+                      SettingWidget(
+                        setting: "Cerrar Sesión",
+                        onPressed: () async {
+                          AuthService().logout();
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => LoginScreen(),
                               ));
                         },
                       ),
