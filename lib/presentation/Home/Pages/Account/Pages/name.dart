@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 
 import '../../../../../config/theme/app_colors.dart';
+import '../../../../../shared/models/user_update_model.dart';
 import '../widgets/setting.dart';
 
 class NameScreen extends StatefulWidget {
@@ -21,7 +22,14 @@ class _NameScreenState extends State<NameScreen> {
     super.initState();
   }
 
-  void _update(String update) {}
+  Future<void> _update(String update) async {
+
+    final userUpdate = await UserUpdate(
+      nombre: update.isNotEmpty ? update : null,
+    );
+
+    print(userUpdate);
+  }
 
   @override
   Widget build(BuildContext context) {

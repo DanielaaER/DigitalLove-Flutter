@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:digital_love/presentation/Home/Home.dart';
+import 'package:digital_love/shared/models/user_update_model.dart';
 import 'package:dio/dio.dart';
 
 import '../models/notification_model.dart';
@@ -9,6 +10,8 @@ import 'UserData.dart';
 class ApiService {
   final StreamController<List<AppNotification>> _notificationsController =
       StreamController<List<AppNotification>>.broadcast();
+
+  UserData userData = UserData();
 
   ApiService() {
     _fetchNotificationsPeriodically();
@@ -25,8 +28,8 @@ class ApiService {
     }
   }
 
-  final Dio _dio = Dio(BaseOptions(
-      baseUrl: 'https://gigantic-mora-jazael-3245dd16.koyeb.app/api/v1/'));
+  final Dio _dio =
+      Dio(BaseOptions(baseUrl: 'http://20.55.201.18:8000/api/v1/'));
 
   Future<List<AppNotification>> fetchNotifications() async {
     try {
@@ -46,7 +49,6 @@ class ApiService {
 
   Future<bool> like(Profile profile) async {
     try {
-      UserData userData = UserData();
       print("match api");
       print(userData.userFullName);
       print(userData.userId);
@@ -57,15 +59,14 @@ class ApiService {
       } else {
         print("false");
         return false;
-        throw Exception('Failed to like profile: ${response.statusCode}');
       }
-      return true;
     } catch (error) {
       print("false");
       print("false");
       return false;
     }
   }
+
 
   void dispose() {
     _notificationsController.close();
