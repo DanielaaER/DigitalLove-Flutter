@@ -7,6 +7,7 @@ import 'package:digital_love/shared/widgets/TextBold.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_swipe_action_cell/flutter_swipe_action_cell.dart';
 
+import '../../../shared/models/profile_model.dart';
 import '../Home.dart';
 import 'LabelItem.dart';
 
@@ -27,6 +28,7 @@ class _MatchScreenState extends State<MatchScreen> {
     double height = MediaQuery.of(context).size.height;
     var title = width * 0.09;
     var text = width * 0.05;
+    String picture = "${widget.profile.photoUrl}";
     return Scaffold(
       backgroundColor: AppColors.blackColor,
       body: SizedBox(
@@ -43,9 +45,8 @@ class _MatchScreenState extends State<MatchScreen> {
                         width: double.infinity,
                         height: double.infinity,
                         decoration: BoxDecoration(
-                          image: const DecorationImage(
-                            image: NetworkImage(
-                                'https://images.unsplash.com/photo-1552053831-71594a27632d?q=80&w=1924&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'),
+                          image: DecorationImage(
+                            image: NetworkImage(picture),
                             fit: BoxFit.cover,
                           ),
                         ),
@@ -118,10 +119,11 @@ class _MatchScreenState extends State<MatchScreen> {
                                 crossAxisSpacing: 0,
                                 mainAxisSpacing: 0,
                               ),
-                              itemCount: 2,
+                              itemCount: widget.profile.labels.length,
                               //cambiar a count
                               itemBuilder: (BuildContext context, int index) {
-                                return LabelItem(index);
+                                return LabelItem(
+                                    widget.profile.labels.elementAt(index));
                               },
                               physics: NeverScrollableScrollPhysics(),
                               shrinkWrap:
@@ -145,15 +147,18 @@ class _MatchScreenState extends State<MatchScreen> {
                                         //     MainAxisAlignment.spaceAround,
                                         children: [
                                           CustomTextBold(
-                                              textValue: "Mari  ",
+                                              textValue:
+                                                  "${widget.profile.name}  ",
                                               size: title,
                                               color: AppColors.whiteColor),
                                           CustomText(
-                                              textValue: "24,  ",
+                                              textValue:
+                                                  "${widget.profile.age},  ",
                                               size: text,
                                               color: AppColors.whiteColor),
                                           CustomText(
-                                              textValue: "Picis",
+                                              textValue:
+                                                  "${widget.profile.horoscop}",
                                               size: text,
                                               color: AppColors.whiteColor),
                                         ]),
@@ -194,7 +199,8 @@ class _MatchScreenState extends State<MatchScreen> {
                                             padding: EdgeInsets.only(
                                                 left: width * .03),
                                             child: CustomText(
-                                                textValue: "Orizaba",
+                                                textValue:
+                                                    "${widget.profile.city}",
                                                 size: text,
                                                 color: AppColors.whiteColor),
                                           ),

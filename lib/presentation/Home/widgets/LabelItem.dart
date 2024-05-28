@@ -2,7 +2,7 @@ import 'package:digital_love/config/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 
 class LabelItem extends StatelessWidget {
-  final int index;
+  final String index;
 
   LabelItem(this.index);
 
@@ -23,7 +23,7 @@ class LabelItem extends StatelessWidget {
       ),
       backgroundColor: AppColors.primaryColor,
       label: Container(
-        padding: EdgeInsets.symmetric(vertical: 0, horizontal: width * .090),
+        padding: EdgeInsets.symmetric(vertical: 0, horizontal: width * .010),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(45),
           color: Colors.transparent,
