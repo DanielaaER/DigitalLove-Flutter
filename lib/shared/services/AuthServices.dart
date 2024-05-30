@@ -68,7 +68,7 @@ class AuthService with ChangeNotifier {
   UserData userData = UserData();
 
   final Dio _dio =
-  Dio(BaseOptions(baseUrl: 'http://20.55.201.18:8000/api/v1/'));
+  Dio(BaseOptions(baseUrl: 'https://better-ursola-jazael-26647204.koyeb.app/api/v1/'));
 
   Future<bool> login(String email, String password) async {
     if (email.isEmpty || password.isEmpty) {
