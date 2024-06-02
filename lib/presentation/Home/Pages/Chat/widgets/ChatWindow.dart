@@ -1,10 +1,11 @@
 import 'package:digital_love/config/theme/app_colors.dart';
+import 'package:digital_love/shared/services/UserData.dart';
 import 'package:digital_love/shared/widgets/Text.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-import '../../../../../shared/services/MqttClient.dart';
+import '../../../../../shared/services/webSocket.dart';
 
 class ChatWindow extends StatefulWidget {
   @override
@@ -13,20 +14,18 @@ class ChatWindow extends StatefulWidget {
   final int id;
   final String name;
   final String? profilePicture;
-  final int idSendUser;
 
-  const ChatWindow(
-      {super.key,
-      required this.id,
-      required this.name,
-      this.profilePicture,
-      required this.idSendUser});
+  const ChatWindow({
+    super.key,
+    required this.id,
+    required this.name,
+    this.profilePicture,
+  });
 }
 
 class _ChatWindowState extends State<ChatWindow> {
-  late MqttService _mqttService;
-
   void onNotificationTap() {}
+  int idSendUser = UserData()!.userId!;
   String edad = "";
   String signo = "";
   String meProfilePicture = "";
@@ -42,35 +41,27 @@ class _ChatWindowState extends State<ChatWindow> {
     });
     getMessages();
 
-    _mqttService = MqttService();
-    _mqttService.connect();
     super.initState();
   }
 
   void _onMessageReceived(String message) {
-    // Agrega el mensaje recibido a la lista de mensajes para mostrarlo
-    setState(() {
-      messages.add(Message(
-          id: messages.length + 1,
-          message: message,
-          idUser: widget.idSendUser));
-    });
-  }
-
-  void _sendMessage(String message) {
-    _mqttService.sendMessage(
-        1, message); // Envía el mensaje al topico correspondiente
-    // Agrega el mensaje enviado localmente a la lista de mensajes para mostrarlo instantáneamente
     setState(() {
       messages.add(Message(
           id: messages.length + 1, message: message, idUser: widget.id));
     });
   }
 
+  void _sendMessage(String message) {
+    setState(() {
+      messages.add(Message(
+          id: messages.length + 1, message: message, idUser: idSendUser));
+    });
+  }
+
   void getMessages() {
     setState(() {
       print("user send me");
-      print(widget.idSendUser);
+      print(idSendUser);
       messages = [
         Message(id: 1, message: "hola", idUser: 1),
         Message(id: 1, message: "hola", idUser: 2),
@@ -211,7 +202,7 @@ class _ChatWindowState extends State<ChatWindow> {
                     padding:
                         EdgeInsets.symmetric(vertical: 5.0, horizontal: 10.0),
                     child: Row(
-                      mainAxisAlignment: message.idUser == widget.idSendUser
+                      mainAxisAlignment: message.idUser == idSendUser
                           ? MainAxisAlignment.start
                           : MainAxisAlignment.end,
                       children: [
@@ -222,16 +213,12 @@ class _ChatWindowState extends State<ChatWindow> {
                               bottomLeft: Radius.circular(16.0),
                               bottomRight: Radius.circular(16.0),
                               topLeft: Radius.circular(
-                                  message.idUser == widget.idSendUser
-                                      ? 0.0
-                                      : 16.0),
+                                  message.idUser == idSendUser ? 0.0 : 16.0),
                               topRight: Radius.circular(
-                                  message.idUser != widget.idSendUser
-                                      ? 0.0
-                                      : 16.0),
+                                  message.idUser != idSendUser ? 0.0 : 16.0),
                             ),
                             child: Container(
-                              color: message.idUser == widget.idSendUser
+                              color: message.idUser == idSendUser
                                   ? AppColors.shadeColor
                                   : AppColors.primaryColor,
                               padding: EdgeInsets.all(10.0),

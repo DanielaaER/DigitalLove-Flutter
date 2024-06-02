@@ -9,7 +9,7 @@ import 'UserData.dart';
 
 class AuthService with ChangeNotifier {
   final UserData _userData = UserData();
-  final String url = "https://gigantic-mora-jazael-3245dd16.koyeb.app/api/v1/";
+  final String url = "https://better-ursola-jazael-26647204.koyeb.app/api/v1/";
 
   bool _autenticando = false;
   bool _isLoggedIn = true;

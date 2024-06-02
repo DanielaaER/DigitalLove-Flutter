@@ -145,7 +145,6 @@ class _ChatScreenState extends State<ChatScreen> {
                               id: chats[index].id,
                               name: chats[index].name,
                               profilePicture: chats[index].profilePicture,
-                              idSendUser: chats[index].idUser,
                             ),
                           ));
                     },

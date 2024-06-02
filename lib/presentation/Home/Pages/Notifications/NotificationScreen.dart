@@ -4,9 +4,7 @@ import '../../../../shared/services/ApiService.dart';
 import 'notificationWidget.dart'; // Importa el widget de notificaciones
 
 class NotificationsPage extends StatefulWidget {
-  final ApiService apiServiceapiService;
-
-  NotificationsPage({required this.apiServiceapiService});
+  NotificationsPage();
 
   @override
   _NotificationsPageState createState() => _NotificationsPageState();
@@ -20,7 +18,7 @@ class _NotificationsPageState extends State<NotificationsPage> {
         title: Text('Notificaciones'),
       ),
       body: StreamBuilder<List<AppNotification>>(
-        stream: widget.apiServiceapiService.notificationsStream,
+        stream: ApiService().notificationsStream,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return Center(child: CircularProgressIndicator());
@@ -36,13 +34,83 @@ class _NotificationsPageState extends State<NotificationsPage> {
                 return NotificationWidget(
                   notificationTitle: 'Notificación',
                   notificationMessage: notification.mensaje,
-                  time: '${notification.fechaEnvio.hour}:${notification.fechaEnvio.minute}',
+                  time:
+                      '${notification.fechaEnvio.hour}:${notification.fechaEnvio.minute}',
+                  idUser: notification.usuario,
+                  onTap: () =>
+                      _showLikeDialog(context, idUser: notification.usuario),
                 );
               },
             );
           }
         },
       ),
+    );
+  }
+
+  void _showLikeDialog(BuildContext context, {int? idUser}) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Acción de Like'),
+          content: Text('¿Quieres aceptar o rechazar el like?'),
+          actions: <Widget>[
+            TextButton(
+              child: Text('Aceptar Like'),
+              onPressed: () async {
+                var response = await ApiService().responseLike(idUser!, true);
+                print('Aceptar Like');
+                if (response) {
+                  print('Like aceptado');
+
+                  Navigator.of(context).pop();
+                } else {
+                  Navigator.of(context).pop();
+                  _showErrorDialog(context);
+                  print('Error al aceptar like');
+                }
+              },
+            ),
+            TextButton(
+              child: Text('Rechazar Like'),
+              onPressed: () async {
+                // Lógica para rechazar el like
+                var response = await ApiService().responseLike(idUser!, false);
+                print('Rechazar Like');
+                if (response) {
+                  print('Like rechazado');
+                  Navigator.of(context).pop();
+                } else {
+                  Navigator.of(context).pop();
+                  _showErrorDialog(context);
+                  print('Error al rechazar like');
+                }
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _showErrorDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Error'),
+          content: Text('Ya has respondido a esta persona.'),
+          actions: <Widget>[
+            TextButton(
+              child: Text('Cerrar'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
     );
   }
 }

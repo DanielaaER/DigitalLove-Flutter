@@ -41,7 +41,7 @@ class User {
 
   factory User.fromJson(Map<String, dynamic> json) => User(
       id: json["id"],
-      tipoUsuario: json["tipoUsuario"],
+      tipoUsuario: "USUARIO",
       nombre: json["nombre"],
       apellidoMaterno: json["apellidoMaterno"],
       apellidoPaterno: json["apellidoPaterno"],
@@ -55,7 +55,7 @@ class User {
       password: json["password"]);
 
   Map<String, dynamic> toJson() => {
-        "tipoUsuario": tipoUsuario,
+        "tipoUsuario": "USUARIO",
         "nombre": nombre,
         "apellidoMaterno": apellidoMaterno,
         "apellidoPaterno": apellidoPaterno,
