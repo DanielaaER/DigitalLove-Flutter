@@ -1,10 +1,19 @@
+import 'dart:convert';
+
 import 'package:digital_love/config/theme/app_colors.dart';
+import 'package:digital_love/shared/models/chat_model.dart';
+import 'package:digital_love/shared/models/send_message_model.dart';
 import 'package:digital_love/shared/services/UserData.dart';
 import 'package:digital_love/shared/widgets/Text.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:web_socket_channel/web_socket_channel.dart';
 
+import '../../../../../shared/models/chat_response_model.dart';
+import '../../../../../shared/models/message_model.dart';
+import '../../../../../shared/models/message_response_model.dart';
+import '../../../../../shared/services/ApiService.dart';
 import '../../../../../shared/services/webSocket.dart';
 
 class ChatWindow extends StatefulWidget {
@@ -13,19 +22,22 @@ class ChatWindow extends StatefulWidget {
 
   final int id;
   final String name;
+  final int idSender;
   final String? profilePicture;
 
   const ChatWindow({
     super.key,
     required this.id,
     required this.name,
+    required this.idSender,
     this.profilePicture,
   });
 }
 
 class _ChatWindowState extends State<ChatWindow> {
   void onNotificationTap() {}
-  int idSendUser = UserData()!.userId!;
+  late int idSendUser;
+
   String edad = "";
   String signo = "";
   String meProfilePicture = "";
@@ -38,45 +50,87 @@ class _ChatWindowState extends State<ChatWindow> {
     setState(() {
       edad = "21 años";
       signo = "libra";
+      idSendUser = widget.idSender;
     });
+    _initializeWebSocket();
     getMessages();
 
     super.initState();
   }
 
-  void _onMessageReceived(String message) {
-    setState(() {
-      messages.add(Message(
-          id: messages.length + 1, message: message, idUser: widget.id));
-    });
+  late WebSocketChannel channel;
+  var userData = UserData();
+  var userId = UserData().userId;
+
+  void _initializeWebSocket() {
+    print("inicio socler chat");
+    if (userId != null) {
+      final wsUrl = Uri.parse(
+          'wss://better-ursola-jazael-26647204.koyeb.app/ws/chat/${widget.id}/');
+      channel = WebSocketChannel.connect(wsUrl);
+      channel.stream.listen((message) {
+        final data = jsonDecode(message);
+        print("data");
+        print(data);
+
+        print("message recived");
+        setState(() {
+          messages.add(Message(
+              id: messages.length + 1, message: data["mensaje"], idUser: idSendUser));
+        });
+        _updateMessages();
+      }, onDone: () {
+        print('WebSocket connection closed');
+      }, onError: (error) {
+        print('WebSocket error: $error');
+      });
+    } else {
+      print('Error: User ID is null');
+    }
   }
+
 
   void _sendMessage(String message) {
+    print("send socket");
+    print("chat id");
+    print(widget.id);
+    final send = SendMessage(
+        mensaje: message,
+        usuarioEnviaId: userId!,
+        usuarioRecibeId: idSendUser,
+        chatPersonalId: widget.id);
+
+    channel.sink.add(jsonEncode(send.toJson()));
+
     setState(() {
-      messages.add(Message(
-          id: messages.length + 1, message: message, idUser: idSendUser));
+      messages.add(
+          Message(id: messages.length + 1, message: message, idUser: userId!));
     });
   }
 
-  void getMessages() {
+  Future<void> getMessages() async {
+    MessageResponse response = await ApiService().getMessges(widget.id);
+    print(response.mensajes);
     setState(() {
+      response.mensajes.forEach((element) {
+        messages.add(Message(
+            id: element.chatId,
+            message: element.mensaje,
+            idUser: element.usuarioId));
+      });
+    });
+    setState(() async {
       print("user send me");
       print(idSendUser);
-      messages = [
-        Message(id: 1, message: "hola", idUser: 1),
-        Message(id: 1, message: "hola", idUser: 2),
-        Message(id: 1, message: "¿Qué tal", idUser: 1),
-        Message(id: 1, message: "¿Qué tal", idUser: 1),
-      ];
+      print("user me");
+      print(userId);
     });
   }
 
   void _updateMessages() {
-    // Actualiza tus datos de mensajes aquí
-    // Luego, desplaza el controlador al final
     _scrollController.animateTo(
       _scrollController.position.maxScrollExtent,
-      duration: Duration(milliseconds: 300),
+      duration: Duration(milliseconds: 1),
       curve: Curves.easeOut,
     );
   }
@@ -281,10 +335,10 @@ class _ChatWindowState extends State<ChatWindow> {
                     onTap: () {
                       print("send message");
                       _sendMessage(_messageController.text);
-                      _updateMessages();
                       setState(() {
                         _messageController.text = "";
                       });
+                      _updateMessages();
                     },
                     child: Container(
                       width: width * .11,
@@ -311,22 +365,4 @@ class _ChatWindowState extends State<ChatWindow> {
       ),
     );
   }
-}
-
-class Message {
-  final int id;
-
-  // final DateTime hour;
-  final String message;
-  final int idUser;
-
-  // final int idMe;
-
-  Message({
-    required this.id,
-    // required this.hour,
-    required this.message,
-    required this.idUser,
-    // required this.idMe
-  });
 }

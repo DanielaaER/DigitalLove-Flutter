@@ -1,8 +1,13 @@
 import 'dart:async';
 import 'package:digital_love/presentation/Home/Home.dart';
+import 'package:digital_love/presentation/Home/Pages/Chat/widgets/ChatWindow.dart';
+import 'package:digital_love/shared/models/chat_conversarion_model.dart';
 import 'package:digital_love/shared/models/chat_model.dart';
 import 'package:dio/dio.dart';
 
+import '../models/chat_response_model.dart';
+import '../models/message_model.dart';
+import '../models/message_response_model.dart';
 import '../models/notification_model.dart';
 import '../models/profile_model.dart';
 import 'UserData.dart';
@@ -32,6 +37,7 @@ class ApiService {
     try {
       UserData userData = UserData();
       print("notificar");
+      print(userData.userId);
       final response = await _dio.get('/notificaciones/${userData.userId}');
       List<dynamic> body = response.data;
       List<AppNotification> notifications = body
@@ -39,8 +45,6 @@ class ApiService {
           .toList()
           .reversed
           .toList();
-      print("notificaciones");
-      print(notifications);
       return notifications;
     } catch (error) {
       throw Exception('Failed to load notifications: $error');
@@ -106,6 +110,24 @@ class ApiService {
       throw Exception('Failed to get chat: $error');
     }
   }
+
+  Future<MessageResponse> getMessges(int idChat) async {
+    try {
+      final response = await _dio.get('/mensajesAnteriores/$idChat');
+      if (response.statusCode == 200) {
+        print('Chat response sent successfully');
+        print(response);
+        MessageResponse chat = MessageResponse.fromJson(response.data);
+        return chat;
+      } else {
+        throw Exception('Failed to get chat: ${response.statusCode}');
+      }
+    } catch (error) {
+      throw Exception('Failed to get chat: $error');
+    }
+  }
+
+
 
   void dispose() {
     _notificationsController.close();

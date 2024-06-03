@@ -7,157 +7,76 @@ import 'package:digital_love/shared/widgets/TextBold.dart';
 import 'package:digital_love/shared/widgets/TextSpan.dart';
 import 'package:flutter/material.dart';
 
+import '../../../../shared/models/chat_model.dart';
+import '../../../../shared/models/chat_response_model.dart';
+import '../../../../shared/services/ApiService.dart';
+import '../../../../shared/services/UserData.dart';
+
 class ChatScreen extends StatefulWidget {
   @override
   _ChatScreenState createState() => _ChatScreenState();
 }
 
 class _ChatScreenState extends State<ChatScreen> {
-  PageController _pageController = PageController();
+  late Future<ChatResponse> chatResponse;
 
-  bool canScroll = false;
-  double _dragDistance = 0.0;
-  final double _longSwipeThreshold = 100.0;
-  double _pageOffset = 0.0;
-  var nextProfile = 0;
-  var noProfiles = false;
-
-  var chats = [
-    Chat(
-        id: 1,
-        name: 'Rafaela',
-        lastMessage: "hola",
-        time: "10:01 AM",
-        idUser: 1,
-        profilePicture:
-            "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRt4ZHvtgQvmWfBY"
-            "-awhyifwjex-_AnOZJy30wWEYm7frPNCxUc9bbb6KUDRY_R_BsyyV0&usqp=CAU"),
-    Chat(
-        id: 2,
-        name: 'Pedri',
-        lastMessage: "que opinas..",
-        time: "10:01 PM",
-        idUser: 2,
-        profilePicture: ""),
-    Chat(
-      id: 3,
-      name: 'Hernan',
-      lastMessage: "holaaa",
-      time: "10:01 AM",
-      idUser: 2,
-    ),
-    Chat(
-        id: 1,
-        name: 'Rafaela',
-        lastMessage: "hola",
-        time: "10:01 AM",
-        idUser: 2,
-        profilePicture:
-            "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRt4ZHvtgQvmWfBY"
-            "-awhyifwjex-_AnOZJy30wWEYm7frPNCxUc9bbb6KUDRY_R_BsyyV0&usqp=CAU"),
-    Chat(
-        id: 2,
-        name: 'Pedri',
-        lastMessage: "que opinas..",
-        time: "10:01 PM",
-        idUser: 2,
-        profilePicture: ""),
-    Chat(
-      id: 3,
-      name: 'Hernan',
-      lastMessage: "holaaa",
-      time: "10:01 AM",
-      idUser: 2,
-    ),
-    Chat(
-        id: 1,
-        name: 'Rafaela',
-        lastMessage: "hola",
-        time: "10:01 AM",
-        idUser: 2,
-        profilePicture:
-            "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRt4ZHvtgQvmWfBY"
-            "-awhyifwjex-_AnOZJy30wWEYm7frPNCxUc9bbb6KUDRY_R_BsyyV0&usqp=CAU"),
-    Chat(
-        id: 2,
-        name: 'Pedri',
-        lastMessage: "que opinas..",
-        time: "10:01 PM",
-        idUser: 2,
-        profilePicture: ""),
-    Chat(
-      id: 3,
-      name: 'Hernan',
-      lastMessage: "holaaa",
-      time: "10:01 AM",
-      idUser: 2,
-    ),
-    Chat(
-        id: 1,
-        name: 'Rafaela',
-        lastMessage: "hola",
-        time: "10:01 AM",
-        idUser: 2,
-        profilePicture:
-            "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRt4ZHvtgQvmWfBY"
-            "-awhyifwjex-_AnOZJy30wWEYm7frPNCxUc9bbb6KUDRY_R_BsyyV0&usqp=CAU"),
-    Chat(
-        id: 2,
-        name: 'Pedri',
-        lastMessage: "que opinas..",
-        time: "10:01 PM",
-        idUser: 2,
-        profilePicture: ""),
-    Chat(
-      id: 3,
-      name: 'Hernan',
-      lastMessage: "holaaa",
-      time: "10:01 AM",
-      idUser: 2,
-    ),
-  ];
+  @override
+  void initState() {
+    super.initState();
+    chatResponse = ApiService().getChat();
+  }
 
   @override
   Widget build(BuildContext context) {
-    var height = MediaQuery.of(context).size.height;
-    var width = MediaQuery.of(context).size.width;
-    Widget nextProfileWidget;
-
-    var title = width * 0.09;
-    var text = width * 0.05;
-
     return Scaffold(
-        backgroundColor: AppColors.whiteColor,
-        body: Stack(children: [
-          Container(
-            color: AppColors.whiteColor,
-            height: MediaQuery.of(context).size.height * .8,
-            width: width,
-            child: ListView.builder(
-              itemCount: chats.length,
-              itemBuilder: (BuildContext context, int index) {
+      body: FutureBuilder<ChatResponse>(
+        future: chatResponse,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(child: CircularProgressIndicator());
+          } else if (snapshot.hasError) {
+            return Center(child: Text('Error: ${snapshot.error}'));
+          } else if (snapshot.hasData) {
+            return ListView.builder(
+              itemCount: snapshot.data?.chats.length ?? 0,
+              itemBuilder: (context, index) {
+                var chat = snapshot.data!.chats[index];
+                print(chat.id);
+                print("Chat");
+                print(chat.usuarioMatch);
+
+                var userChat = chat.usuarioMatch;
+                if (userChat == UserData().userId) {
+                  userChat = chat.usuario;
+                }
+
                 return GestureDetector(
-                    onTap: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => ChatWindow(
-                              id: chats[index].id,
-                              name: chats[index].name,
-                              profilePicture: chats[index].profilePicture,
-                            ),
-                          ));
-                    },
-                    child: ChatPreviewWidget(
-                      senderName: chats[index].name,
-                      lastMessage: chats[index].lastMessage,
-                      time: chats[index].time,
-                      profilePicture: chats[index].profilePicture,
-                    ));
+                  onTap: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => ChatWindow(
+                            id: chat.id,
+                            name: 'Sender ${userChat}',
+                            idSender: userChat,
+                          ),
+                        ));
+                  },
+                  child: ChatPreviewWidget(
+                    senderName: 'Sender ${userChat}',
+                    lastMessage: "",
+                    time: "",
+                    idChat: chat.id,
+                  ),
+                );
               },
-            ),
-          ),
-        ]));
+            );
+          } else {
+            return Center(child: Text('No data available'));
+          }
+        },
+      ),
+    );
   }
 }
 

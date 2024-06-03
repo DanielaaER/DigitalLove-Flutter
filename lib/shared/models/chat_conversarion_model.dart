@@ -1,23 +1,25 @@
-import 'package:flutter/foundation.dart';
-
-class Chat {
-  final int id;
-  final int usuario;
-  final int usuarioMatch;
+class ChatConversation {
+  final List<String> id;
+  final int idChat;
+  final String usuario;
+  final String mensaje;
   final DateTime fechaRegistro;
 
-  Chat({
+
+  ChatConversation({
     required this.id,
+    required this.idChat,
     required this.usuario,
-    required this.usuarioMatch,
+    required this.mensaje,
     required this.fechaRegistro,
   });
 
-  factory Chat.fromJson(Map<String, dynamic> json) {
-    return Chat(
+  factory ChatConversation.fromJson(Map<String, dynamic> json) {
+    return ChatConversation(
       id: json['id'],
+      idChat: json['id_chat'],
       usuario: json['usuario'],
-      usuarioMatch: json['usuario_match'],
+      mensaje: json['mensaje'],
       fechaRegistro: DateTime.parse(json['fechaRegistro']),
     );
   }
@@ -25,10 +27,10 @@ class Chat {
   Map<String, dynamic> toJson() {
     return {
       'id': id,
+      'id_chat': idChat,
       'usuario': usuario,
-      'usuario_match': usuarioMatch,
+      'mensaje': mensaje,
       'fechaRegistro': fechaRegistro.toIso8601String(),
     };
   }
 }
-
