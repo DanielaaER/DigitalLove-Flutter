@@ -3,6 +3,7 @@ import 'package:digital_love/presentation/Home/Home.dart';
 import 'package:digital_love/presentation/Home/Pages/Chat/widgets/ChatWindow.dart';
 import 'package:digital_love/shared/models/chat_conversarion_model.dart';
 import 'package:digital_love/shared/models/chat_model.dart';
+import 'package:digital_love/shared/models/match_user_model.dart';
 import 'package:dio/dio.dart';
 
 import '../models/chat_response_model.dart';
@@ -127,6 +128,23 @@ class ApiService {
     }
   }
 
+  Future<List<MatchUsuario>> fetchUsuarios() async {
+    try {
+      final response = await _dio.get('encontrar_usuarios/${UserData().userId}/');
+      if (response.statusCode == 200) {
+        List<dynamic> body = response.data;
+        print(body);
+        List<MatchUsuario> usuarios = body.map((dynamic item) => MatchUsuario.fromJson(item)).toList();
+
+
+        return usuarios;
+      } else {
+        throw Exception('Failed to load usuarios');
+      }
+    } catch (error) {
+      throw Exception('Failed to load usuarios: $error');
+    }
+  }
 
 
   void dispose() {

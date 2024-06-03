@@ -1,4 +1,3 @@
-
 import 'package:digital_love/config/theme/app_colors.dart';
 import 'package:digital_love/shared/widgets/Text.dart';
 import 'package:digital_love/shared/widgets/TextBold.dart';
@@ -91,7 +90,7 @@ class _MatchScreenState extends State<MatchScreen> {
                           padding: EdgeInsets.only(
                               bottom: height * .005, right: width * .08),
                           child: Text(
-                            widget.profile.preferences,
+                            widget.profile.preferences!,
                             style: TextStyle(
                                 color: AppColors.whiteColor, fontSize: text),
                           ),
@@ -150,11 +149,6 @@ class _MatchScreenState extends State<MatchScreen> {
                                           CustomText(
                                               textValue:
                                                   "${widget.profile.age},  ",
-                                              size: text,
-                                              color: AppColors.whiteColor),
-                                          CustomText(
-                                              textValue:
-                                                  "${widget.profile.horoscop}",
                                               size: text,
                                               color: AppColors.whiteColor),
                                         ]),

@@ -13,6 +13,9 @@ class AuthService with ChangeNotifier {
 
   bool _autenticando = false;
   bool _isLoggedIn = true;
+  bool _noProfiles = false;
+
+  bool get noProfiles => _noProfiles;
 
   bool get autenticando => _autenticando;
 
@@ -53,6 +56,11 @@ class AuthService with ChangeNotifier {
   File? get back_credential => _userData.back_credential;
 
   File? get selfie => _userData.selfie;
+
+  set noProfiles(bool valor) {
+    _noProfiles = valor;
+    notifyListeners();
+  }
 
   set autenticando(bool valor) {
     _autenticando = valor;

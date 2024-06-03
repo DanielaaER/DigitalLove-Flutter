@@ -1,10 +1,9 @@
 
 class Profile {
   final int id;
-  final String preferences;
+  final String? preferences;
   final String name;
   final String city;
-  final String horoscop;
   final String age;
   final List<String> labels;
   final String photoUrl;
@@ -14,7 +13,6 @@ class Profile {
     required this.preferences,
     required this.name,
     required this.city,
-    required this.horoscop,
     required this.age,
     required this.labels,
     required this.photoUrl,
@@ -26,7 +24,6 @@ class Profile {
       preferences: json['preferences'],
       name: json['name'],
       city: json['city'],
-      horoscop: json['horoscop'],
       age: json['age'],
       labels: List<String>.from(json['labels']),
       photoUrl: json['photoUrl'],
