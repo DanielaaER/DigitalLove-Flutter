@@ -130,12 +130,13 @@ class ApiService {
 
   Future<List<MatchUsuario>> fetchUsuarios() async {
     try {
-      final response = await _dio.get('encontrar_usuarios/${UserData().userId}/');
+      final response =
+          await _dio.get('encontrar_usuarios/${UserData().userId}/');
       if (response.statusCode == 200) {
         List<dynamic> body = response.data;
         print(body);
-        List<MatchUsuario> usuarios = body.map((dynamic item) => MatchUsuario.fromJson(item)).toList();
-
+        List<MatchUsuario> usuarios =
+            body.map((dynamic item) => MatchUsuario.fromJson(item)).toList();
 
         return usuarios;
       } else {
@@ -146,6 +147,36 @@ class ApiService {
     }
   }
 
+  UserData userData = UserData();
+
+  Future<bool> newPreferences(List<String> selectedLabels) async {
+    try {
+      print("newPreferences");
+      print(userData.userFullName);
+      print(userData.userId);
+      print(selectedLabels);
+      final response =
+          await _dio.post('/registrar_preferencias/${userData.userId}/',
+              options: Options(
+                headers: {
+                  'Content-Type': 'application/json',
+                },
+              ),
+              data: {"etiquetas": selectedLabels});
+      print("response");
+      print(response);
+      if (response.data["message"] == "Preferencias registradas") {
+        return true;
+      } else {
+        print("false");
+        return false;
+      }
+    } catch (error) {
+      print("error");
+      print(error);
+      return false;
+    }
+  }
 
   void dispose() {
     _notificationsController.close();

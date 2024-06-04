@@ -3,16 +3,31 @@ import 'package:flutter/material.dart';
 
 import '../../config/theme/app_colors.dart';
 
-class CustomSexAutocomplete extends StatelessWidget {
+class CustomGenderAutocomplete extends StatelessWidget {
   // final List<String> suggestions;
   final ValueChanged<String> onSelected;
 
-  CustomSexAutocomplete({
+  CustomGenderAutocomplete({
     // required this.suggestions,
     required this.onSelected,
   });
 
-  var suggestions = ["FEMENINO", "MASCULINO"];
+  var suggestions = [
+    "Heterosexual",
+    "Gay",
+    "Lesbiana",
+    "Bisexual",
+    "Pansexual",
+    "Asexual",
+    "Demisexual",
+    "Polisexual",
+    "Sapiosexual",
+    "Queer",
+    "Intersexual",
+    "Transexual",
+    "No binario",
+    "Prefiero no responder"
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -25,7 +40,7 @@ class CustomSexAutocomplete extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
         Text(
-          "Genero",
+          "Orientación sexual",
           style: TextStyle(
             fontSize: text,
             color: AppColors.primaryColor,

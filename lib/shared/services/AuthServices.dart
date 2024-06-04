@@ -5,6 +5,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../models/user_update_model.dart';
 import 'UserData.dart';
 
 class AuthService with ChangeNotifier {
@@ -57,6 +58,11 @@ class AuthService with ChangeNotifier {
 
   File? get selfie => _userData.selfie;
 
+  UserData userData = UserData();
+
+  final Dio _dio = Dio(BaseOptions(
+      baseUrl: 'https://better-ursola-jazael-26647204.koyeb.app/api/v1/'));
+
   set noProfiles(bool valor) {
     _noProfiles = valor;
     notifyListeners();
@@ -79,8 +85,8 @@ class AuthService with ChangeNotifier {
     }
 
     try {
-      final response = await Dio().post(
-        '${url}loginUsuario/',
+      final response = await _dio.post(
+        'loginUsuario/',
         data: {
           'usuario': email,
           'password': password,
@@ -135,8 +141,8 @@ class AuthService with ChangeNotifier {
       File back = _userData.back_credential!;
       File selfie = _userData.selfie!;
 
-      final response = await Dio().post(
-        '${url}registrarUsuario/',
+      final response = await _dio.post(
+        '}registrarUsuario/',
         data: {
           'nombre': _userData.userSingleName,
           'apellidoPaterno': _userData.userLastame,
@@ -292,5 +298,47 @@ class AuthService with ChangeNotifier {
 
     _isLoggedIn = _userData.userId != null;
     notifyListeners();
+  }
+
+  Future<bool> updateUser(UserUpdate userUpdate) async {
+    try {
+      final response = await _dio.patch(
+        'actualizarUsuario/${userData.userId}/',
+        data: userUpdate.toJson(),
+        options: Options(
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        ),
+      );
+
+      if (response.statusCode == 200) {
+        var data = response.data;
+        print(data);
+        if (data['message'] == "Usuario actualizado") {
+          userData.userSingleName =
+              userUpdate.nombre ?? userData.userSingleName;
+          userData.userLastame =
+              userUpdate.apellidoPaterno ?? userData.userLastame;
+          userData.userLastName2 =
+              userUpdate.apellidoMaterno ?? userData.userLastName2;
+          userData.edad = userUpdate.edad ?? userData.edad;
+          userData.ubicacion = userUpdate.ubicacion ?? userData.ubicacion;
+          userData.sexo = userUpdate.sexo ?? userData.sexo;
+          userData.telefono = userUpdate.telefono ?? userData.telefono;
+          userData.estado = userUpdate.estado ?? userData.estado;
+          userData.email = userUpdate.correo ?? userData.email;
+          userData.password = userUpdate.password ?? userData.password;
+
+          notifyListeners();
+          return true;
+        }
+      }
+
+      return false;
+    } catch (e) {
+      print('Error during update request: $e');
+      return false;
+    }
   }
 }

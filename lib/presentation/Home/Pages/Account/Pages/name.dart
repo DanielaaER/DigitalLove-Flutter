@@ -1,11 +1,14 @@
+import 'package:digital_love/shared/services/AuthServices.dart';
 import 'package:digital_love/shared/widgets/Button.dart';
 import 'package:digital_love/shared/widgets/TextBold.dart';
 import 'package:digital_love/shared/widgets/TextField.dart';
+import 'package:digital_love/shared/widgets/TextFieldDisable.dart';
 import 'package:digital_love/shared/widgets/TextFieldEmail.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 
 import '../../../../../config/theme/app_colors.dart';
+import '../../../../../shared/models/user_update_model.dart';
 import '../widgets/setting.dart';
 
 class NameScreen extends StatefulWidget {
@@ -21,7 +24,6 @@ class _NameScreenState extends State<NameScreen> {
     super.initState();
   }
 
-  void _update(String update) {}
 
   @override
   Widget build(BuildContext context) {
@@ -73,20 +75,10 @@ class _NameScreenState extends State<NameScreen> {
                       transformAlignment: Alignment.topCenter,
                       padding: EdgeInsets.only(
                           top: height * .05, bottom: height * .05),
-                      child: CustomTextField(
-                          textValue: "Nombre", controller: _textController),
+                      child: CustomTextFieldDisable(
+                          titleValue: "Nombre",
+                          textValue: "${AuthService().userSingleName.toString().toUpperCase()}"),
                     ),
-                    Container(
-                      width: width * .5,
-                      transformAlignment: Alignment.topCenter,
-                      padding: EdgeInsets.only(bottom: height * .05),
-                      child: CustomButton(
-                        textValue: "Actualizar",
-                        onPressed: () {
-                          _update(_textController.text);
-                        },
-                      ),
-                    )
                   ],
                 ),
               ),
