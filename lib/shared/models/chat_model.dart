@@ -2,8 +2,8 @@ import 'package:flutter/foundation.dart';
 
 class Chat {
   final int id;
-  final int usuario;
-  final int usuarioMatch;
+  final UsuarioChat usuario;
+  final UsuarioChat usuarioMatch;
   final DateTime fechaRegistro;
 
   Chat({
@@ -16,8 +16,8 @@ class Chat {
   factory Chat.fromJson(Map<String, dynamic> json) {
     return Chat(
       id: json['id'],
-      usuario: json['usuario'],
-      usuarioMatch: json['usuario_match'],
+      usuario: UsuarioChat.fromJson(json['usuario']),
+      usuarioMatch: UsuarioChat.fromJson(json['usuario_match']),
       fechaRegistro: DateTime.parse(json['fechaRegistro']),
     );
   }
@@ -32,3 +32,34 @@ class Chat {
   }
 }
 
+class UsuarioChat {
+  final int id;
+  final String nombre;
+  final int edad;
+  final List<dynamic> fotos;
+
+  UsuarioChat({
+    required this.id,
+    required this.nombre,
+    required this.edad,
+    required this.fotos,
+  });
+
+  factory UsuarioChat.fromJson(Map<String, dynamic> json) {
+    return UsuarioChat(
+      id: json['id'],
+      nombre: json['nombre'],
+      edad: json['edad'],
+      fotos: List<dynamic>.from(json['fotos']),
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'nombre': nombre,
+      'edad': edad,
+      'fotos': fotos,
+    };
+  }
+}

@@ -75,8 +75,12 @@ class _ChatWindowState extends State<ChatWindow> {
 
         print("message recived");
         setState(() {
-          messages.add(Message(
-              id: messages.length + 1, message: data["mensaje"], idUser: idSendUser));
+          if (data["usuario_envia"] == idSendUser) {
+            messages.add(Message(
+                id: messages.length + 1,
+                message: data["mensaje"],
+                idUser: idSendUser));
+          }
         });
         _updateMessages();
       }, onDone: () {
@@ -88,7 +92,6 @@ class _ChatWindowState extends State<ChatWindow> {
       print('Error: User ID is null');
     }
   }
-
 
   void _sendMessage(String message) {
     print("send socket");

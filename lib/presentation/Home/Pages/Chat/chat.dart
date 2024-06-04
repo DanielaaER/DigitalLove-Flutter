@@ -42,13 +42,13 @@ class _ChatScreenState extends State<ChatScreen> {
               itemBuilder: (context, index) {
                 var chat = snapshot.data!.chats[index];
                 print(chat.id);
-                print("Chat");
-                print(chat.usuarioMatch);
 
                 var userChat = chat.usuarioMatch;
-                if (userChat == UserData().userId) {
+                if (userChat.id == UserData().userId) {
                   userChat = chat.usuario;
                 }
+                print("Chat");
+                print(userChat.nombre);
 
                 return GestureDetector(
                   onTap: () {
@@ -57,13 +57,16 @@ class _ChatScreenState extends State<ChatScreen> {
                         MaterialPageRoute(
                           builder: (context) => ChatWindow(
                             id: chat.id,
-                            name: 'Sender ${userChat}',
-                            idSender: userChat,
+                            name: '${userChat.nombre}',
+                            idSender: userChat.id,
+                            profilePicture: userChat.fotos.isNotEmpty
+                                ? userChat.fotos[0]
+                                : null,
                           ),
                         ));
                   },
                   child: ChatPreviewWidget(
-                    senderName: 'Sender ${userChat}',
+                    senderName: '${userChat.nombre}',
                     lastMessage: "",
                     time: "",
                     idChat: chat.id,
