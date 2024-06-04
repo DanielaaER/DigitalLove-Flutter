@@ -67,8 +67,8 @@ class AuthService with ChangeNotifier {
 
   UserData userData = UserData();
 
-  final Dio _dio =
-  Dio(BaseOptions(baseUrl: 'https://better-ursola-jazael-26647204.koyeb.app/api/v1/'));
+  final Dio _dio = Dio(BaseOptions(
+      baseUrl: 'https://better-ursola-jazael-26647204.koyeb.app/api/v1/'));
 
   Future<bool> login(String email, String password) async {
     if (email.isEmpty || password.isEmpty) {
@@ -294,8 +294,8 @@ class AuthService with ChangeNotifier {
 
   Future<bool> updateUser(UserUpdate userUpdate) async {
     try {
-      final response = await _dio.put(
-        'updateUsuario/${userData.userId}',
+      final response = await _dio.patch(
+        'actualizarUsuario/${userData.userId}/',
         data: userUpdate.toJson(),
         options: Options(
           headers: {
@@ -306,8 +306,8 @@ class AuthService with ChangeNotifier {
 
       if (response.statusCode == 200) {
         var data = response.data;
-        if (data['status_code'] == 200) {
-          // Actualiza los datos del usuario si la actualización fue exitosa
+        print(data);
+        if (data['message'] == "Usuario actualizado") {
           userData.userSingleName =
               userUpdate.nombre ?? userData.userSingleName;
           userData.userLastame =
@@ -333,5 +333,4 @@ class AuthService with ChangeNotifier {
       return false;
     }
   }
-
 }

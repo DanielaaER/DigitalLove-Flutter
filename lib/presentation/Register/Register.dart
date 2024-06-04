@@ -13,7 +13,7 @@ import 'package:digital_love/shared/widgets/TextFieldEmail.dart';
 
 import '../../shared/models/user_model.dart';
 import '../../shared/widgets/Gesture.dart';
-import '../../shared/widgets/SexDrop.dart';
+import '../../shared/widgets/GenderDrop.dart';
 import '../../shared/widgets/TextBold.dart';
 import '../../shared/widgets/TextFieldPasswordVerify.dart';
 
@@ -180,7 +180,6 @@ class _RegisterView extends StatelessWidget {
                         apellidoMaterno: _segundoApellidoController.text.trim(),
                         correo: _emailController.text.trim(),
                         password: _passwordController.text.trim(),
-                        tipoUsuario: "USUARIO",
                         edad: int.parse(_edadController.text.trim()),
                         estado: "ACTIVO",
                         sexo: _sexoController.text.trim(),

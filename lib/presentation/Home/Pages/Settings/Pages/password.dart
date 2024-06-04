@@ -6,6 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 
 import '../../../../../config/theme/app_colors.dart';
+import '../../../../../shared/models/user_update_model.dart';
+import '../../../../../shared/services/AuthServices.dart';
 import '../widgets/setting.dart';
 
 class PasswordScreen extends StatefulWidget {
@@ -21,7 +23,13 @@ class _PasswordScreenState extends State<PasswordScreen> {
     super.initState();
   }
 
-  void _update(String update) {}
+  Future<bool> _update(String update) async {
+    print(update);
+    UserUpdate userUpdate = UserUpdate(password: update);
+    var response = await AuthService().updateUser(userUpdate);
+    print(response);
+    return response;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -81,7 +89,7 @@ class _PasswordScreenState extends State<PasswordScreen> {
                       padding: EdgeInsets.only(
                           top: height * .05, bottom: height * .05),
                       child: CustomTextField(
-                          textValue: "Contraseña Actual", controller: _textController),
+                          textValue: "Nueva Contraseña", controller: _textController),
                     ),
                     Container(
                       width: width * .5,
@@ -89,8 +97,19 @@ class _PasswordScreenState extends State<PasswordScreen> {
                       padding: EdgeInsets.only(bottom: height * .05),
                       child: CustomButton(
                         textValue: "Actualizar",
-                        onPressed: () {
-                          _update(_textController.text);
+                        onPressed: () async {
+                          bool response = await _update(_textController.text);
+                          if (response ){
+                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                              content: Text('Contraseña actualizada'),
+                            ));
+                            Navigator.pop(context);
+
+                          } else {
+                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                              content: Text('Error al actualizar contraseña'),
+                            ));
+                          }
                         },
                       ),
                     )

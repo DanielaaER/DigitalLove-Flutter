@@ -1,3 +1,4 @@
+import 'package:digital_love/shared/services/UserData.dart';
 import 'package:digital_love/shared/widgets/Button.dart';
 import 'package:digital_love/shared/widgets/TextBold.dart';
 import 'package:digital_love/shared/widgets/TextField.dart';
@@ -7,6 +8,8 @@ import 'package:flutter/rendering.dart';
 
 import '../../../../../config/theme/app_colors.dart';
 import '../../../../../shared/models/user_update_model.dart';
+import '../../../../../shared/services/AuthServices.dart';
+import '../../../../../shared/widgets/TextFieldDisable.dart';
 import '../widgets/setting.dart';
 
 class LastNameScreen extends StatefulWidget {
@@ -81,20 +84,11 @@ class _LastNameScreenState extends State<LastNameScreen> {
                       transformAlignment: Alignment.topCenter,
                       padding: EdgeInsets.only(
                           top: height * .05, bottom: height * .05),
-                      child: CustomTextField(
-                          textValue: "Apellido", controller: _textController),
+                      child: CustomTextFieldDisable(
+                          titleValue: "Apellido",
+                          textValue: "${UserData().userLastame.toString().toUpperCase()} ${UserData().userLastName2.toString().toUpperCase()}"),
                     ),
-                    Container(
-                      width: width * .5,
-                      transformAlignment: Alignment.topCenter,
-                      padding: EdgeInsets.only(bottom: height * .05),
-                      child: CustomButton(
-                        textValue: "Actualizar",
-                        onPressed: () {
-                          _update(_textController.text);
-                        },
-                      ),
-                    )
+
                   ],
                 ),
               ),

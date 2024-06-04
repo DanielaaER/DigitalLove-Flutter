@@ -145,16 +145,16 @@ class _AccountScreenState extends State<AccountScreen> {
                               ));
                         },
                       ),
-                      SettingWidget(
-                        setting: "Edad",
-                        onPressed: () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => AgeScreen(),
-                              ));
-                        },
-                      ),
+                      // SettingWidget(
+                      //   setting: "Edad",
+                      //   onPressed: () {
+                      //     Navigator.push(
+                      //         context,
+                      //         MaterialPageRoute(
+                      //           builder: (context) => AgeScreen(),
+                      //         ));
+                      //   },
+                      // ),
                       SettingWidget(
                         setting: "Ciudad",
                         onPressed: () {
