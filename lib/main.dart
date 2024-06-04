@@ -12,6 +12,9 @@ import 'dart:async';
 import 'package:provider/provider.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 
+import 'config/router/routes.dart';
+import 'config/theme/app_colors.dart';
+import 'presentation/Home/Home.dart';
 import 'presentation/Home/Pages/Notifications/NotificationScreen.dart';
 import 'shared/services/ApiService.dart';
 import 'shared/services/AuthServices.dart';
