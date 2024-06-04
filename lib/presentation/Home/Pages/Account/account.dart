@@ -1,6 +1,7 @@
 import 'package:digital_love/presentation/Home/Pages/Account/Pages/age.dart';
 import 'package:digital_love/presentation/Home/Pages/Account/Pages/city.dart';
 import 'package:digital_love/presentation/Home/Pages/Account/Pages/gender.dart';
+import 'package:digital_love/presentation/Home/Pages/Account/Pages/labels.dart';
 import 'package:digital_love/presentation/Home/Pages/Account/Pages/lastname.dart';
 import 'package:digital_love/presentation/Home/Pages/Account/Pages/name.dart';
 import 'package:digital_love/presentation/Home/Pages/Account/Pages/sex.dart';
@@ -192,7 +193,7 @@ class _AccountScreenState extends State<AccountScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       SettingWidget(
-                        setting: "Sexo",
+                        setting: "Genero",
                         onPressed: () {
                           Navigator.push(
                               context,
@@ -202,7 +203,7 @@ class _AccountScreenState extends State<AccountScreen> {
                         },
                       ),
                       SettingWidget(
-                        setting: "Genero",
+                        setting: "Orientacion Sexual",
                         onPressed: () {
                           Navigator.push(
                               context,
@@ -237,7 +238,15 @@ class _AccountScreenState extends State<AccountScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      SettingWidget(setting: "Etiquetas"),
+                      SettingWidget(
+                          setting: "Etiquetas",
+                          onPressed: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => LabelScreen(),
+                                ));
+                          }),
                     ],
                   ),
                 ),

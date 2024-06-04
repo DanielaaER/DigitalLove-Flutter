@@ -28,8 +28,8 @@ class ApiService {
     }
   }
 
-  final Dio _dio =
-      Dio(BaseOptions(baseUrl: 'https://better-ursola-jazael-26647204.koyeb.app/api/v1/'));
+  final Dio _dio = Dio(BaseOptions(
+      baseUrl: 'https://better-ursola-jazael-26647204.koyeb.app/api/v1/'));
 
   Future<List<AppNotification>> fetchNotifications() async {
     try {
@@ -67,6 +67,34 @@ class ApiService {
     }
   }
 
+  Future<bool> newPreferences(List<String> selectedLabels) async {
+    try {
+      print("newPreferences");
+      print(userData.userFullName);
+      print(userData.userId);
+      print(selectedLabels);
+      final response =
+          await _dio.post('/registrar_preferencias/${userData.userId}/',
+              options: Options(
+                headers: {
+                  'Content-Type': 'application/json',
+                },
+              ),
+              data: {"etiquetas": selectedLabels});
+      print("response");
+      print(response);
+      if (response.data["message"] == "Preferencias registradas") {
+        return true;
+      } else {
+        print("false");
+        return false;
+      }
+    } catch (error) {
+      print("error");
+      print(error);
+      return false;
+    }
+  }
 
   void dispose() {
     _notificationsController.close();
