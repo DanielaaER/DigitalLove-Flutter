@@ -90,7 +90,7 @@ class _AgeScreenState extends State<AgeScreen> {
                       child: CustomButton(
                         textValue: "Actualizar",
                         onPressed: () {
-                          _update(_textController.text);
+                          _update(_textController.text as int);
                         },
                       ),
                     )
