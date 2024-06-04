@@ -295,6 +295,7 @@ class AuthService with ChangeNotifier {
     _userData.ubicacion = prefs.getString('ubicacion');
     _userData.email = prefs.getString('email');
     _userData.userToken = prefs.getString('userToken');
+    _userData.noProfiles = prefs.getBool('noProfiles');
 
     _isLoggedIn = _userData.userId != null;
     notifyListeners();

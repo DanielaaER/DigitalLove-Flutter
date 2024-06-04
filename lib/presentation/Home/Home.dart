@@ -4,9 +4,11 @@ import 'dart:convert';
 import 'package:digital_love/config/theme/app_colors.dart';
 import 'package:digital_love/shared/services/ApiService.dart';
 import 'package:digital_love/shared/services/AuthServices.dart';
+import 'package:digital_love/shared/services/UserData.dart';
 import 'package:digital_love/shared/widgets/TextBold.dart';
 import 'package:digital_love/shared/widgets/TextSpan.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../shared/models/profile_model.dart';
 import 'widgets/Match.dart';
@@ -35,7 +37,19 @@ class _HomeScreenState extends State<HomeScreen> {
     fetchProfiles();
   }
 
+  late SharedPreferences pref;
+
   Future<void> fetchProfiles() async {
+    print("no profiles");
+    print(UserData().noProfiles);
+
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    prefs.getBool('noProfiles');
+    setState(() {
+      pref = prefs;
+    });
+
     try {
       var users = await ApiService().fetchUsuarios();
       print("users");
@@ -116,10 +130,10 @@ class _HomeScreenState extends State<HomeScreen> {
     var title = width * 0.09;
     var text = width * 0.05;
     print("NEX PROFILE");
-    print(nextProfile + 1);
+    print(nextProfile);
     print("profiles lencht");
     print(profiles.length);
-    if (nextProfile <= profiles.length + 1) {
+    if (nextProfile < profiles.length) {
       print("page offset");
       print("hay otro");
       print(nextProfile);
@@ -128,11 +142,13 @@ class _HomeScreenState extends State<HomeScreen> {
       print("page offset");
       print("no hay otro");
       nextProfileWidget = Container(color: AppColors.primaryColor);
-      AuthService().noProfiles = true;
+
+      pref.setBool('noProfiles', true);
+      UserData().noProfiles = true;
+      print("show no profiles");
       setState(() {
         canScroll = false;
-        print(AuthService().noProfiles);
-        print("show no profiles");
+        print(UserData().noProfiles);
       });
       // }
     }
@@ -331,7 +347,7 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ],
           ),
-          if (AuthService().noProfiles == true)
+          if (UserData().noProfiles == true)
             Positioned.fill(
                 child: Container(
               width: width * .8,
@@ -351,13 +367,13 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                   CustomTextSpan(
                       textValue:
-                          "Ooops! Parece que has superado el limite de likes por el dia de hoy, por favor intentalo mañana.",
+                          "Ooops! Parece que has superado el limite de perfiles por el dia de hoy, por favor intentalo mañana.",
                       size: text,
                       color: AppColors.whiteColor.withOpacity(.8),
                       highlightedWords: [
                         "limite",
                         "hoy",
-                        "likes",
+                        "perfiles",
                         "intentalo",
                         "mañana"
                       ]),

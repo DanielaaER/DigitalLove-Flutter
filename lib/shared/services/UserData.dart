@@ -1,5 +1,7 @@
 import 'dart:io';
 
+import 'package:shared_preferences/shared_preferences.dart';
+
 class UserData {
   static final UserData _instance = UserData._internal();
 
@@ -21,7 +23,7 @@ class UserData {
   File? _front;
   File? _back;
   File? _selfie;
-
+  bool _noProfiles = false;
 
   factory UserData() {
     return _instance;
@@ -31,24 +33,42 @@ class UserData {
 
   // Getters
   int? get userId => _userId;
+
   String? get userSingleName => _userSingleName;
+
   String? get userLastame => _userLastame;
+
   String? get userLastName2 => _userLastName2;
+
   String? get userFullName => _userFullName;
+
   String? get username => _username;
+
   String? get userToken => _userToken;
+
   String? get tipoUsuario => _tipoUsuario;
+
   int? get edad => _edad;
+
   String? get estado => _estado;
+
   String? get sexo => _sexo;
+
   String? get telefono => _telefono;
+
   String? get ubicacion => _ubicacion;
+
   String? get email => _email;
+
   String? get password => _password;
 
   File? get front_credential => _front;
+
   File? get back_credential => _back;
+
   File? get selfie => _selfie;
+
+  bool? get noProfiles => _noProfiles;
 
   // Setters
   set userId(int? value) {
@@ -122,6 +142,8 @@ class UserData {
   set selfie(File? value) {
     _selfie = value;
   }
-  
 
+  set noProfiles(bool? value) {
+    _noProfiles = value!;
+  }
 }
