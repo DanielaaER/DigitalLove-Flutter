@@ -9,9 +9,6 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'dart:async';
 import 'package:provider/provider.dart';
 
-import 'config/router/routes.dart';
-import 'config/theme/app_colors.dart';
-import 'presentation/Home/Home.dart';
 import 'presentation/Home/Pages/Notifications/NotificationScreen.dart';
 import 'shared/services/ApiService.dart';
 import 'shared/services/AuthServices.dart'; // Asegúrate de tener este import correcto
