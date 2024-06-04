@@ -1,6 +1,4 @@
-import 'package:digital_love/shared/services/ApiService.dart';
 import 'package:digital_love/shared/widgets/Button.dart';
-import 'package:digital_love/shared/widgets/LabelDrop.dart';
 import 'package:digital_love/shared/widgets/TextBold.dart';
 import 'package:digital_love/shared/widgets/TextField.dart';
 import 'package:digital_love/shared/widgets/TextFieldEmail.dart';
@@ -9,33 +7,28 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 
 import '../../../../../config/theme/app_colors.dart';
-import '../../../../../shared/services/AuthServices.dart';
 import '../widgets/setting.dart';
 
-class LabelScreen extends StatefulWidget {
+class SexScreen extends StatefulWidget {
   @override
-  _LabelScreenState createState() => _LabelScreenState();
+  _SexScreenState createState() => _SexScreenState();
 }
 
-class _LabelScreenState extends State<LabelScreen> {
+class _SexScreenState extends State<SexScreen> {
   TextEditingController _textController = TextEditingController();
-  List<String> selectedLabels = [];
-
-  void _onLabelsSelected(List<String> labels) {
-    setState(() {
-      selectedLabels = labels;
-    });
-  }
+  late List<String> list = [
+    "Mujer",
+    "Hombre",
+    "No binario",
+    "Prefiero no responder",
+  ];
 
   @override
   void initState() {
     super.initState();
   }
 
-  Future<bool> _update(List<String> selectedLabels) async {
-    bool response = await ApiService().newPreferences(selectedLabels);
-    return response;
-  }
+  void _update(String update) {}
 
   @override
   Widget build(BuildContext context) {
@@ -86,53 +79,24 @@ class _LabelScreenState extends State<LabelScreen> {
                       width: width * .8,
                       transformAlignment: Alignment.topCenter,
                       padding: EdgeInsets.only(
-                          top: height * .01, bottom: height * .02),
-                      child: CustomLabelAutocomplete(
-                        onSelected: _onLabelsSelected,
+                          top: height * .05, bottom: height * .05),
+                      child: CustomTextList(
+                        textValue: "Genero",
+                        controller: _textController,
+                        list: list,
                       ),
                     ),
-                    // Container(
-                    //   width: width * .8,
-                    //   transformAlignment: Alignment.topCenter,
-                    //   padding: EdgeInsets.only(
-                    //       top: height * .02, bottom: height * .02),
-                    //   child: Wrap(
-                    //     spacing: 6.0,
-                    //     runSpacing: 6.0,
-                    //     children: selectedLabels
-                    //         .map((label) => Chip(
-                    //               label: Text(label),
-                    //               onDeleted: () {
-                    //                 setState(() {
-                    //                   selectedLabels.remove(label);
-                    //                 });
-                    //               },
-                    //             ))
-                    //         .toList(),
-                    //   ),
-                    // ),
                     Container(
-                      width: width * .8,
+                      width: width * .5,
                       transformAlignment: Alignment.topCenter,
-                      padding: EdgeInsets.only(
-                          top: height * .02, bottom: height * .08),
+                      padding: EdgeInsets.only(bottom: height * .05),
                       child: CustomButton(
                         textValue: "Actualizar",
-                        onPressed: () async {
-                          bool response = await _update(selectedLabels);
-                          if (response) {
-                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                              content: Text('Etiquetas actualizadas'),
-                            ));
-                            Navigator.pop(context);
-                          } else {
-                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                              content: Text('Error al actualizar etiquetas'),
-                            ));
-                          }
+                        onPressed: () {
+                          _update(_textController.text);
                         },
                       ),
-                    ),
+                    )
                   ],
                 ),
               ),
