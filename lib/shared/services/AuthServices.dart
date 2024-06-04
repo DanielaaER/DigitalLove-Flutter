@@ -5,12 +5,11 @@ import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../models/user_update_model.dart';
 import 'UserData.dart';
 
 class AuthService with ChangeNotifier {
   final UserData _userData = UserData();
-  final String url = "http://20.55.201.18:8000/api/v1/";
+  final String url = "https://gigantic-mora-jazael-3245dd16.koyeb.app/api/v1/";
 
   bool _autenticando = false;
   bool _isLoggedIn = true;
@@ -65,11 +64,6 @@ class AuthService with ChangeNotifier {
     notifyListeners();
   }
 
-  UserData userData = UserData();
-
-  final Dio _dio = Dio(BaseOptions(
-      baseUrl: 'https://better-ursola-jazael-26647204.koyeb.app/api/v1/'));
-
   Future<bool> login(String email, String password) async {
     if (email.isEmpty || password.isEmpty) {
       print("empty");
@@ -77,8 +71,8 @@ class AuthService with ChangeNotifier {
     }
 
     try {
-      final response = await _dio.post(
-        'loginUsuario/',
+      final response = await Dio().post(
+        '${url}loginUsuario/',
         data: {
           'usuario': email,
           'password': password,
@@ -133,8 +127,8 @@ class AuthService with ChangeNotifier {
       File back = _userData.back_credential!;
       File selfie = _userData.selfie!;
 
-      final response = await _dio.post(
-        'registrarUsuario/',
+      final response = await Dio().post(
+        '${url}registrarUsuario/',
         data: {
           'nombre': _userData.userSingleName,
           'apellidoPaterno': _userData.userLastame,
@@ -290,47 +284,5 @@ class AuthService with ChangeNotifier {
 
     _isLoggedIn = _userData.userId != null;
     notifyListeners();
-  }
-
-  Future<bool> updateUser(UserUpdate userUpdate) async {
-    try {
-      final response = await _dio.patch(
-        'actualizarUsuario/${userData.userId}/',
-        data: userUpdate.toJson(),
-        options: Options(
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        ),
-      );
-
-      if (response.statusCode == 200) {
-        var data = response.data;
-        print(data);
-        if (data['message'] == "Usuario actualizado") {
-          userData.userSingleName =
-              userUpdate.nombre ?? userData.userSingleName;
-          userData.userLastame =
-              userUpdate.apellidoPaterno ?? userData.userLastame;
-          userData.userLastName2 =
-              userUpdate.apellidoMaterno ?? userData.userLastName2;
-          userData.edad = userUpdate.edad ?? userData.edad;
-          userData.ubicacion = userUpdate.ubicacion ?? userData.ubicacion;
-          userData.sexo = userUpdate.sexo ?? userData.sexo;
-          userData.telefono = userUpdate.telefono ?? userData.telefono;
-          userData.estado = userUpdate.estado ?? userData.estado;
-          userData.email = userUpdate.correo ?? userData.email;
-          userData.password = userUpdate.password ?? userData.password;
-
-          notifyListeners();
-          return true;
-        }
-      }
-
-      return false;
-    } catch (e) {
-      print('Error during update request: $e');
-      return false;
-    }
   }
 }

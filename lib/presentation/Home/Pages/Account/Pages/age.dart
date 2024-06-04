@@ -6,7 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 
 import '../../../../../config/theme/app_colors.dart';
-import '../../../../../shared/models/user_update_model.dart';
 import '../widgets/setting.dart';
 
 class AgeScreen extends StatefulWidget {
@@ -22,13 +21,7 @@ class _AgeScreenState extends State<AgeScreen> {
     super.initState();
   }
 
-  Future<void> _update(int update) async {
-    final userUpdate = await UserUpdate(
-      edad: update,
-    );
-
-    print(userUpdate);
-  }
+  void _update(String update) {}
 
   @override
   Widget build(BuildContext context) {
@@ -90,7 +83,7 @@ class _AgeScreenState extends State<AgeScreen> {
                       child: CustomButton(
                         textValue: "Actualizar",
                         onPressed: () {
-                          _update(_textController.text as int);
+                          _update(_textController.text);
                         },
                       ),
                     )

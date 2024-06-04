@@ -1,8 +1,8 @@
 import 'package:digital_love/presentation/Login/Login.dart';
+import 'package:digital_love/presentation/Login/components/LoginError.dart';
 import 'package:digital_love/presentation/Register/pages/RegisterConfirmacion.dart';
 import 'package:digital_love/shared/services/AuthServices.dart';
 import 'package:digital_love/shared/widgets/Button.dart';
-import 'package:digital_love/shared/widgets/SexDrop.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:digital_love/config/theme/app_colors.dart';
@@ -13,6 +13,8 @@ import 'package:digital_love/shared/widgets/TextFieldEmail.dart';
 
 import '../../shared/models/user_model.dart';
 import '../../shared/widgets/Gesture.dart';
+import '../../shared/widgets/SexDrop.dart';
+import '../../shared/widgets/TextBold.dart';
 import '../../shared/widgets/TextFieldPasswordVerify.dart';
 
 class RegisterScreen extends StatefulWidget {
@@ -178,6 +180,7 @@ class _RegisterView extends StatelessWidget {
                         apellidoMaterno: _segundoApellidoController.text.trim(),
                         correo: _emailController.text.trim(),
                         password: _passwordController.text.trim(),
+                        tipoUsuario: "USUARIO",
                         edad: int.parse(_edadController.text.trim()),
                         estado: "ACTIVO",
                         sexo: _sexoController.text.trim(),

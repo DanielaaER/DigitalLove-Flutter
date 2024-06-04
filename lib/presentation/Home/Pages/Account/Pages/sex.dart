@@ -1,5 +1,4 @@
 import 'package:digital_love/shared/widgets/Button.dart';
-import 'package:digital_love/shared/widgets/SexDrop.dart';
 import 'package:digital_love/shared/widgets/TextBold.dart';
 import 'package:digital_love/shared/widgets/TextField.dart';
 import 'package:digital_love/shared/widgets/TextFieldEmail.dart';
@@ -8,8 +7,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 
 import '../../../../../config/theme/app_colors.dart';
-import '../../../../../shared/models/user_update_model.dart';
-import '../../../../../shared/services/AuthServices.dart';
 import '../widgets/setting.dart';
 
 class SexScreen extends StatefulWidget {
@@ -19,20 +16,18 @@ class SexScreen extends StatefulWidget {
 
 class _SexScreenState extends State<SexScreen> {
   TextEditingController _textController = TextEditingController();
+  late List<String> list = [
+    "Mujer",
+    "Hombre",
+    "Otro",
+  ];
 
   @override
   void initState() {
     super.initState();
   }
 
-  //void _update(String update) {}
-  Future<bool> _update(String update) async {
-    print(update);
-    UserUpdate userUpdate = UserUpdate(sexo: update);
-    var response = await AuthService().updateUser(userUpdate);
-    print(response);
-    return response;
-  }
+  void _update(String update) {}
 
   @override
   Widget build(BuildContext context) {
@@ -84,10 +79,10 @@ class _SexScreenState extends State<SexScreen> {
                       transformAlignment: Alignment.topCenter,
                       padding: EdgeInsets.only(
                           top: height * .05, bottom: height * .05),
-                      child: CustomSexAutocomplete(
-                        onSelected: (value) {
-                          _textController.text = value;
-                        },
+                      child: CustomTextList(
+                        textValue: "Genero",
+                        controller: _textController,
+                        list: list,
                       ),
                     ),
                     Container(
@@ -96,18 +91,8 @@ class _SexScreenState extends State<SexScreen> {
                       padding: EdgeInsets.only(bottom: height * .05),
                       child: CustomButton(
                         textValue: "Actualizar",
-                        onPressed: () async {
-                          bool response = await _update(_textController.text);
-                          if (response) {
-                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                              content: Text('Sexo actualizado'),
-                            ));
-                            Navigator.pop(context);
-                          } else {
-                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                              content: Text('Error al actualizar sexo'),
-                            ));
-                          }
+                        onPressed: () {
+                          _update(_textController.text);
                         },
                       ),
                     )
