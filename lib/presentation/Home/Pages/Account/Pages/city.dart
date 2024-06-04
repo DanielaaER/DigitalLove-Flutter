@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 
 import '../../../../../config/theme/app_colors.dart';
+import '../../../../../shared/models/user_update_model.dart';
 import '../widgets/setting.dart';
 
 class CityScreen extends StatefulWidget {
@@ -16,14 +17,55 @@ class CityScreen extends StatefulWidget {
 
 class _CityScreenState extends State<CityScreen> {
   TextEditingController _textController = TextEditingController();
-  List<String> list = ["Veracruz", "Monterrey"];
+  List<String> list = [
+    'Aguascalientes',
+    'Baja California',
+    'Baja California Sur',
+    'Campeche',
+    'Chiapas',
+    'Chihuahua',
+    'Ciudad de México',
+    'Coahuila',
+    'Colima',
+    'Durango',
+    'Guanajuato',
+    'Guerrero',
+    'Hidalgo',
+    'Jalisco',
+    'México',
+    'Michoacán',
+    'Morelos',
+    'Nayarit',
+    'Nuevo León',
+    'Oaxaca',
+    'Puebla',
+    'Querétaro',
+    'Quintana Roo',
+    'San Luis Potosí',
+    'Sinaloa',
+    'Sonora',
+    'Tabasco',
+    'Tamaulipas',
+    'Tlaxcala',
+    'Veracruz',
+    'Yucatán',
+    'Zacatecas'
+  ];
 
   @override
   void initState() {
     super.initState();
   }
 
-  void _update(String update) {}
+  //void _update(String update) {}
+  Future<void> _update(String update) async {
+    final userUpdate = await UserUpdate(
+      estado: update.isNotEmpty ? update : null,
+    );
+
+    print(userUpdate);
+  }
+  //void _update(String update) {}
 
   @override
   Widget build(BuildContext context) {
