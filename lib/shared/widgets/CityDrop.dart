@@ -1,18 +1,53 @@
+
 import 'package:digital_love/shared/widgets/TextField.dart';
 import 'package:flutter/material.dart';
 
 import '../../config/theme/app_colors.dart';
 
-class CustomSexAutocomplete extends StatelessWidget {
+class CustomCityAutocomplete extends StatelessWidget {
   // final List<String> suggestions;
   final ValueChanged<String> onSelected;
 
-  CustomSexAutocomplete({
+  CustomCityAutocomplete({
     // required this.suggestions,
     required this.onSelected,
   });
 
-  var suggestions = ["FEMENINO", "MASCULINO"];
+  var suggestions = [
+    'Aguascalientes',
+    'Baja California',
+    'Baja California Sur',
+    'Campeche',
+    'Chiapas',
+    'Chihuahua',
+    'Ciudad de México',
+    'Coahuila',
+    'Colima',
+    'Durango',
+    'Guanajuato',
+    'Guerrero',
+    'Hidalgo',
+    'Jalisco',
+    'México',
+    'Michoacán',
+    'Morelos',
+    'Nayarit',
+    'Nuevo León',
+    'Oaxaca',
+    'Puebla',
+    'Querétaro',
+    'Quintana Roo',
+    'San Luis Potosí',
+    'Sinaloa',
+    'Sonora',
+    'Tabasco',
+    'Tamaulipas',
+    'Tlaxcala',
+    'Veracruz',
+    'Yucatán',
+    'Zacatecas'
+  ].map((city) => city.toUpperCase()).toList();
+
 
   @override
   Widget build(BuildContext context) {
@@ -25,7 +60,7 @@ class CustomSexAutocomplete extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
         Text(
-          "Genero",
+          "Ciudad",
           style: TextStyle(
             fontSize: text,
             color: AppColors.primaryColor,
@@ -53,7 +88,7 @@ class CustomSexAutocomplete extends StatelessWidget {
               decoration: InputDecoration(
                 contentPadding:
                 EdgeInsets.fromLTRB(width * .05, 0, 10, width * .05),
-                hintText: 'Ingresa tu sexo',
+                hintText: 'Ingresa tu ciudad',
                 hintStyle: TextStyle(
                     color: AppColors.shadeColor, //
                     fontWeight: FontWeight.normal,

@@ -1,37 +1,87 @@
-import 'package:digital_love/shared/widgets/TextField.dart';
 import 'package:flutter/material.dart';
-
 import '../../config/theme/app_colors.dart';
 
-class CustomSexAutocomplete extends StatelessWidget {
-  // final List<String> suggestions;
-  final ValueChanged<String> onSelected;
+class CustomLabelAutocomplete extends StatefulWidget {
+  final ValueChanged<List<String>> onSelected;
 
-  CustomSexAutocomplete({
-    // required this.suggestions,
+  CustomLabelAutocomplete({
     required this.onSelected,
   });
 
-  var suggestions = ["FEMENINO", "MASCULINO"];
+  @override
+  _CustomLabelAutocompleteState createState() =>
+      _CustomLabelAutocompleteState();
+}
+
+class _CustomLabelAutocompleteState extends State<CustomLabelAutocomplete> {
+  var suggestions = [
+    "Amor",
+    "Diversión",
+    "Música",
+    "Arte",
+    "Un rato",
+    "Deporte",
+    "Viajes",
+    "Lectura",
+    "Cine",
+    "Gastronomía",
+    "Tecnología",
+    "Naturaleza",
+    "Ciencia",
+    "Filosofía"
+  ];
+  List<String> selectedLabels = [];
+  TextEditingController _textEditingController = TextEditingController();
+
+  void _onSelected(String value) {
+    setState(() {
+      if (!selectedLabels.contains(value)) {
+        selectedLabels.add(value);
+        _textEditingController.clear();
+        widget.onSelected(selectedLabels);
+      }
+    });
+  }
+
+  void _removeLabel(String label) {
+    setState(() {
+      selectedLabels.remove(label);
+      widget.onSelected(selectedLabels);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     var width = MediaQuery.of(context).size.width;
     var height = MediaQuery.of(context).size.height;
-    var title = width * 0.09;
     var text = width * 0.05;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
         Text(
-          "Genero",
+          "Etiquetas",
           style: TextStyle(
             fontSize: text,
             color: AppColors.primaryColor,
             fontWeight: FontWeight.bold,
           ),
         ),
+        SizedBox(height: 8.0),
+        // Agregar espacio entre el texto y los chips
+        Wrap(
+          spacing: 6.0,
+          runSpacing: 6.0,
+          children: selectedLabels
+              .map((label) => Chip(
+            label: Text(label),
+            onDeleted: () => _removeLabel(label),
+          ))
+              .toList(),
+        ),
+        SizedBox(height: 8.0),
+        // Agregar espacio entre los chips y el Autocomplete
         Autocomplete<String>(
           optionsBuilder: (TextEditingValue textEditingValue) {
             return suggestions.where((String option) {
@@ -41,21 +91,22 @@ class CustomSexAutocomplete extends StatelessWidget {
             });
           },
           onSelected: (String value) {
-            onSelected(value);
+            _onSelected(value);
           },
           fieldViewBuilder: (BuildContext context,
               TextEditingController textEditingController,
               FocusNode focusNode,
               VoidCallback onFieldSubmitted) {
+            _textEditingController = textEditingController;
             return TextField(
               controller: textEditingController,
               focusNode: focusNode,
               decoration: InputDecoration(
                 contentPadding:
                 EdgeInsets.fromLTRB(width * .05, 0, 10, width * .05),
-                hintText: 'Ingresa tu sexo',
+                hintText: 'Ingresa tus preferencias',
                 hintStyle: TextStyle(
-                    color: AppColors.shadeColor, //
+                    color: AppColors.shadeColor,
                     fontWeight: FontWeight.normal,
                     fontSize: text * 0.8),
                 border: OutlineInputBorder(
@@ -78,7 +129,7 @@ class CustomSexAutocomplete extends StatelessWidget {
                 elevation: 4.0,
                 child: SizedBox(
                   width: MediaQuery.of(context).size.width * .8,
-                  height: height * .1,
+                  height: height * .3,
                   child: ListView.builder(
                     padding: EdgeInsets.all(8.0),
                     itemCount: options.length,
@@ -96,7 +147,7 @@ class CustomSexAutocomplete extends StatelessWidget {
               ),
             );
           },
-        )
+        ),
       ],
     );
   }

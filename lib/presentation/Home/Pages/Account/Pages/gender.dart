@@ -1,4 +1,5 @@
 import 'package:digital_love/shared/widgets/Button.dart';
+import 'package:digital_love/shared/widgets/GenderDrop.dart';
 import 'package:digital_love/shared/widgets/TextBold.dart';
 import 'package:digital_love/shared/widgets/TextField.dart';
 import 'package:digital_love/shared/widgets/TextFieldEmail.dart';
@@ -7,7 +8,8 @@ import 'package:digital_love/shared/widgets/TextListLabel.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 
-import '../../../../../config/theme/app_colors.dart';
+import '../../../../../config/theme/app_colors.dart';import '../../../../../shared/models/user_update_model.dart';
+import '../../../../../shared/services/AuthServices.dart';
 import '../widgets/setting.dart';
 
 class GenderScreen extends StatefulWidget {
@@ -17,20 +19,21 @@ class GenderScreen extends StatefulWidget {
 
 class _GenderScreenState extends State<GenderScreen> {
   TextEditingController _textController = TextEditingController();
-  late List<String> list = [
-    "Heterosexual",
-    "Gay",
-    "Bisexual",
-    "Queer",
-    "Asexuals"
-  ];
+
 
   @override
   void initState() {
     super.initState();
   }
 
-  void _update(String update) {}
+  //void _update(String update) {}
+  Future<bool> _update(String update) async {
+    print(update);
+    UserUpdate userUpdate = UserUpdate(orientacionSexual: update);
+    var response = await AuthService().updateUser(userUpdate);
+    print(response);
+    return response;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -78,15 +81,15 @@ class _GenderScreenState extends State<GenderScreen> {
                   // crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Container(
-                      width: width * .8,
-                      transformAlignment: Alignment.topCenter,
-                      padding: EdgeInsets.only(
-                          top: height * .05, bottom: height * .05),
-                      child: CustomTextList(
-                        textValue: "Genero",
-                        controller: _textController,
-                        list: list,
-                      ),
+                        width: width * .8,
+                        transformAlignment: Alignment.topCenter,
+                        padding: EdgeInsets.only(
+                            top: height * .05, bottom: height * .05),
+                        child: CustomGenderAutocomplete(
+                          onSelected: (value) {
+                            _textController.text = value;
+                          },
+                        )
                     ),
                     Container(
                       width: width * .5,
@@ -94,8 +97,18 @@ class _GenderScreenState extends State<GenderScreen> {
                       padding: EdgeInsets.only(bottom: height * .05),
                       child: CustomButton(
                         textValue: "Actualizar",
-                        onPressed: () {
-                          _update(_textController.text);
+                        onPressed: () async {
+                          bool response = await _update(_textController.text);
+                          if (response) {
+                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                              content: Text('Orientacion sexual actualizada'),
+                            ));
+                            Navigator.pop(context);
+                          } else {
+                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                              content: Text('Error al actualizar orientación sexual'),
+                            ));
+                          }
                         },
                       ),
                     )
