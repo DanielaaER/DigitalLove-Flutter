@@ -62,7 +62,6 @@ class _NavBarState extends State<NavBar> {
         context,
         MaterialPageRoute(
           builder: (context) => NotificationsPage(
-            apiServiceapiService: ApiService(),
           ),
         ));
   }

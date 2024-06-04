@@ -1,14 +1,9 @@
-import 'dart:ffi';
-
 import 'package:digital_love/config/theme/app_colors.dart';
-import 'package:digital_love/shared/widgets/Button.dart';
 import 'package:digital_love/shared/widgets/Text.dart';
 import 'package:digital_love/shared/widgets/TextBold.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_swipe_action_cell/flutter_swipe_action_cell.dart';
 
 import '../../../shared/models/profile_model.dart';
-import '../Home.dart';
 import 'LabelItem.dart';
 
 class MatchScreen extends StatefulWidget {
@@ -95,7 +90,7 @@ class _MatchScreenState extends State<MatchScreen> {
                           padding: EdgeInsets.only(
                               bottom: height * .005, right: width * .08),
                           child: Text(
-                            widget.profile.preferences,
+                            widget.profile.preferences!,
                             style: TextStyle(
                                 color: AppColors.whiteColor, fontSize: text),
                           ),
@@ -154,11 +149,6 @@ class _MatchScreenState extends State<MatchScreen> {
                                           CustomText(
                                               textValue:
                                                   "${widget.profile.age},  ",
-                                              size: text,
-                                              color: AppColors.whiteColor),
-                                          CustomText(
-                                              textValue:
-                                                  "${widget.profile.horoscop}",
                                               size: text,
                                               color: AppColors.whiteColor),
                                         ]),

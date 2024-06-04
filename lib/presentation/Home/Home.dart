@@ -3,6 +3,7 @@ import 'dart:convert';
 
 import 'package:digital_love/config/theme/app_colors.dart';
 import 'package:digital_love/shared/services/ApiService.dart';
+import 'package:digital_love/shared/services/AuthServices.dart';
 import 'package:digital_love/shared/widgets/TextBold.dart';
 import 'package:digital_love/shared/widgets/TextSpan.dart';
 import 'package:flutter/material.dart';
@@ -23,7 +24,8 @@ class _HomeScreenState extends State<HomeScreen> {
   final double _longSwipeThreshold = 100.0;
   double _pageOffset = 0.0;
   var nextProfile = 0;
-  var noProfiles = false;
+
+  // var noProfiles = false;
   bool isLoading = true;
   bool hasError = false;
 
@@ -35,44 +37,29 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Future<void> fetchProfiles() async {
     try {
-      // Aquí estamos usando datos de prueba en lugar de una llamada a la API
-      final response = jsonEncode([
-        {
-          'id': 1,
-          'preferences': 'Gay',
-          'name': 'Alice',
-          'city': 'New York',
-          'horoscop': 'Aries',
-          'age': '25',
-          'labels': ['Friendly', 'Outgoing', 'Traveler'],
-          'photoUrl':
-              'https://images.unsplash.com/photo-1552053831-71594a27632d?q=80&w=1924&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-        },
-        {
-          'id': 2,
-          'preferences': 'Bisexual',
-          'name': 'Bob',
-          'city': 'Los Angeles',
-          'horoscop': 'Taurus',
-          'age': '28',
-          'labels': ['Music Lover', 'Foodie', 'Adventurous'],
-          'photoUrl':
-              'https://images.unsplash.com/photo-1552053831-71594a27632d?q=80&w=1924&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-        },
-        {
-          'id': 3,
-          'preferences': 'Gay',
-          'name': 'Charlie',
-          'city': 'San Francisco',
-          'horoscop': 'Gemini',
-          'age': '30',
-          'labels': ['Techie', 'Gamer', 'Fitness Enthusiast'],
-          'photoUrl': 'https://example.com/photos/charlie.jpg'
-        }
-      ]);
-      final List<dynamic> profileJson = json.decode(response);
+      var users = await ApiService().fetchUsuarios();
+      print("users");
+      List<Profile> perfiles = [];
+      users.forEach((usuario) {
+        print(
+            'Usuario: ${usuario.nombre}, ID: ${usuario.id}, Foto: ${usuario.fotos}, Edad: ${usuario.edad}');
+
+        perfiles.add(Profile(
+            id: usuario.id,
+            preferences: usuario.sexo,
+            name: usuario.nombre,
+            city: usuario.ubicacion,
+            age: usuario.edad.toString(),
+            labels: usuario.fotos,
+            photoUrl: usuario.fotos.isNotEmpty
+                ? usuario.fotos[0]
+                : '')); // Manejar si fotos está vacío
+      });
+      print("profiles");
+
       setState(() {
-        profiles = profileJson.map((json) => Profile.fromJson(json)).toList();
+        profiles = perfiles;
+
         isLoading = false;
       });
     } catch (e) {
@@ -93,7 +80,6 @@ class _HomeScreenState extends State<HomeScreen> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text("Ocurrió un error al dar like"),
-
         ),
       );
     }
@@ -129,31 +115,26 @@ class _HomeScreenState extends State<HomeScreen> {
 
     var title = width * 0.09;
     var text = width * 0.05;
-    if (_pageOffset != 0 && _pageOffset.abs() < profiles.length) {
-      print(profiles.length);
+    print("NEX PROFILE");
+    print(nextProfile + 1);
+    print("profiles lencht");
+    print(profiles.length);
+    if (nextProfile <= profiles.length + 1) {
+      print("page offset");
       print("hay otro");
       print(nextProfile);
-
-      if (nextProfile + 1 < profiles.length) {
-        int nextProfileIndex = _pageOffset > 0
-            ? _pageController.page!.toInt() + 1
-            : _pageController.page!.toInt();
-        nextProfileWidget = MatchScreen(profile: profiles[nextProfile]);
-      } else {
-        nextProfileWidget = Container(color: AppColors.primaryColor);
-        setState(() {
-          noProfiles = true;
-          canScroll = false;
-          print("show no profiles");
-          print(noProfiles);
-        });
-      }
+      nextProfileWidget = MatchScreen(profile: profiles[nextProfile]);
     } else {
+      print("page offset");
       print("no hay otro");
       nextProfileWidget = Container(color: AppColors.primaryColor);
+      AuthService().noProfiles = true;
       setState(() {
         canScroll = false;
+        print(AuthService().noProfiles);
+        print("show no profiles");
       });
+      // }
     }
     return Scaffold(
         backgroundColor: AppColors.blackColor,
@@ -199,7 +180,9 @@ class _HomeScreenState extends State<HomeScreen> {
                         if (_dragDistance.abs() > _longSwipeThreshold) {
                           if (_dragDistance > 0) {
                             setState(() {
-                              nextProfile = profile.id;
+                              print("position");
+                              print(profiles.indexOf(profile));
+                              nextProfile = profiles.indexOf(profile) + 1;
                               print("next profile");
                               print(nextProfile);
                             });
@@ -210,7 +193,9 @@ class _HomeScreenState extends State<HomeScreen> {
                           } else {
                             await like(profile);
                             setState(() {
-                              nextProfile = profile.id;
+                              print("position");
+                              print(profiles.indexOf(profile));
+                              nextProfile = profiles.indexOf(profile) + 1;
                               print("next profile");
                               print(nextProfile);
                             });
@@ -239,12 +224,16 @@ class _HomeScreenState extends State<HomeScreen> {
                         child: Stack(
                           alignment: Alignment.center,
                           children: [
-                            if (profiles.length < profile.id) nextProfileWidget,
-                            if (profiles.length >= profile.id)
+                            if (profiles.length <=
+                                profiles.indexOf(profile) + 1)
+                              nextProfileWidget,
+                            if (profiles.length >=
+                                profiles.indexOf(profile) + 1)
                               Positioned.fill(
                                 child: MatchScreen(profile: profile),
                               ),
-                            if (profiles.length >= profile.id)
+                            if (profiles.length >=
+                                profiles.indexOf(profile) + 1)
                               Positioned(
                                 width: width,
                                 bottom: height * .02,
@@ -256,6 +245,16 @@ class _HomeScreenState extends State<HomeScreen> {
                                   children: [
                                     GestureDetector(
                                       onTap: () {
+                                        setState(() {
+                                          print("position");
+                                          print(profiles.indexOf(profile));
+                                          nextProfile =
+                                              profiles.indexOf(profile) + 1;
+                                          print("next profile");
+                                          print(nextProfile);
+                                        });
+                                        print("match");
+
                                         _pageController.nextPage(
                                             duration:
                                                 Duration(milliseconds: 500),
@@ -284,6 +283,18 @@ class _HomeScreenState extends State<HomeScreen> {
                                     GestureDetector(
                                       onTap: () async {
                                         await like(profile);
+                                        setState(() {
+                                          print("position");
+                                          print(profiles.indexOf(profile));
+                                          nextProfile =
+                                              profiles.indexOf(profile) + 1;
+                                          print("next profile");
+                                          print(nextProfile);
+                                        });
+                                        print("match");
+
+                                        _resetPageOffset();
+
                                         _pageController.nextPage(
                                             duration:
                                                 Duration(milliseconds: 500),
@@ -320,7 +331,7 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ],
           ),
-          if (noProfiles == true)
+          if (AuthService().noProfiles == true)
             Positioned.fill(
                 child: Container(
               width: width * .8,

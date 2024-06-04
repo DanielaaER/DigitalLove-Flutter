@@ -7,11 +7,13 @@ class ChatPreviewWidget extends StatelessWidget {
   final String lastMessage;
   final String time;
   final String? profilePicture;
+  final int idChat;
 
   ChatPreviewWidget(
       {required this.senderName,
       required this.lastMessage,
       required this.time,
+      required this.idChat,
       this.profilePicture});
 
   @override

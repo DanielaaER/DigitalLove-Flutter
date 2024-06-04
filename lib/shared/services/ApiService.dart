@@ -1,7 +1,14 @@
 import 'dart:async';
 import 'package:digital_love/presentation/Home/Home.dart';
+import 'package:digital_love/presentation/Home/Pages/Chat/widgets/ChatWindow.dart';
+import 'package:digital_love/shared/models/chat_conversarion_model.dart';
+import 'package:digital_love/shared/models/chat_model.dart';
+import 'package:digital_love/shared/models/match_user_model.dart';
 import 'package:dio/dio.dart';
 
+import '../models/chat_response_model.dart';
+import '../models/message_model.dart';
+import '../models/message_response_model.dart';
 import '../models/notification_model.dart';
 import '../models/profile_model.dart';
 import 'UserData.dart';
@@ -18,26 +25,27 @@ class ApiService {
       _notificationsController.stream;
 
   void _fetchNotificationsPeriodically() async {
-    while (true) {
-      await Future.delayed(Duration(seconds: 5)); // Intervalo de 5 segundos
-      List<AppNotification> notifications = await fetchNotifications();
-      _notificationsController.add(notifications);
-    }
+    List<AppNotification> notifications = await fetchNotifications();
+    _notificationsController.add(notifications);
   }
 
   final Dio _dio = Dio(BaseOptions(
-      baseUrl: 'https://gigantic-mora-jazael-3245dd16.koyeb.app/api/v1/'));
+      baseUrl: 'https://better-ursola-jazael-26647204.koyeb.app/api/v1/'));
+
+  List<AppNotification> _notifications = [];
 
   Future<List<AppNotification>> fetchNotifications() async {
     try {
       UserData userData = UserData();
       print("notificar");
-      print(userData.userFullName);
       print(userData.userId);
       final response = await _dio.get('/notificaciones/${userData.userId}');
       List<dynamic> body = response.data;
-      List<AppNotification> notifications =
-          body.map((dynamic item) => AppNotification.fromJson(item)).toList();
+      List<AppNotification> notifications = body
+          .map((dynamic item) => AppNotification.fromJson(item))
+          .toList()
+          .reversed
+          .toList();
       return notifications;
     } catch (error) {
       throw Exception('Failed to load notifications: $error');
@@ -66,6 +74,78 @@ class ApiService {
       return false;
     }
   }
+
+  Future<bool> responseLike(int idUser, bool action) async {
+    try {
+      UserData userData = UserData();
+      final response = await _dio.post('/responder_like/', data: {
+        "envia_id": userData.userId,
+        "recibe_id": idUser,
+        "accion": action
+      });
+      if (response.statusCode == 200) {
+        print('Like response sent successfully');
+        print(response);
+        return true;
+      } else {
+        return false;
+      }
+    } catch (error) {
+      return false;
+    }
+  }
+
+  Future<ChatResponse> getChat() async {
+    try {
+      UserData userData = UserData();
+      final response = await _dio.get('/chatsUsuario/${userData.userId}');
+      if (response.statusCode == 200) {
+        print('Chat response sent successfully');
+        print(response);
+        ChatResponse chatResponse = ChatResponse.fromJson(response.data);
+        return chatResponse;
+      } else {
+        throw Exception('Failed to get chat: ${response.statusCode}');
+      }
+    } catch (error) {
+      throw Exception('Failed to get chat: $error');
+    }
+  }
+
+  Future<MessageResponse> getMessges(int idChat) async {
+    try {
+      final response = await _dio.get('/mensajesAnteriores/$idChat');
+      if (response.statusCode == 200) {
+        print('Chat response sent successfully');
+        print(response);
+        MessageResponse chat = MessageResponse.fromJson(response.data);
+        return chat;
+      } else {
+        throw Exception('Failed to get chat: ${response.statusCode}');
+      }
+    } catch (error) {
+      throw Exception('Failed to get chat: $error');
+    }
+  }
+
+  Future<List<MatchUsuario>> fetchUsuarios() async {
+    try {
+      final response = await _dio.get('encontrar_usuarios/${UserData().userId}/');
+      if (response.statusCode == 200) {
+        List<dynamic> body = response.data;
+        print(body);
+        List<MatchUsuario> usuarios = body.map((dynamic item) => MatchUsuario.fromJson(item)).toList();
+
+
+        return usuarios;
+      } else {
+        throw Exception('Failed to load usuarios');
+      }
+    } catch (error) {
+      throw Exception('Failed to load usuarios: $error');
+    }
+  }
+
 
   void dispose() {
     _notificationsController.close();
