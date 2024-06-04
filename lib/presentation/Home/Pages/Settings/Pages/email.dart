@@ -1,3 +1,5 @@
+import 'package:digital_love/shared/models/user_update_model.dart';
+import 'package:digital_love/shared/services/AuthServices.dart';
 import 'package:digital_love/shared/widgets/Button.dart';
 import 'package:digital_love/shared/widgets/TextBold.dart';
 import 'package:digital_love/shared/widgets/TextField.dart';
@@ -21,7 +23,13 @@ class _EmailScreenState extends State<EmailScreen> {
     super.initState();
   }
 
-  void _update(String update) {}
+  Future<bool> _update(String update) async {
+    print(update);
+    UserUpdate userUpdate = UserUpdate(correo: update);
+    var response = await AuthService().updateUser(userUpdate);
+    print(response);
+    return response;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -80,7 +88,7 @@ class _EmailScreenState extends State<EmailScreen> {
                       transformAlignment: Alignment.topCenter,
                       padding: EdgeInsets.only(
                           top: height * .05, bottom: height * .05),
-                      child: CustomTextField(
+                      child: CustomTextFieldEmail(
                           textValue: "Email", controller: _textController),
                     ),
                     Container(
@@ -89,8 +97,19 @@ class _EmailScreenState extends State<EmailScreen> {
                       padding: EdgeInsets.only(bottom: height * .05),
                       child: CustomButton(
                         textValue: "Actualizar",
-                        onPressed: () {
-                          _update(_textController.text);
+                        onPressed: () async {
+                          bool response = await _update(_textController.text);
+                          if (response ){
+                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                              content: Text('Correo actualizado'),
+                            ));
+                            Navigator.pop(context);
+
+                          } else {
+                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                              content: Text('Error al actualizar correo'),
+                            ));
+                          }
                         },
                       ),
                     )

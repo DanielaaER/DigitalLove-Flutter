@@ -1,4 +1,5 @@
 import 'package:digital_love/shared/widgets/Button.dart';
+import 'package:digital_love/shared/widgets/CityDrop.dart';
 import 'package:digital_love/shared/widgets/TextBold.dart';
 import 'package:digital_love/shared/widgets/TextField.dart';
 import 'package:digital_love/shared/widgets/TextFieldEmail.dart';
@@ -7,6 +8,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 
 import '../../../../../config/theme/app_colors.dart';
+import '../../../../../shared/models/user_update_model.dart';
+import '../../../../../shared/services/AuthServices.dart';
 import '../widgets/setting.dart';
 
 class CityScreen extends StatefulWidget {
@@ -16,14 +19,22 @@ class CityScreen extends StatefulWidget {
 
 class _CityScreenState extends State<CityScreen> {
   TextEditingController _textController = TextEditingController();
-  List<String> list = ["Veracruz", "Monterrey"];
 
   @override
   void initState() {
     super.initState();
   }
 
-  void _update(String update) {}
+  //void _update(String update) {}
+  Future<bool> _update(String update) async {
+    print(update);
+    UserUpdate userUpdate = UserUpdate(ubicacion: update);
+    var response = await AuthService().updateUser(userUpdate);
+    print(response);
+    return response;
+  }
+
+  //void _update(String update) {}
 
   @override
   Widget build(BuildContext context) {
@@ -75,10 +86,10 @@ class _CityScreenState extends State<CityScreen> {
                       transformAlignment: Alignment.topCenter,
                       padding: EdgeInsets.only(
                           top: height * .05, bottom: height * .05),
-                      child: CustomTextList(
-                        textValue: "Ciudad",
-                        controller: _textController,
-                        list: list,
+                      child: CustomCityAutocomplete(
+                        onSelected: (String value) {
+                          _textController.text = value;
+                        },
                       ),
                     ),
                     Container(
@@ -87,8 +98,18 @@ class _CityScreenState extends State<CityScreen> {
                       padding: EdgeInsets.only(bottom: height * .05),
                       child: CustomButton(
                         textValue: "Actualizar",
-                        onPressed: () {
-                          _update(_textController.text);
+                        onPressed: () async {
+                          bool response = await _update(_textController.text);
+                          if (response) {
+                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                              content: Text('Ciudad actualizada'),
+                            ));
+                            Navigator.pop(context);
+                          } else {
+                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                              content: Text('Error al actualizar cidudad'),
+                            ));
+                          }
                         },
                       ),
                     )
