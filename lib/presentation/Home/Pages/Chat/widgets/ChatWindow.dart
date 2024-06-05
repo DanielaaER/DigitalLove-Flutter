@@ -144,6 +144,7 @@ class _ChatWindowState extends State<ChatWindow> {
     double height = MediaQuery.of(context).size.height;
     var title = width * 0.06;
     var text = width * 0.04;
+    var textInfo = width * 0.035;
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark.copyWith(
       statusBarColor: Colors.white, // Fondo blanco de la barra de estado
     ));
@@ -216,7 +217,7 @@ class _ChatWindowState extends State<ChatWindow> {
                               ),
                               CustomText(
                                 color: AppColors.whiteColor,
-                                size: text,
+                                size: textInfo,
                                 textValue: "${edad}, ${signo}",
                               )
                             ])),

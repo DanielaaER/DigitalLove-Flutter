@@ -156,7 +156,7 @@ class ApiService {
       print(userData.userId);
       print(selectedLabels);
       final response =
-          await _dio.post('/registrar_preferencias/${userData.userId}/',
+          await _dio.post('/actualizar_preferencias/${userData.userId}/',
               options: Options(
                 headers: {
                   'Content-Type': 'application/json',

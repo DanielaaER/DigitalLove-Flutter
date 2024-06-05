@@ -23,6 +23,7 @@ class _MatchScreenState extends State<MatchScreen> {
     double height = MediaQuery.of(context).size.height;
     var title = width * 0.09;
     var text = width * 0.05;
+    var textCity = width * 0.03;
     String picture = "${widget.profile.photoUrl}";
     return Scaffold(
       backgroundColor: AppColors.blackColor,
@@ -191,7 +192,7 @@ class _MatchScreenState extends State<MatchScreen> {
                                             child: CustomText(
                                                 textValue:
                                                     "${widget.profile.city}",
-                                                size: text,
+                                                size: textCity,
                                                 color: AppColors.whiteColor),
                                           ),
                                         ]),
