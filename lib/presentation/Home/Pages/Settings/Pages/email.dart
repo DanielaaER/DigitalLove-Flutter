@@ -43,7 +43,9 @@ class _EmailScreenState extends State<EmailScreen> {
               Padding(
                   padding: EdgeInsets.only(top: height * .1, left: width * .1),
                   child: GestureDetector(
-                      onTap: () {},
+                      onTap: () {
+                        Navigator.pop(context);
+                      },
                       child: Icon(
                         Icons.arrow_back_ios,
                         size: title,
