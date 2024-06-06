@@ -10,6 +10,7 @@ import 'UserData.dart';
 
 class AuthService with ChangeNotifier {
   final UserData _userData = UserData();
+
   // final String url = "https://better-ursola-jazael-26647204.koyeb.app/api/v1/";
 
   bool _autenticando = false;
@@ -63,9 +64,8 @@ class AuthService with ChangeNotifier {
   // final Dio _dio = Dio(BaseOptions(
   //     baseUrl: 'https://better-ursola-jazael-26647204.koyeb.app/api/v1/'));
   //
-  final Dio _dio = Dio(BaseOptions(
-      baseUrl: 'http://20.55.201.18:8000/api/v1/'));
-
+  final Dio _dio =
+      Dio(BaseOptions(baseUrl: 'http://20.55.201.18:8000/api/v1/'));
 
   set noProfiles(bool valor) {
     _noProfiles = valor;
@@ -150,9 +150,10 @@ class AuthService with ChangeNotifier {
     print("response");
     print(response);
     try {
-      File front = _userData.front_credential!;
-      File back = _userData.back_credential!;
-      File selfie = _userData.selfie!;
+      if (response) {
+        File front = _userData.front_credential!;
+        File back = _userData.back_credential!;
+        File selfie = _userData.selfie!;
 
         FormData formData = FormData.fromMap({
           'edad': _userData.edad,
