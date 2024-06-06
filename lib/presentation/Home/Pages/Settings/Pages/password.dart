@@ -43,7 +43,9 @@ class _PasswordScreenState extends State<PasswordScreen> {
               Padding(
                   padding: EdgeInsets.only(top: height * .1, left: width * .1),
                   child: GestureDetector(
-                      onTap: () {},
+                      onTap: () {
+                        Navigator.pop(context);
+                      },
                       child: Icon(
                         Icons.arrow_back_ios,
                         size: title,
@@ -81,7 +83,8 @@ class _PasswordScreenState extends State<PasswordScreen> {
                       padding: EdgeInsets.only(
                           top: height * .05, bottom: height * .05),
                       child: CustomTextField(
-                          textValue: "Contraseña Actual", controller: _textController),
+                          textValue: "Contraseña Actual",
+                          controller: _textController),
                     ),
                     Container(
                       width: width * .5,

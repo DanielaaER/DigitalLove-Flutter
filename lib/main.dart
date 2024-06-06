@@ -74,7 +74,7 @@ class _MainAppState extends State<MainApp> with WidgetsBindingObserver {
     final userId = UserData().userId;
     if (userId != null) {
       final wsUrl = Uri.parse(
-          'wss://better-ursola-jazael-26647204.koyeb.app/ws/notifications/$userId/');
+          'wss://172.212.111.86:8000/ws/notifications/$userId/');
       channel = WebSocketChannel.connect(wsUrl);
 
       channel.stream.listen((message) {

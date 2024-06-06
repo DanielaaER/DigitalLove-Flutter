@@ -75,7 +75,7 @@ class _ChatWindowState extends State<ChatWindow> {
     print("inicio socler chat");
     if (userId != null) {
       final wsUrl = Uri.parse(
-          'wss://better-ursola-jazael-26647204.koyeb.app/ws/chat/${widget.id}/');
+          'wss://172.212.111.86:8000/ws/chat/${widget.id}/');
       channel = WebSocketChannel.connect(wsUrl);
       channel.stream.listen((message) {
         final data = jsonDecode(message);
@@ -153,6 +153,7 @@ class _ChatWindowState extends State<ChatWindow> {
     double height = MediaQuery.of(context).size.height;
     var title = width * 0.06;
     var text = width * 0.04;
+    var textInfo = width * 0.035;
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark.copyWith(
       statusBarColor: Colors.white, // Fondo blanco de la barra de estado
     ));
@@ -226,7 +227,7 @@ class _ChatWindowState extends State<ChatWindow> {
                               ),
                               CustomText(
                                 color: AppColors.whiteColor,
-                                size: text,
+                                size: textInfo,
                                 textValue: "${edad}, ${signo}",
                               )
                             ])),

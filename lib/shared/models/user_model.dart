@@ -10,7 +10,7 @@ String userToJson(User data) => json.encode(data.toJson());
 
 class User {
   int? id;
-  String tipoUsuario;
+  String orientacion;
   String nombre;
   String apellidoMaterno;
   String apellidoPaterno;
@@ -25,7 +25,7 @@ class User {
 
   User({
     this.id,
-    required this.tipoUsuario,
+    required this.orientacion,
     required this.nombre,
     required this.apellidoMaterno,
     required this.apellidoPaterno,
@@ -41,7 +41,7 @@ class User {
 
   factory User.fromJson(Map<String, dynamic> json) => User(
       id: json["id"],
-      tipoUsuario: "USUARIO",
+      orientacion: json["orientacionSexual"],
       nombre: json["nombre"],
       apellidoMaterno: json["apellidoMaterno"],
       apellidoPaterno: json["apellidoPaterno"],
@@ -55,7 +55,7 @@ class User {
       password: json["password"]);
 
   Map<String, dynamic> toJson() => {
-        "tipoUsuario": "USUARIO",
+        "orientacionSexual": orientacion,
         "nombre": nombre,
         "apellidoMaterno": apellidoMaterno,
         "apellidoPaterno": apellidoPaterno,

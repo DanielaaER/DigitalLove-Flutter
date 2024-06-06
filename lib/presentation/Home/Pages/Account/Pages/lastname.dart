@@ -54,7 +54,9 @@ class _LastNameScreenState extends State<LastNameScreen> {
               Padding(
                   padding: EdgeInsets.only(top: height * .1, left: width * .1),
                   child: GestureDetector(
-                      onTap: () {},
+                      onTap: () {
+                        Navigator.pop(context);
+                      },
                       child: Icon(
                         Icons.arrow_back_ios,
                         size: title,
@@ -86,9 +88,9 @@ class _LastNameScreenState extends State<LastNameScreen> {
                           top: height * .05, bottom: height * .05),
                       child: CustomTextFieldDisable(
                           titleValue: "Apellido",
-                          textValue: "${UserData().userLastame.toString().toUpperCase()} ${UserData().userLastName2.toString().toUpperCase()}"),
+                          textValue:
+                              "${UserData().userLastame.toString().toUpperCase()} ${UserData().userLastName2.toString().toUpperCase()}"),
                     ),
-
                   ],
                 ),
               ),
