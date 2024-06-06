@@ -171,7 +171,12 @@ class AuthService with ChangeNotifier {
 
         if (response.statusCode == 200) {
           print('Usuario registrado correctamente');
-          return true;
+          var newResponse = await uploadSelfie();
+          if (newResponse) {
+            return true;
+          } else {
+            return false;
+          }
         } else {
           print('Error al registrar el usuario: ${response.statusCode}');
           print('Mensaje de error: ${response.data}');
