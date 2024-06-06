@@ -75,7 +75,7 @@ class _ChatWindowState extends State<ChatWindow> {
     print("inicio socler chat");
     if (userId != null) {
       final wsUrl = Uri.parse(
-          'wss://172.212.111.86:8000/ws/chat/${widget.id}/');
+          'wss://20.55.201.18:8000/ws/chat/${widget.id}/');
       channel = WebSocketChannel.connect(wsUrl);
       channel.stream.listen((message) {
         final data = jsonDecode(message);
