@@ -30,8 +30,8 @@ class _AcosoScreenState extends State<AcosoScreen> {
   Future<bool> _update(String update) async {
     Reporte reporte = Reporte(
         mensaje: update,
-        usuarioEnviaId: widget.usuarioRecibe,
-        usuarioRecibeId: UserData().userId!);
+        motivo: "ACOSO",
+        usuarioRecibeId: widget.usuarioRecibe);
     bool response = await ApiService().sendReport(reporte);
     print(response);
     return response;
