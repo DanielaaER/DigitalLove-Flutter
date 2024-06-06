@@ -30,8 +30,11 @@ class ApiService {
     _notificationsController.add(notifications);
   }
 
+  // final Dio _dio = Dio(BaseOptions(
+  //     baseUrl: 'https://better-ursola-jazael-26647204.koyeb.app/api/v1/'));
+
   final Dio _dio = Dio(BaseOptions(
-      baseUrl: 'https://better-ursola-jazael-26647204.koyeb.app/api/v1/'));
+      baseUrl: 'http://172.212.111.86:8000/api/v1/'));
 
   List<AppNotification> _notifications = [];
 

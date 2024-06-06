@@ -10,7 +10,7 @@ import 'UserData.dart';
 
 class AuthService with ChangeNotifier {
   final UserData _userData = UserData();
-  final String url = "https://better-ursola-jazael-26647204.koyeb.app/api/v1/";
+  // final String url = "https://better-ursola-jazael-26647204.koyeb.app/api/v1/";
 
   bool _autenticando = false;
   bool _isLoggedIn = true;
@@ -60,8 +60,12 @@ class AuthService with ChangeNotifier {
 
   UserData userData = UserData();
 
+  // final Dio _dio = Dio(BaseOptions(
+  //     baseUrl: 'https://better-ursola-jazael-26647204.koyeb.app/api/v1/'));
+  //
   final Dio _dio = Dio(BaseOptions(
-      baseUrl: 'https://better-ursola-jazael-26647204.koyeb.app/api/v1/'));
+      baseUrl: 'http://172.212.111.86:8000/api/v1/'));
+
 
   set noProfiles(bool valor) {
     _noProfiles = valor;
