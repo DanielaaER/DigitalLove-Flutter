@@ -1,16 +1,16 @@
 class Reporte {
+  String motivo;
   String mensaje;
-  int usuarioEnviaId;
   int usuarioRecibeId;
 
-  Reporte({required this.mensaje, required this.usuarioEnviaId, required this.usuarioRecibeId});
+  Reporte({required this.mensaje, required this.motivo, required this.usuarioRecibeId});
 
   // Convertir de JSON a un objeto Mensaje
   factory Reporte.fromJson(Map<String, dynamic> json) {
     return Reporte(
       mensaje: json['mensaje'],
-      usuarioEnviaId: json['usuario_envia_id'],
-      usuarioRecibeId: json['usuario_recibe_id'],
+      motivo: json['motivo'],
+      usuarioRecibeId: json['usuario_reportado'],
     );
   }
 
@@ -18,7 +18,7 @@ class Reporte {
   Map<String, dynamic> toJson() {
     return {
       'mensaje': mensaje,
-      'usuario_envia_id': usuarioEnviaId,
+      'motivo': motivo,
       'usuario_recibe_id': usuarioRecibeId,
     };
   }

@@ -6,6 +6,7 @@ import 'package:digital_love/shared/models/chat_model.dart';
 import 'package:digital_love/shared/models/match_user_model.dart';
 import 'package:digital_love/shared/models/report_model.dart';
 import 'package:dio/dio.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../models/chat_response_model.dart';
 import '../models/message_model.dart';
@@ -184,24 +185,30 @@ class ApiService {
 
   Future<bool> sendReport(Reporte reporte) async {
     try {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      var token = prefs.getString('userToken');
+      print("token");
+      print(token);
       print("reporte");
-      print(userData.userFullName);
-      print(userData.userId);
+      print(reporte.motivo);
       print(reporte.mensaje);
-      final response = await _dio.post('/enviarReporteToAdmin/',
+      print(reporte.usuarioRecibeId);
+
+      final response = await _dio.post('/reportarUsuario/',
           options: Options(
             headers: {
               'Content-Type': 'application/json',
+              'Authorization': 'Bearer $token',
             },
           ),
           data: {
-            "mensaje": reporte.mensaje,
-            "usuario_envia_id": reporte.usuarioEnviaId,
-            "usuario_recibe_id": reporte.usuarioRecibeId,
+            "motivo": reporte.motivo,
+            "comentario": reporte.mensaje,
+            "usuario_reportado": reporte.usuarioRecibeId,
           });
       print("response");
       print(response);
-      if (response.data["message"] == "Preferencias registradas") {
+      if (response.data["message"] == "Reporte registrado exitosamente") {
         return true;
       } else {
         print("false");

@@ -110,7 +110,7 @@ class AuthService with ChangeNotifier {
         print("entro a response data");
         _userData.userId = user.id;
         _userData.userFullName =
-            "${user.nombre} ${user.apellidoPaterno} ${user.apellidoPaterno}";
+            "${user.nombre} ${user.apellidoPaterno} ${user.apellidoMaterno}";
         _userData.username = user.usuario;
         _userData.userSingleName = user.nombre;
         _userData.userLastame = user.apellidoPaterno;
@@ -122,6 +122,9 @@ class AuthService with ChangeNotifier {
         _userData.telefono = user.telefono;
         _userData.ubicacion = user.ubicacion;
         _userData.email = user.correo;
+        _userData.userToken = data["token"];
+        print(_userData.userToken);
+        print(_userData.userFullName);
 
         _isLoggedIn = true;
         notifyListeners();
@@ -147,7 +150,10 @@ class AuthService with ChangeNotifier {
     print("response");
     print(response);
     try {
-      if (response) {
+      File front = _userData.front_credential!;
+      File back = _userData.back_credential!;
+      File selfie = _userData.selfie!;
+
         FormData formData = FormData.fromMap({
           'edad': _userData.edad,
           'estado': _userData.estado,
@@ -292,7 +298,7 @@ class AuthService with ChangeNotifier {
     try {
       _userData.userId = user.id;
       _userData.userFullName =
-          "${user.nombre} ${user.apellidoPaterno} ${user.apellidoPaterno}";
+          "${user.nombre} ${user.apellidoPaterno} ${user.apellidoMaterno}";
       _userData.username = user.usuario;
       _userData.userSingleName = user.nombre;
       _userData.userLastame = user.apellidoPaterno;
