@@ -24,6 +24,7 @@ class UserData {
   File? _back;
   File? _selfie;
   bool _noProfiles = false;
+  String? _orientation;
 
   factory UserData() {
     return _instance;
@@ -70,7 +71,13 @@ class UserData {
 
   bool? get noProfiles => _noProfiles;
 
+  String? get orientacionSexual => _orientation;
+
   // Setters
+
+  set orientacionSexual(String? value) {
+    _orientation = value;
+  }
   set userId(int? value) {
     _userId = value;
   }

@@ -10,7 +10,7 @@ import 'UserData.dart';
 
 class AuthService with ChangeNotifier {
   final UserData _userData = UserData();
-  final String url = "https://better-ursola-jazael-26647204.koyeb.app/api/v1/";
+  // final String url = "https://better-ursola-jazael-26647204.koyeb.app/api/v1/";
 
   bool _autenticando = false;
   bool _isLoggedIn = true;
@@ -60,8 +60,12 @@ class AuthService with ChangeNotifier {
 
   UserData userData = UserData();
 
+  // final Dio _dio = Dio(BaseOptions(
+  //     baseUrl: 'https://better-ursola-jazael-26647204.koyeb.app/api/v1/'));
+  //
   final Dio _dio = Dio(BaseOptions(
-      baseUrl: 'https://better-ursola-jazael-26647204.koyeb.app/api/v1/'));
+      baseUrl: 'http://172.212.111.86:8000/api/v1/'));
+
 
   set noProfiles(bool valor) {
     _noProfiles = valor;
@@ -111,7 +115,7 @@ class AuthService with ChangeNotifier {
         _userData.userSingleName = user.nombre;
         _userData.userLastame = user.apellidoPaterno;
         _userData.userLastName2 = user.apellidoMaterno;
-        _userData.tipoUsuario = user.tipoUsuario;
+        _userData.tipoUsuario = user.orientacion;
         _userData.edad = user.edad;
         _userData.estado = user.estado;
         _userData.sexo = user.sexo;
@@ -136,43 +140,65 @@ class AuthService with ChangeNotifier {
   }
 
   Future<bool> register() async {
+    File front = _userData.front_credential!;
+    File back = _userData.back_credential!;
+    File selfie = _userData.selfie!;
+    var response = await validateFaces(selfie, front);
+    print("response");
+    print(response);
     try {
-      File front = _userData.front_credential!;
-      File back = _userData.back_credential!;
-      File selfie = _userData.selfie!;
-
-      final response = await _dio.post(
-        '}registrarUsuario/',
-        data: {
-          'nombre': _userData.userSingleName,
-          'apellidoPaterno': _userData.userLastame,
-          'apellidoMaterno': _userData.userLastName2,
-          'usuario': _userData.username,
-          'password': _userData.password,
+      if (response) {
+        FormData formData = FormData.fromMap({
           'edad': _userData.edad,
-          'sexo': _userData.sexo,
-          'telefono': _userData.telefono,
-          'ubicacion': _userData.ubicacion,
-          'correo': _userData.email,
-          'tipoUsuario': _userData.tipoUsuario,
           'estado': _userData.estado,
-        },
-        options: Options(
-          headers: {'Content-Type': 'application/json'},
-        ),
-      );
-      print("response");
-      var data = response.data;
-      print(data);
-      if (data['status_code'] == 200) {
-        print("entro a response data");
-        return true;
+          'sexo': _userData.sexo,
+          'nombre': _userData.userSingleName,
+          'usuario': _userData.username,
+          'apellidoMaterno': _userData.userLastName2,
+          'apellidoPaterno': _userData.userLastame,
+          'telefono': _userData.telefono,
+          'correo': _userData.email,
+          'orientacionSexual': _userData.orientacionSexual,
+          'password': _userData.password,
+          'ubicacion': _userData.ubicacion,
+        });
+
+        final response = await _dio.post(
+          'https://better-ursola-jazael-26647204.koyeb.app/api/v1/registrarUsuario/',
+          data: formData,
+          options: Options(
+            headers: {
+              'Content-Type': 'multipart/form-data',
+            },
+          ),
+        );
+
+        if (response.statusCode == 200) {
+          print('Usuario registrado correctamente');
+          var newResponse = await uploadSelfie();
+          if (newResponse) {
+            return true;
+          } else {
+            return false;
+          }
+        } else {
+          print('Error al registrar el usuario: ${response.statusCode}');
+          print('Mensaje de error: ${response.data}');
+          return false;
+        }
+      } else
+        return false;
+    } catch (e) {
+      if (e is DioError) {
+        // Manejo específico de errores Dio
+        print('Error de Dio: ${e.response?.statusCode}');
+        print('Datos de error: ${e.response?.data}');
+        return false;
       } else {
+        // Manejo de otros errores
+        print('Error: $e');
         return false;
       }
-    } catch (e) {
-      print('Error during login request: $e');
-      return false;
     }
   }
 
@@ -271,7 +297,7 @@ class AuthService with ChangeNotifier {
       _userData.userSingleName = user.nombre;
       _userData.userLastame = user.apellidoPaterno;
       _userData.userLastName2 = user.apellidoMaterno;
-      _userData.tipoUsuario = user.tipoUsuario;
+      _userData.tipoUsuario = user.orientacion;
       _userData.edad = user.edad;
       _userData.estado = user.estado;
       _userData.sexo = user.sexo;

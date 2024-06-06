@@ -2,6 +2,8 @@ import 'package:digital_love/presentation/Login/Login.dart';
 import 'package:digital_love/presentation/Register/pages/RegisterConfirmacion.dart';
 import 'package:digital_love/shared/services/AuthServices.dart';
 import 'package:digital_love/shared/widgets/Button.dart';
+import 'package:digital_love/shared/widgets/CityDrop.dart';
+import 'package:digital_love/shared/widgets/GenderDrop.dart';
 import 'package:digital_love/shared/widgets/SexDrop.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -50,6 +52,8 @@ class _RegisterView extends StatelessWidget {
   TextEditingController _sexoController = TextEditingController();
   TextEditingController _telefonoController = TextEditingController();
   TextEditingController _ubicacionController = TextEditingController();
+  TextEditingController _genderController = TextEditingController();
+
   TextEditingController _usuarioController = TextEditingController();
 
   @override
@@ -112,6 +116,12 @@ class _RegisterView extends StatelessWidget {
             SizedBox(
               height: height * .02,
             ),
+            CustomGenderAutocomplete(onSelected: (String value) {
+              _genderController.text = value;
+            }),
+            SizedBox(
+              height: height * .02,
+            ),
             CustomTextField(
               textValue: 'Telefono',
               controller: _telefonoController,
@@ -119,10 +129,9 @@ class _RegisterView extends StatelessWidget {
             SizedBox(
               height: height * .02,
             ),
-            CustomTextField(
-              textValue: 'Ubicacion',
-              controller: _ubicacionController,
-            ),
+            CustomCityAutocomplete(onSelected: (String value) {
+              _ubicacionController.text = value;
+            }),
             SizedBox(
               height: height * .02,
             ),
@@ -151,7 +160,7 @@ class _RegisterView extends StatelessWidget {
               textValue: 'Contraseña',
               controller: _passwordverifyController,
             ),
-            if (_passwordController.text == _passwordverifyController.text)
+            if (_passwordController.text != _passwordverifyController.text)
               Container(
                 margin: EdgeInsets.only(
                     top: MediaQuery.of(context).size.height * .006,
@@ -184,7 +193,7 @@ class _RegisterView extends StatelessWidget {
                         telefono: _telefonoController.text.trim(),
                         ubicacion: _ubicacionController.text.trim(),
                         usuario: _usuarioController.text.trim(),
-                        tipoUsuario: "USUARIO",
+                        orientacion: _genderController.text.trim(),
                       );
 
                       var response = await _register(user);
