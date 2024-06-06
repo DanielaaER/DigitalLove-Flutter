@@ -87,7 +87,7 @@ class _PhotoErrorView extends StatelessWidget {
         child: CustomButton(
             textValue: "Reintentar",
             onPressed: () {
-              Navigator.removeRoute(
+              Navigator.push(
                   context,
                   MaterialPageRoute(
                     builder: (context) => RegisterScreen(),
