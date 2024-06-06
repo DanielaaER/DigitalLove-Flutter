@@ -1,3 +1,5 @@
+import 'package:digital_love/shared/models/report_model.dart';
+import 'package:digital_love/shared/services/ApiService.dart';
 import 'package:digital_love/shared/widgets/Button.dart';
 import 'package:digital_love/shared/widgets/TextBold.dart';
 import 'package:digital_love/shared/widgets/TextField.dart';
@@ -20,7 +22,13 @@ class _OtroScreenState extends State<OtroScreen> {
     super.initState();
   }
 
-  void _update(String update) {}
+  Future<bool> _update(String update) async {
+    Reporte reporte = Reporte(
+        mensaje: update, motivo: "OTRO", usuarioRecibeId: widget.usuarioRecibe);
+    bool response = await ApiService().sendReport(reporte);
+    print(response);
+    return response;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -43,7 +51,8 @@ class _OtroScreenState extends State<OtroScreen> {
                   padding: EdgeInsets.only(top: height * .1, left: width * .1),
                   child: GestureDetector(
                       onTap: () {
-                        Navigator.pop(context);},
+                        Navigator.pop(context);
+                      },
                       child: Icon(
                         Icons.arrow_back_ios,
                         size: title,
@@ -91,6 +100,16 @@ class _OtroScreenState extends State<OtroScreen> {
                         textValue: "Reportar",
                         onPressed: () {
                           _update(_textController.text);
+                          if (response) {
+                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                              content: Text('Reporte enviado'),
+                            ));
+                            Navigator.pop(context);
+                          } else {
+                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                              content: Text('Error al enviar reporte'),
+                            ));
+                          }
                         },
                       ),
                     )

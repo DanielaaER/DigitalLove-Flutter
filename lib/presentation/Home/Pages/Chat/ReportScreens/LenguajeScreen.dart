@@ -1,3 +1,5 @@
+import 'package:digital_love/shared/models/report_model.dart';
+import 'package:digital_love/shared/services/ApiService.dart';
 import 'package:digital_love/shared/widgets/Button.dart';
 import 'package:digital_love/shared/widgets/TextBold.dart';
 import 'package:digital_love/shared/widgets/TextField.dart';
@@ -20,7 +22,15 @@ class _LenguajeScreenState extends State<LenguajeScreen> {
     super.initState();
   }
 
-  void _update(String update) {}
+  Future<bool> _update(String update) async {
+    Reporte reporte = Reporte(
+        mensaje: update,
+        motivo: "LENGUAJE INAPROPIADO",
+        usuarioRecibeId: widget.usuarioRecibe);
+    bool response = await ApiService().sendReport(reporte);
+    print(response);
+    return response;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -92,6 +102,16 @@ class _LenguajeScreenState extends State<LenguajeScreen> {
                         textValue: "Reportar",
                         onPressed: () {
                           _update(_textController.text);
+                          if (response) {
+                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                              content: Text('Reporte enviado'),
+                            ));
+                            Navigator.pop(context);
+                          } else {
+                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                              content: Text('Error al enviar reporte'),
+                            ));
+                          }
                         },
                       ),
                     )
