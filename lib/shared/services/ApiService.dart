@@ -4,6 +4,7 @@ import 'package:digital_love/presentation/Home/Pages/Chat/widgets/ChatWindow.dar
 import 'package:digital_love/shared/models/chat_conversarion_model.dart';
 import 'package:digital_love/shared/models/chat_model.dart';
 import 'package:digital_love/shared/models/match_user_model.dart';
+import 'package:digital_love/shared/models/report_model.dart';
 import 'package:dio/dio.dart';
 
 import '../models/chat_response_model.dart';
@@ -163,6 +164,38 @@ class ApiService {
                 },
               ),
               data: {"etiquetas": selectedLabels});
+      print("response");
+      print(response);
+      if (response.data["message"] == "Preferencias registradas") {
+        return true;
+      } else {
+        print("false");
+        return false;
+      }
+    } catch (error) {
+      print("error");
+      print(error);
+      return false;
+    }
+  }
+
+  Future<bool> sendReport(Reporte reporte) async {
+    try {
+      print("reporte");
+      print(userData.userFullName);
+      print(userData.userId);
+      print(reporte.mensaje);
+      final response = await _dio.post('/enviarReporteToAdmin/',
+          options: Options(
+            headers: {
+              'Content-Type': 'application/json',
+            },
+          ),
+          data: {
+            "mensaje": reporte.mensaje,
+            "usuario_envia_id": reporte.usuarioEnviaId,
+            "usuario_recibe_id": reporte.usuarioRecibeId,
+          });
       print("response");
       print(response);
       if (response.data["message"] == "Preferencias registradas") {
