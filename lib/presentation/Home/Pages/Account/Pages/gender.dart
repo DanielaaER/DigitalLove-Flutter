@@ -8,7 +8,8 @@ import 'package:digital_love/shared/widgets/TextListLabel.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 
-import '../../../../../config/theme/app_colors.dart';import '../../../../../shared/models/user_update_model.dart';
+import '../../../../../config/theme/app_colors.dart';
+import '../../../../../shared/models/user_update_model.dart';
 import '../../../../../shared/services/AuthServices.dart';
 import '../widgets/setting.dart';
 
@@ -19,7 +20,6 @@ class GenderScreen extends StatefulWidget {
 
 class _GenderScreenState extends State<GenderScreen> {
   TextEditingController _textController = TextEditingController();
-
 
   @override
   void initState() {
@@ -55,7 +55,9 @@ class _GenderScreenState extends State<GenderScreen> {
               Padding(
                   padding: EdgeInsets.only(top: height * .1, left: width * .1),
                   child: GestureDetector(
-                      onTap: () {},
+                      onTap: () {
+                        Navigator.pop(context);
+                      },
                       child: Icon(
                         Icons.arrow_back_ios,
                         size: title,
@@ -89,8 +91,7 @@ class _GenderScreenState extends State<GenderScreen> {
                           onSelected: (value) {
                             _textController.text = value;
                           },
-                        )
-                    ),
+                        )),
                     Container(
                       width: width * .5,
                       transformAlignment: Alignment.topCenter,
@@ -106,7 +107,8 @@ class _GenderScreenState extends State<GenderScreen> {
                             Navigator.pop(context);
                           } else {
                             ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                              content: Text('Error al actualizar orientación sexual'),
+                              content: Text(
+                                  'Error al actualizar orientación sexual'),
                             ));
                           }
                         },

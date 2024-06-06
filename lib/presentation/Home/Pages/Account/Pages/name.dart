@@ -24,7 +24,6 @@ class _NameScreenState extends State<NameScreen> {
     super.initState();
   }
 
-
   @override
   Widget build(BuildContext context) {
     var height = MediaQuery.of(context).size.height;
@@ -45,7 +44,9 @@ class _NameScreenState extends State<NameScreen> {
               Padding(
                   padding: EdgeInsets.only(top: height * .1, left: width * .1),
                   child: GestureDetector(
-                      onTap: () {},
+                      onTap: () {
+                        Navigator.pop(context);
+                      },
                       child: Icon(
                         Icons.arrow_back_ios,
                         size: title,
@@ -77,7 +78,8 @@ class _NameScreenState extends State<NameScreen> {
                           top: height * .05, bottom: height * .05),
                       child: CustomTextFieldDisable(
                           titleValue: "Nombre",
-                          textValue: "${AuthService().userSingleName.toString().toUpperCase()}"),
+                          textValue:
+                              "${AuthService().userSingleName.toString().toUpperCase()}"),
                     ),
                   ],
                 ),
