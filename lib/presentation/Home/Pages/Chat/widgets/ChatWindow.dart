@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:digital_love/config/theme/app_colors.dart';
+import 'package:digital_love/presentation/Home/Pages/Chat/widgets/Report.dart';
 import 'package:digital_love/shared/models/chat_model.dart';
 import 'package:digital_love/shared/models/send_message_model.dart';
 import 'package:digital_love/shared/services/UserData.dart';
@@ -24,18 +25,26 @@ class ChatWindow extends StatefulWidget {
   final String name;
   final int idSender;
   final String? profilePicture;
+  final int age;
 
   const ChatWindow({
     super.key,
     required this.id,
     required this.name,
     required this.idSender,
-    this.profilePicture,
+    this.profilePicture, required this.age,
   });
 }
 
 class _ChatWindowState extends State<ChatWindow> {
-  void onNotificationTap() {}
+  void onNotificationTap() {
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => ReportScreen(usuarioRecibe: idSendUser,),
+        ));
+  }
+
   late int idSendUser;
 
   String edad = "";
@@ -48,8 +57,8 @@ class _ChatWindowState extends State<ChatWindow> {
   @override
   void initState() {
     setState(() {
-      edad = "21 años";
-      signo = "libra";
+      edad = widget.age.toString();
+      // signo = "libra";
       idSendUser = widget.idSender;
     });
     _initializeWebSocket();
@@ -205,6 +214,7 @@ class _ChatWindowState extends State<ChatWindow> {
                               ],
                             )),
                         GestureDetector(
+
                             // onTap: () => onTap(),
                             child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,

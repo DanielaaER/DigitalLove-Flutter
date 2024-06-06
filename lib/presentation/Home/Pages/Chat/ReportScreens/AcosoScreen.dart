@@ -1,3 +1,6 @@
+import 'package:digital_love/shared/models/report_model.dart';
+import 'package:digital_love/shared/services/ApiService.dart';
+import 'package:digital_love/shared/services/UserData.dart';
 import 'package:digital_love/shared/widgets/Button.dart';
 import 'package:digital_love/shared/widgets/TextBold.dart';
 import 'package:digital_love/shared/widgets/TextField.dart';
@@ -8,6 +11,10 @@ import 'package:flutter/rendering.dart';
 import '../../../../../config/theme/app_colors.dart';
 
 class AcosoScreen extends StatefulWidget {
+  final int usuarioRecibe;
+
+  const AcosoScreen({super.key, required this.usuarioRecibe});
+
   @override
   _AcosoScreenState createState() => _AcosoScreenState();
 }
@@ -20,7 +27,15 @@ class _AcosoScreenState extends State<AcosoScreen> {
     super.initState();
   }
 
-  void _update(String update) {}
+  Future<bool> _update(String update) async {
+    Reporte reporte = Reporte(
+        mensaje: update,
+        usuarioEnviaId: widget.usuarioRecibe,
+        usuarioRecibeId: UserData().userId!);
+    bool response = await ApiService().sendReport(reporte);
+    print(response);
+    return response;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -42,7 +57,9 @@ class _AcosoScreenState extends State<AcosoScreen> {
               Padding(
                   padding: EdgeInsets.only(top: height * .1, left: width * .1),
                   child: GestureDetector(
-                      onTap: () {},
+                      onTap: () {
+                        Navigator.pop(context);
+                      },
                       child: Icon(
                         Icons.arrow_back_ios,
                         size: title,
@@ -88,8 +105,18 @@ class _AcosoScreenState extends State<AcosoScreen> {
                       padding: EdgeInsets.only(bottom: height * .05),
                       child: CustomButton(
                         textValue: "Reportar",
-                        onPressed: () {
-                          _update(_textController.text);
+                        onPressed: () async {
+                          bool response = await _update(_textController.text);
+                          if (response) {
+                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                              content: Text('Reporte enviado'),
+                            ));
+                            Navigator.pop(context);
+                          } else {
+                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                              content: Text('Error al enviar reporte'),
+                            ));
+                          }
                         },
                       ),
                     )

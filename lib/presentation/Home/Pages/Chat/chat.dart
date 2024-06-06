@@ -62,6 +62,7 @@ class _ChatScreenState extends State<ChatScreen> {
                             profilePicture: userChat.fotos.isNotEmpty
                                 ? userChat.fotos[0]
                                 : null,
+                            age: userChat.edad
                           ),
                         ));
                   },

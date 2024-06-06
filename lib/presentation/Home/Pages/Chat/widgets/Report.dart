@@ -1,10 +1,4 @@
 import 'package:digital_love/config/theme/app_colors.dart';
-import 'package:digital_love/presentation/Home/Pages/Account/Pages/age.dart';
-import 'package:digital_love/presentation/Home/Pages/Account/Pages/city.dart';
-import 'package:digital_love/presentation/Home/Pages/Account/Pages/gender.dart';
-import 'package:digital_love/presentation/Home/Pages/Account/Pages/lastname.dart';
-import 'package:digital_love/presentation/Home/Pages/Account/Pages/name.dart';
-import 'package:digital_love/presentation/Home/Pages/Account/Pages/sex.dart';
 import 'package:digital_love/presentation/Home/Pages/Account/widgets/setting.dart';
 import 'package:digital_love/presentation/Home/Pages/Chat/ReportScreens/AcosoScreen.dart';
 import 'package:digital_love/presentation/Home/Pages/Chat/ReportScreens/BullyingScreen.dart';
@@ -12,13 +6,6 @@ import 'package:digital_love/presentation/Home/Pages/Chat/ReportScreens/Discrimi
 import 'package:digital_love/presentation/Home/Pages/Chat/ReportScreens/EstafaScreen.dart';
 import 'package:digital_love/presentation/Home/Pages/Chat/ReportScreens/IdentidadScreen.dart';
 import 'package:digital_love/presentation/Home/Pages/Chat/ReportScreens/OtrosScreen.dart';
-import 'package:digital_love/presentation/Home/Pages/Settings/Pages/cookies.dart';
-import 'package:digital_love/presentation/Home/Pages/Settings/Pages/email.dart';
-import 'package:digital_love/presentation/Home/Pages/Settings/Pages/password.dart';
-import 'package:digital_love/presentation/Home/Pages/Settings/Pages/preferences.dart';
-import 'package:digital_love/presentation/Home/Pages/Settings/Pages/privacity.dart';
-import 'package:digital_love/presentation/Login/Login.dart';
-import 'package:digital_love/shared/services/AuthServices.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -26,6 +13,10 @@ import 'package:flutter/rendering.dart';
 import '../ReportScreens/LenguajeScreen.dart';
 
 class ReportScreen extends StatefulWidget {
+
+  final int usuarioRecibe;
+
+  const ReportScreen({super.key, required this.usuarioRecibe});
   @override
   _ReportScreenState createState() => _ReportScreenState();
 }
@@ -105,7 +96,7 @@ class _ReportScreenState extends State<ReportScreen> {
                           Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => AcosoScreen(),
+                                builder: (context) => AcosoScreen(usuarioRecibe: widget.usuarioRecibe,),
                               ));
                         },
                       ),
