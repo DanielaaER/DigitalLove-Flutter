@@ -176,6 +176,62 @@ class AuthService with ChangeNotifier {
     }
   }
 
+  Future<bool> uploadSelfie() async {
+    if (_userData.userId == null || _userData.selfie == null) return false;
+
+    try {
+      String userId = _userData.userId.toString();
+      File selfie = _userData.selfie!;
+
+      FormData formData = FormData.fromMap({
+        'file': await MultipartFile.fromFile(selfie.path),
+      });
+
+      final response = await _dio.post(
+        'extraerAtributos/$userId/',
+        data: formData,
+        options: Options(
+          headers: {'Content-Type': 'multipart/form-data'},
+        ),
+      );
+
+      print("response");
+      var data = response.data;
+      print(data);
+
+      return data['status_code'] == 200;
+    } catch (e) {
+      print('Error during upload selfie request: $e');
+      return false;
+    }
+  }
+
+  Future<bool> validateFaces(File faceImage, File idImage) async {
+    try {
+      FormData formData = FormData.fromMap({
+        'imagenRostro': await MultipartFile.fromFile(faceImage.path),
+        'imagenIdentificacion': await MultipartFile.fromFile(idImage.path),
+      });
+
+      final response = await _dio.post(
+        'validarRostros/',
+        data: formData,
+        options: Options(
+          headers: {'Content-Type': 'multipart/form-data'},
+        ),
+      );
+
+      print("response");
+      var data = response.data;
+      print(data);
+
+      return data['status_code'] == 200;
+    } catch (e) {
+      print('Error during validate faces request: $e');
+      return false;
+    }
+  }
+
   Future<bool> saveFrontCredential(File file) async {
     try {
       _userData.front_credential = file;

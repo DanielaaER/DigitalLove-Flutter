@@ -45,15 +45,11 @@ class _CameraSelfieState extends State<CameraSelfie> {
     super.dispose();
   }
 
-
   @override
   Widget build(BuildContext context) {
     var height = MediaQuery.of(context).size.height;
     return Scaffold(
-      body: Stack(
-        alignment: Alignment.center,
-
-          children: [
+      body: Stack(alignment: Alignment.center, children: [
         Container(
           height: height,
           child: FutureBuilder<void>(
@@ -88,7 +84,7 @@ class _CameraSelfieState extends State<CameraSelfie> {
                         builder: (context) => HomeScreen(),
                       ),
                     );
-                  } else{
+                  } else {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
