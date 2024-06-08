@@ -24,10 +24,17 @@ class LoginScreen extends StatefulWidget {
 }
 
 TextEditingController _emailController = TextEditingController();
-
 TextEditingController _passwordController = TextEditingController();
 
 class _LoginScreenState extends State<LoginScreen> {
+  bool _isLoading = false;
+
+  Future<bool> _login(String email, String password) async {
+    print("login");
+    var log = await AuthService().login(email, password);
+    return log;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -39,7 +46,31 @@ class _LoginScreenState extends State<LoginScreen> {
             height: MediaQuery.of(context).size.height * .3,
             width: double.infinity,
           ),
-          _LoginView(),
+          _LoginView(
+            isLoading: _isLoading,
+            onLogin: (email, password) async {
+              setState(() {
+                _isLoading = true;
+              });
+
+              bool log = await _login(email, password);
+              setState(() {
+                _isLoading = false;
+              });
+
+              if (log) {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => NavBar()),
+                );
+              } else {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => LoginErrorScreen()),
+                );
+              }
+            },
+          ),
         ],
       ),
     );
@@ -47,14 +78,10 @@ class _LoginScreenState extends State<LoginScreen> {
 }
 
 class _LoginView extends StatelessWidget {
-  _LoginView();
+  final bool isLoading;
+  final Future<void> Function(String email, String password) onLogin;
 
-  Future<bool> _login(String email, String password) async {
-    print("login");
-    var log = await AuthService().login(email, password);
-
-    return log;
-  }
+  _LoginView({required this.isLoading, required this.onLogin});
 
   @override
   Widget build(BuildContext context) {
@@ -62,6 +89,7 @@ class _LoginView extends StatelessWidget {
     var height = MediaQuery.of(context).size.height;
     var title = width * 0.09;
     var text = width * 0.05;
+
     return SingleChildScrollView(
       child: Container(
         margin: EdgeInsets.only(top: MediaQuery.of(context).size.height * .3),
@@ -76,20 +104,17 @@ class _LoginView extends StatelessWidget {
               size: title,
               color: AppColors.primaryColor,
             ),
-            const SizedBox(
-              height: 10,
-            ),
+            const SizedBox(height: 10),
             Row(
               children: [
                 CustomTextSpanLight(
-                    textValue: "Inicia sesión con tu cuenta DigitalLove",
-                    size: text * .9,
-                    color: AppColors.backColor,
-                    highlightedWords: ["DigitalLove"]),
+                  textValue: "Inicia sesión con tu cuenta DigitalLove",
+                  size: text * .9,
+                  color: AppColors.backColor,
+                  highlightedWords: ["DigitalLove"],
+                ),
               ],
             ),
-
-            // SizedBox(height: 1),
             Container(
               padding: EdgeInsets.fromLTRB(width * .06, height * .04, 0, 0),
               alignment: Alignment.topCenter,
@@ -111,47 +136,34 @@ class _LoginView extends StatelessWidget {
                     child: Column(
                       children: [
                         CustomButton(
-                            textValue: "Iniciar Sesión",
-                            onPressed: () async {
-                              final email = _emailController.text.trim();
-                              final password = _passwordController.text.trim();
-                              print("email");
-                              print(email);
-                              print("password");
-                              print(password);
-                              bool log = await _login(email, password);
-                              if (log == true) {
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => NavBar(),
-                                    ));
-                              } else {
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => LoginErrorScreen(),
-                                    ));
-                              }
-                            }),
+                          loading: isLoading,
+                          textValue: "Iniciar Sesión",
+                          onPressed: () async {
+                            final email = _emailController.text.trim();
+                            final password = _passwordController.text.trim();
+                            await onLogin(email, password);
+                          },
+                        ),
                         SizedBox(height: height * .01),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             CustomText(
-                                textValue: "¿No tienes cuenta?",
-                                size: text * .8,
-                                color: AppColors.backColor),
+                              textValue: "¿No tienes cuenta?",
+                              size: text * .8,
+                              color: AppColors.backColor,
+                            ),
                             CustomGesture(
                               textValue: "Registrate",
-                              onPressed: () {     Navigator.push(
+                              onPressed: () {
+                                Navigator.push(
                                   context,
                                   MaterialPageRoute(
                                     builder: (context) => RegisterScreen(),
-                                  ));
-
+                                  ),
+                                );
                               },
-                            )
+                            ),
                           ],
                         ),
                       ],

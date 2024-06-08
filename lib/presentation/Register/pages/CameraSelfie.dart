@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:digital_love/presentation/Home/Home.dart';
+import 'package:digital_love/presentation/Home/NavBar.dart';
 import 'package:digital_love/presentation/Register/pages/CredentialBackConfirmacion.dart';
 import 'package:digital_love/presentation/Register/pages/PhotoError.dart';
 import 'package:digital_love/shared/widgets/Button.dart';
@@ -23,6 +24,7 @@ class CameraSelfie extends StatefulWidget {
 class _CameraSelfieState extends State<CameraSelfie> {
   late CameraController _controller;
   late Future<void> _initializeControllerFuture;
+  bool _isLoading = false;
 
   @override
   void initState() {
@@ -68,32 +70,42 @@ class _CameraSelfieState extends State<CameraSelfie> {
           child: Container(
             alignment: Alignment.center,
             child: CustomButton(
+              loading: _isLoading,
               onPressed: () async {
                 try {
+                  setState(() {
+                    _isLoading = true;
+                  });
                   await _initializeControllerFuture;
                   final image = await _controller.takePicture();
-                  print("image");
-                  File picture = File(image.path);
+                  print("image selfie");
 
-                  AuthService().saveFrontCredential(picture);
+                  File picture = File(image.path);
+                  print(image.path);
+
+                  bool save = await AuthService().saveSelfie(picture);
+                  print("save selfie");
+                  print(save);
                   var response = await AuthService().register();
                   if (response) {
-                    Navigator.push(
+                    Navigator.pushAndRemoveUntil(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => HomeScreen(),
+                        builder: (context) => NavBar(),
                       ),
+                      (Route<dynamic> route) =>
+                          false, // Esto elimina todas las rutas anteriores
                     );
                   } else {
-                    Navigator.push(
+                    Navigator.pushAndRemoveUntil(
                       context,
                       MaterialPageRoute(
                         builder: (context) => PhotoErrorScreen(),
                       ),
+                      (Route<dynamic> route) =>
+                          false, // Esto elimina todas las rutas anteriores
                     );
                   }
-
-                  // Aquí puedes manejar la imagen capturada, como guardarla o mostrarla en otro widget.
                 } catch (e) {
                   print(e);
                 }

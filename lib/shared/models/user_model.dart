@@ -3,6 +3,7 @@
 //     final user = userFromJson(jsonString);
 
 import 'dart:convert';
+import 'dart:io';
 
 User userFromJson(String str) => User.fromJson(json.decode(str));
 
@@ -22,6 +23,8 @@ class User {
   String estado;
   String correo;
   String? password;
+  String? foto;
+  File? profilePicture;
 
   User({
     this.id,
@@ -36,10 +39,14 @@ class User {
     required this.usuario,
     required this.estado,
     required this.correo,
+    this.foto,
+    this.profilePicture,
     this.password,
   });
 
-  factory User.fromJson(Map<String, dynamic> json) => User(
+  factory User.fromJson(Map<String, dynamic> json) {
+    print(json);
+    return User(
       id: json["id"],
       orientacion: json["orientacionSexual"],
       nombre: json["nombre"],
@@ -52,7 +59,12 @@ class User {
       usuario: json["usuario"],
       estado: json["estado"],
       correo: json["correo"],
-      password: json["password"]);
+      password: json["password"],
+      foto: (json["fotos"] != null && json["fotos"].isNotEmpty)
+          ? json["fotos"][0]
+          : "",
+    );
+  }
 
   Map<String, dynamic> toJson() => {
         "orientacionSexual": orientacion,
@@ -66,5 +78,8 @@ class User {
         "usuario": usuario,
         "estado": estado,
         "correo": correo,
+        "fotos": [
+          {"foto": foto},
+        ]
       };
 }

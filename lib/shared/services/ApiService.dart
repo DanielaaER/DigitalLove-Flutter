@@ -34,8 +34,8 @@ class ApiService {
   // final Dio _dio = Dio(BaseOptions(
   //     baseUrl: 'https://better-ursola-jazael-26647204.koyeb.app/api/v1/'));
 
-  final Dio _dio = Dio(BaseOptions(
-      baseUrl: 'http://20.55.201.18:8000/api/v1/'));
+  final Dio _dio =
+      Dio(BaseOptions(baseUrl: 'http://20.55.201.18:8000/api/v1/'));
 
   List<AppNotification> _notifications = [];
 
@@ -63,9 +63,12 @@ class ApiService {
       print("match api");
       print(userData.userFullName);
       print(userData.userId);
-      final response = await _dio.post('/like/',
+      final response = await _dio.post('/enviarLike/',
           data: {"envia": userData.userId, "recibe": profile.id});
-      if (response.statusCode == 200) {
+      print("response");
+      print(response);
+      if (response.data["message"] == "Like enviado correctamente") {
+        print("true");
         return true;
       } else {
         print("false");
@@ -74,8 +77,8 @@ class ApiService {
       }
       return true;
     } catch (error) {
-      print("false");
-      print("false");
+      print("error");
+      print(error);
       return false;
     }
   }
@@ -140,9 +143,10 @@ class ApiService {
       if (response.statusCode == 200) {
         List<dynamic> body = response.data;
         print(body);
+        print("body");
+        print(body[0]["etiquetas"]);
         List<MatchUsuario> usuarios =
             body.map((dynamic item) => MatchUsuario.fromJson(item)).toList();
-
         return usuarios;
       } else {
         throw Exception('Failed to load usuarios');
@@ -161,7 +165,7 @@ class ApiService {
       print(userData.userId);
       print(selectedLabels);
       final response =
-          await _dio.post('/actualizar_preferencias/${userData.userId}/',
+          await _dio.patch('/actualizar_preferencias/${userData.userId}/',
               options: Options(
                 headers: {
                   'Content-Type': 'application/json',
@@ -171,6 +175,39 @@ class ApiService {
       print("response");
       print(response);
       if (response.data["message"] == "Preferencias registradas") {
+        print("true");
+        print("preferencias registradas");
+        return true;
+      } else {
+        print("false");
+        return false;
+      }
+    } catch (error) {
+      print("error");
+      print(error);
+      return false;
+    }
+  }
+
+  Future<bool> registerPreferences(var data) async {
+    try {
+      print("registerPreferences");
+      print(userData.userFullName);
+      print(userData.userId);
+      print(data);
+      final response =
+          await _dio.post('/registrar_preferencias/${userData.userId}/',
+              options: Options(
+                headers: {
+                  'Content-Type': 'application/json',
+                },
+              ),
+              data: data);
+      print("response");
+      print(response);
+      if (response.data["message"] == "Preferencias registradas") {
+        print("true");
+        print("preferencias registradas");
         return true;
       } else {
         print("false");

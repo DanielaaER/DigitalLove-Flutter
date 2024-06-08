@@ -1,38 +1,23 @@
+import 'package:digital_love/presentation/Home/Pages/Welcome/welcomeScreen.dart';
 import 'package:flutter/material.dart';
 import '../../config/theme/app_colors.dart';
 
-class CustomLabelAutocomplete extends StatefulWidget {
-  final ValueChanged<List<String>> onSelected;
+class CustomLabelHairColorAutocomplete extends StatefulWidget {
+  final ValueChanged<String> onSelected;
 
-  CustomLabelAutocomplete({
+  CustomLabelHairColorAutocomplete({
     required this.onSelected,
   });
 
   @override
-  _CustomLabelAutocompleteState createState() =>
-      _CustomLabelAutocompleteState();
+  _CustomLabelHairColorAutocompleteState createState() =>
+      _CustomLabelHairColorAutocompleteState();
 }
 
-class _CustomLabelAutocompleteState extends State<CustomLabelAutocomplete> {
-  var suggestions = [
-    "Amor",
-    "Videojuegos",
-    "Deportes",
-    "Musica",
-    "Películas",
-    "Series",
-    "Anime",
-    "Viajar",
-    "Gym",
-    "Lectura",
-    "Cocinar",
-    "Fotografia",
-    "Senderismo",
-    "Naturaleza",
-    "Moda",
-    "Bailar"
-  ];
-  List<String> selectedLabels = [];
+class _CustomLabelHairColorAutocompleteState
+    extends State<CustomLabelHairColorAutocomplete> {
+  var suggestions = ['BLACK_HAIR', 'BLOND_HAIR', 'BROWN_HAIR', 'GRAY_HAIR'];
+  String selectedLabels = "BLACK_HAIR";
   TextEditingController _textEditingController = TextEditingController();
   FocusNode _focusNode = FocusNode();
   bool _showOptions = false;
@@ -40,7 +25,7 @@ class _CustomLabelAutocompleteState extends State<CustomLabelAutocomplete> {
   void _onSelected(String value) {
     setState(() {
       if (!selectedLabels.contains(value)) {
-        selectedLabels.add(value);
+        selectedLabels = value;
         _textEditingController.clear();
         widget.onSelected(selectedLabels);
         _focusNode.unfocus();
@@ -51,7 +36,7 @@ class _CustomLabelAutocompleteState extends State<CustomLabelAutocomplete> {
 
   void _removeLabel(String label) {
     setState(() {
-      selectedLabels.remove(label);
+      selectedLabels = "STRAIGHT_HAIR";
       widget.onSelected(selectedLabels);
     });
   }
@@ -74,7 +59,7 @@ class _CustomLabelAutocompleteState extends State<CustomLabelAutocomplete> {
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
         Text(
-          "Gustos",
+          "Tipo de cabello",
           style: TextStyle(
             fontSize: text,
             color: AppColors.primaryColor,
@@ -83,16 +68,13 @@ class _CustomLabelAutocompleteState extends State<CustomLabelAutocomplete> {
         ),
         SizedBox(height: 8.0),
         // Agregar espacio entre el texto y los chips
-        Wrap(
-          spacing: 6.0,
-          runSpacing: 6.0,
-          children: selectedLabels
-              .map((label) => Chip(
-                    label: Text(label),
-                    onDeleted: () => _removeLabel(label),
-                  ))
-              .toList(),
-        ),
+        Wrap(spacing: 6.0, runSpacing: 6.0, children: [
+          Chip(
+            label: Text(selectedLabels),
+            onDeleted: () => _removeLabel(selectedLabels),
+          )
+        ]),
+
         SizedBox(height: 8.0),
         // Agregar espacio entre los chips y el Autocomplete
         Autocomplete<String>(
@@ -148,6 +130,7 @@ class _CustomLabelAutocompleteState extends State<CustomLabelAutocomplete> {
                     itemCount: options.length,
                     itemBuilder: (BuildContext context, int index) {
                       final option = options.elementAt(index);
+
                       return ListTile(
                         title: Text(option),
                         onTap: () {

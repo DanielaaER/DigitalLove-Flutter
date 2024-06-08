@@ -1,10 +1,14 @@
+import 'dart:io';
+
 import 'package:digital_love/presentation/Login/Login.dart';
 import 'package:digital_love/presentation/Register/pages/RegisterConfirmacion.dart';
 import 'package:digital_love/shared/services/AuthServices.dart';
+import 'package:digital_love/shared/services/UserData.dart';
 import 'package:digital_love/shared/widgets/Button.dart';
 import 'package:digital_love/shared/widgets/CityDrop.dart';
 import 'package:digital_love/shared/widgets/GenderDrop.dart';
 import 'package:digital_love/shared/widgets/SexDrop.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:digital_love/config/theme/app_colors.dart';
@@ -12,6 +16,8 @@ import 'package:digital_love/shared/widgets/Text.dart';
 import 'package:digital_love/shared/widgets/TextFieldPassword.dart';
 import 'package:digital_love/shared/widgets/TextField.dart';
 import 'package:digital_love/shared/widgets/TextFieldEmail.dart';
+import 'package:flutter/services.dart';
+import 'package:image_picker/image_picker.dart';
 
 import '../../shared/models/user_model.dart';
 import '../../shared/widgets/Gesture.dart';
@@ -25,17 +31,6 @@ class RegisterScreen extends StatefulWidget {
 }
 
 class _RegisterScreenState extends State<RegisterScreen> {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: _RegisterView(),
-    );
-  }
-}
-
-class _RegisterView extends StatelessWidget {
-  _RegisterView();
-
   Future<bool> _register(User user) async {
     var response = await AuthService().saveTemporal(user);
     print(response);
@@ -55,6 +50,51 @@ class _RegisterView extends StatelessWidget {
   TextEditingController _genderController = TextEditingController();
 
   TextEditingController _usuarioController = TextEditingController();
+  File? _image;
+  static const platforms = const MethodChannel('com.example.my_flutter_plugin');
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    setState(() {
+      _nombreController.text =
+          UserData().userSingleName == null ? "" : UserData().userSingleName!;
+      _primerApellidoController.text =
+          UserData().userLastame == null ? "" : UserData().userLastame!;
+      _segundoApellidoController.text =
+          UserData().userLastName2 == null ? "" : UserData().userLastName2!;
+      _emailController.text = UserData().email == null ? "" : UserData().email!;
+      _edadController.text =
+          UserData().edad == null ? "" : UserData().edad!.toString();
+      _sexoController.text = UserData().sexo == null ? "" : UserData().sexo!;
+      _telefonoController.text =
+          UserData().telefono == null ? "" : UserData().telefono!;
+      _ubicacionController.text =
+          UserData().ubicacion == null ? "" : UserData().ubicacion!;
+      _usuarioController.text =
+          UserData().username == null ? "" : UserData().username!;
+      _genderController.text = UserData().orientacionSexual == null
+          ? ""
+          : UserData().orientacionSexual!;
+      _image =
+          UserData().profilePicture == null ? null : UserData().profilePicture!;
+    });
+  }
+
+  void _pickFile() async {
+    String? filePath = await FilePicker.platform
+        .pickFiles(
+          type: FileType.any,
+        )
+        .then((result) => result?.files.single.path);
+
+    if (filePath != null) {
+      setState(() {
+        _image = File(filePath);
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -62,7 +102,8 @@ class _RegisterView extends StatelessWidget {
     var height = MediaQuery.of(context).size.height;
     var title = width * 0.09;
     var text = width * 0.05;
-    return SingleChildScrollView(
+    return Scaffold(
+        body: SingleChildScrollView(
       child: Container(
         margin: EdgeInsets.only(top: MediaQuery.of(context).size.height * .02),
         padding: EdgeInsets.all(width * .1),
@@ -149,6 +190,24 @@ class _RegisterView extends StatelessWidget {
             SizedBox(
               height: height * .02,
             ),
+            GestureDetector(
+              onTap: _pickFile,
+              child: CircleAvatar(
+                radius: 50,
+                backgroundColor: AppColors.accentColor,
+                backgroundImage: _image != null ? FileImage(_image!) : null,
+                child: _image == null
+                    ? Icon(
+                        Icons.add_a_photo,
+                        size: 50,
+                        color: Colors.white,
+                      )
+                    : null,
+              ),
+            ),
+            SizedBox(
+              height: height * .02,
+            ),
             CustomTextFieldPasswordVerify(
               textValue: 'Contraseña',
               controller: _passwordController,
@@ -194,6 +253,7 @@ class _RegisterView extends StatelessWidget {
                         ubicacion: _ubicacionController.text.trim(),
                         usuario: _usuarioController.text.trim(),
                         orientacion: _genderController.text.trim(),
+                        profilePicture: _image,
                       );
 
                       var response = await _register(user);
@@ -232,6 +292,6 @@ class _RegisterView extends StatelessWidget {
           ],
         ),
       ),
-    );
+    ));
   }
 }

@@ -25,6 +25,7 @@ class CameraCredentialFront extends StatefulWidget {
 class _CameraCredentialFrontState extends State<CameraCredentialFront> {
   late CameraController _controller;
   late Future<void> _initializeControllerFuture;
+  bool _isLoading = false;
 
   @override
   void initState() {
@@ -70,8 +71,12 @@ class _CameraCredentialFrontState extends State<CameraCredentialFront> {
           child: Container(
             alignment: Alignment.center,
             child: CustomButton(
+              loading: _isLoading,
               onPressed: () async {
                 try {
+                  setState(() {
+                    _isLoading = true;
+                  });
                   await _initializeControllerFuture;
                   var image = await _controller.takePicture();
                   File picture = File(image.path);

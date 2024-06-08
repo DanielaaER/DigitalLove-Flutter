@@ -1,3 +1,4 @@
+import 'dart:io';
 
 class Profile {
   final int id;
@@ -6,7 +7,8 @@ class Profile {
   final String city;
   final String age;
   final List<String> labels;
-  final String photoUrl;
+  final String? photoUrl;
+  final String? puntuacion;
 
   Profile({
     required this.id,
@@ -16,6 +18,7 @@ class Profile {
     required this.age,
     required this.labels,
     required this.photoUrl,
+    required this.puntuacion,
   });
 
   factory Profile.fromJson(Map<String, dynamic> json) {
@@ -27,6 +30,7 @@ class Profile {
       age: json['age'],
       labels: List<String>.from(json['labels']),
       photoUrl: json['photoUrl'],
+      puntuacion: json['puntuacion'],
     );
   }
 }
