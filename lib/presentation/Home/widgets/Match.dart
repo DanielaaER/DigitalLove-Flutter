@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:digital_love/config/theme/app_colors.dart';
 import 'package:digital_love/shared/widgets/Text.dart';
 import 'package:digital_love/shared/widgets/TextBold.dart';
@@ -24,7 +26,10 @@ class _MatchScreenState extends State<MatchScreen> {
     var title = width * 0.09;
     var text = width * 0.05;
     var textCity = width * 0.03;
-    String picture = "${widget.profile.photoUrl}";
+    String? picture = widget.profile.photoUrl;
+    print("MatchScreen: build");
+    print("profilePicture: $picture");
+
     return Scaffold(
       backgroundColor: AppColors.blackColor,
       body: SizedBox(
@@ -42,11 +47,24 @@ class _MatchScreenState extends State<MatchScreen> {
                         height: double.infinity,
                         decoration: BoxDecoration(
                           image: DecorationImage(
-                            image: NetworkImage(picture),
+                            image: NetworkImage(
+                                "http://20.55.201.18:8000/api/v1${picture}/"),
                             fit: BoxFit.cover,
                           ),
                         ),
                       ),
+                      // Container(
+                      //   width: double.infinity,
+                      //   height: double.infinity,
+                      //   decoration: BoxDecoration(
+                      //     image: DecorationImage(
+                      //       image: NetworkImage(picture == "null"
+                      //           ? "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRt4ZHvtgQvmWfBY-awhyifwjex-_AnOZJy30wWEYm7frPNCxUc9bbb6KUDRY_R_BsyyV0&usqp=CAU"
+                      //           : picture),
+                      //       fit: BoxFit.cover,
+                      //     ),
+                      //   ),
+                      // ),
                     ],
                   ),
                 ),
@@ -144,12 +162,12 @@ class _MatchScreenState extends State<MatchScreen> {
                                         children: [
                                           CustomTextBold(
                                               textValue:
-                                                  "${widget.profile.name}  ",
+                                                  "${widget.profile.name} ",
                                               size: title,
                                               color: AppColors.whiteColor),
                                           CustomText(
                                               textValue:
-                                                  "${widget.profile.age},  ",
+                                                  "${widget.profile.age}, Score: ${widget.profile.puntuacion}",
                                               size: text,
                                               color: AppColors.whiteColor),
                                         ]),

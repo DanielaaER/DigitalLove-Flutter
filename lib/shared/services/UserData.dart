@@ -25,6 +25,8 @@ class UserData {
   File? _selfie;
   bool _noProfiles = false;
   String? _orientation;
+  String? _foto;
+  File? _profilePicture;
 
   factory UserData() {
     return _instance;
@@ -33,6 +35,10 @@ class UserData {
   UserData._internal();
 
   // Getters
+  String? get foto => _foto;
+
+  File? get profilePicture => _profilePicture;
+
   int? get userId => _userId;
 
   String? get userSingleName => _userSingleName;
@@ -78,6 +84,7 @@ class UserData {
   set orientacionSexual(String? value) {
     _orientation = value;
   }
+
   set userId(int? value) {
     _userId = value;
   }
@@ -152,5 +159,13 @@ class UserData {
 
   set noProfiles(bool? value) {
     _noProfiles = value!;
+  }
+
+  set foto(String? value) {
+    _foto = value;
+  }
+
+  set profilePicture(File? value) {
+    _profilePicture = value;
   }
 }

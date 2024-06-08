@@ -2,6 +2,9 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:digital_love/config/theme/app_colors.dart';
+import 'package:digital_love/presentation/Home/Pages/Account/Pages/labels.dart';
+import 'package:digital_love/presentation/Home/Pages/Welcome/welcomeScreen.dart';
+import 'package:digital_love/shared/models/user_model.dart';
 import 'package:digital_love/shared/services/ApiService.dart';
 import 'package:digital_love/shared/services/AuthServices.dart';
 import 'package:digital_love/shared/services/UserData.dart';
@@ -42,6 +45,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Future<void> fetchProfiles() async {
     print("no profiles");
     print(UserData().noProfiles);
+    UserData().noProfiles = false;
 
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
@@ -51,31 +55,45 @@ class _HomeScreenState extends State<HomeScreen> {
     });
 
     try {
-      var users = await ApiService().fetchUsuarios();
-      print("users");
-      List<Profile> perfiles = [];
-      users.forEach((usuario) {
-        print(
-            'Usuario: ${usuario.nombre}, ID: ${usuario.id}, Foto: ${usuario.fotos}, Edad: ${usuario.edad}');
+      try {
+        var users = await ApiService().fetchUsuarios();
+        print("users");
+        List<Profile> perfiles = [];
 
-        perfiles.add(Profile(
-            id: usuario.id,
-            preferences: usuario.sexo,
-            name: usuario.nombre,
-            city: usuario.ubicacion,
-            age: usuario.edad.toString(),
-            labels: usuario.fotos,
-            photoUrl: usuario.fotos.isNotEmpty
-                ? usuario.fotos[0]
-                : '')); // Manejar si fotos está vacío
-      });
-      print("profiles");
+        users.forEach((usuario) {
+          try {
+            print(
+                'Usuario: ${usuario.nombre}, ID: ${usuario.id}, Foto: ${usuario.etiquetas}, Edad: ${usuario.edad}');
 
-      setState(() {
-        profiles = perfiles;
+            perfiles.add(
+              Profile(
+                  id: usuario.id,
+                  preferences: usuario.sexo,
+                  name: usuario.nombre,
+                  city: usuario.ubicacion,
+                  age: usuario.edad.toString(),
+                  labels: usuario.etiquetas != null
+                      ? usuario.etiquetas
+                      : ["Sin etiquetas"],
+                  photoUrl: (usuario.foto != null) ? usuario.foto : null,
+                  puntuacion: usuario.puntuacion.toString()),
+            ); // Manejar si fotos está vacío
+          } catch (e) {
+            print("Error procesando usuario: ${usuario.id}");
+            print(e);
+          }
+        });
 
-        isLoading = false;
-      });
+        print("profiles");
+
+        setState(() {
+          profiles = perfiles;
+          isLoading = false;
+        });
+      } catch (e) {
+        print("error");
+        print(e);
+      }
     } catch (e) {
       setState(() {
         hasError = true;
@@ -118,12 +136,7 @@ class _HomeScreenState extends State<HomeScreen> {
     if (hasError) {
       return Scaffold(
         backgroundColor: AppColors.blackColor,
-        body: Center(
-          child: Text(
-            'Error loading profiles. Please try again later.',
-            style: TextStyle(color: AppColors.whiteColor),
-          ),
-        ),
+        body: WelcomeScreen(),
       );
     }
 
@@ -182,6 +195,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   },
                   children: profiles.map((profile) {
                     print("profiles");
+                    print(profile.id);
                     return GestureDetector(
                       onHorizontalDragStart: (details) {
                         _dragDistance = 0.0; // Reset drag distance

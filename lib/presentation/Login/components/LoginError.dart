@@ -39,39 +39,37 @@ class _LoginErrorView extends StatelessWidget {
     var height = MediaQuery.of(context).size.height;
     var title = width * 0.09;
     var text = width * 0.05;
-    return Expanded(
-        child: Container(
-            alignment: Alignment.topCenter,
-            padding:
-                EdgeInsets.fromLTRB(width * .2, height * .15, width * .2, 0),
-            child: Column(
-              children: [
-                Icon(
-                  Icons.info_outline,
-                  size: width * .6,
-                  color: AppColors.primaryColor,
-                ),
-                SizedBox(
-                  height: height * .15,
-                ),
-                CustomTextBold(
-                    textValue:
-                        "Ooops! Parece que ha habido un error al iniciar sesión, por favor verifica tus credenciales o intentalo más tarde.",
-                    size: text,
-                    color: AppColors.backColor),
-                SizedBox(
-                  height: height * .15,
-                ),
-                CustomButton(
-                    textValue: "Reintentar",
-                    onPressed: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => LoginScreen(),
-                          ));
-                    })
-              ],
-            )));
+    return Container(
+        alignment: Alignment.topCenter,
+        padding: EdgeInsets.fromLTRB(width * .2, height * .15, width * .2, 0),
+        child: Column(
+          children: [
+            Icon(
+              Icons.info_outline,
+              size: width * .6,
+              color: AppColors.primaryColor,
+            ),
+            SizedBox(
+              height: height * .15,
+            ),
+            CustomTextBold(
+                textValue:
+                    "Ooops! Parece que ha habido un error al iniciar sesión, por favor verifica tus credenciales o intentalo más tarde.",
+                size: text,
+                color: AppColors.backColor),
+            SizedBox(
+              height: height * .15,
+            ),
+            CustomButton(
+                textValue: "Reintentar",
+                onPressed: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => LoginScreen(),
+                      ));
+                })
+          ],
+        ));
   }
 }

@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:digital_love/presentation/Home/Pages/Account/Pages/age.dart';
 import 'package:digital_love/presentation/Home/Pages/Account/Pages/city.dart';
 import 'package:digital_love/presentation/Home/Pages/Account/Pages/gender.dart';
@@ -5,6 +7,7 @@ import 'package:digital_love/presentation/Home/Pages/Account/Pages/labels.dart';
 import 'package:digital_love/presentation/Home/Pages/Account/Pages/lastname.dart';
 import 'package:digital_love/presentation/Home/Pages/Account/Pages/name.dart';
 import 'package:digital_love/presentation/Home/Pages/Account/Pages/sex.dart';
+import 'package:digital_love/shared/services/UserData.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 
@@ -17,14 +20,17 @@ class AccountScreen extends StatefulWidget {
 }
 
 class _AccountScreenState extends State<AccountScreen> {
-  String profilePicture = "";
+  String? profilePicture;
   bool showPicture = true;
   ScrollController _scrollController = ScrollController();
 
   void _loadData() {
-    String picture =
-        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRt4ZHvtgQvmWfBY"
-        "-awhyifwjex-_AnOZJy30wWEYm7frPNCxUc9bbb6KUDRY_R_BsyyV0&usqp=CAU";
+    // String picture =
+    //     "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRt4ZHvtgQvmWfBY"
+    //     "-awhyifwjex-_AnOZJy30wWEYm7frPNCxUc9bbb6KUDRY_R_BsyyV0&usqp=CAU";
+    print("AccountScreen: _loadData");
+    print("UserData().foto: ${UserData().foto}");
+    String picture = UserData().foto == null ? "" : UserData().foto!;
     setState(() {
       profilePicture = picture;
     });
@@ -61,6 +67,9 @@ class _AccountScreenState extends State<AccountScreen> {
     var title = width * 0.07;
     var text = width * 0.05;
 
+    print("AccountScreen: build");
+    print("profilePicture: $profilePicture");
+
     return Scaffold(
         backgroundColor: Colors.white,
         body: Container(
@@ -88,26 +97,27 @@ class _AccountScreenState extends State<AccountScreen> {
                   child: Text(
                     "Perfil",
                     style:
-                    TextStyle(fontSize: title, fontWeight: FontWeight.bold),
+                        TextStyle(fontSize: title, fontWeight: FontWeight.bold),
                   ),
                 ),
                 if (showPicture)
                   Center(
                     child: AnimatedOpacity(
                       duration: const Duration(milliseconds: 300),
-                      opacity: profilePicture.isEmpty ? 0.0 : 1.0,
+                      opacity: profilePicture != null ? 1.0 : 0.0,
                       child: CircleAvatar(
                         radius: title * 3,
-                        backgroundImage: profilePicture.isNotEmpty
-                            ? NetworkImage(profilePicture)
+                        backgroundImage: profilePicture != null
+                            ? NetworkImage(
+                                "http://20.55.201.18:8000/api/v1${profilePicture}/")
                             : null,
                         backgroundColor: Colors.grey,
-                        child: profilePicture.isEmpty
+                        child: profilePicture == null
                             ? Icon(
-                          Icons.person,
-                          size: title * 3,
-                          color: Colors.white,
-                        )
+                                Icons.person,
+                                size: title * 3,
+                                color: Colors.white,
+                              )
                             : null,
                       ),
                     ),

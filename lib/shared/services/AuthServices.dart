@@ -7,6 +7,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../models/user_update_model.dart';
 import 'UserData.dart';
+import 'package:http_parser/http_parser.dart';
 
 class AuthService with ChangeNotifier {
   final UserData _userData = UserData();
@@ -102,6 +103,7 @@ class AuthService with ChangeNotifier {
       print("response");
       var data = response.data;
       print(data);
+      print("data");
       User user = User.fromJson(data["usuario"]);
       print("user");
       print(user);
@@ -127,6 +129,9 @@ class AuthService with ChangeNotifier {
         print(_userData.userFullName);
 
         _isLoggedIn = true;
+        print("foto");
+        print("fot");
+        print(user.foto);
         notifyListeners();
         print("logeo");
         _saveUserData();
@@ -143,9 +148,34 @@ class AuthService with ChangeNotifier {
   }
 
   Future<bool> register() async {
-    File front = _userData.front_credential!;
-    File back = _userData.back_credential!;
-    File selfie = _userData.selfie!;
+    print(_userData.front_credential!.path);
+    File front;
+    File back;
+    File selfie;
+    print("selfie");
+    print(_userData.selfie);
+    if (_userData.front_credential != null) {
+      print("front");
+      print(_userData.front_credential!.path);
+      front = _userData.front_credential!;
+    } else {
+      front = File("");
+    }
+    if (_userData.back_credential != null) {
+      print("back");
+      print(_userData.back_credential!.path);
+      File back = _userData.back_credential!;
+    } else {
+      back = File("");
+    }
+    if (_userData.selfie != null) {
+      print("selfie");
+      print(_userData.selfie!.path);
+      selfie = _userData.selfie!;
+    } else {
+      selfie = File("");
+    }
+
     var response = await validateFaces(selfie, front);
     print("response");
     print(response);
@@ -168,10 +198,21 @@ class AuthService with ChangeNotifier {
           'orientacionSexual': _userData.orientacionSexual,
           'password': _userData.password,
           'ubicacion': _userData.ubicacion,
+          'fotos': [
+            {
+              'foto': await MultipartFile.fromFile(
+                _userData.profilePicture!.path,
+                contentType: MediaType(
+                  'image',
+                  'jpeg',
+                ),
+              ),
+            },
+          ]
         });
 
         final response = await _dio.post(
-          'https://better-ursola-jazael-26647204.koyeb.app/api/v1/registrarUsuario/',
+          'registrarUsuario/',
           data: formData,
           options: Options(
             headers: {
@@ -179,11 +220,19 @@ class AuthService with ChangeNotifier {
             },
           ),
         );
+        print("response register");
+        print(response);
+        _userData.userId = response.data['usuario']['id'];
 
-        if (response.statusCode == 200) {
+        if (response.statusCode == 200 || response.statusCode == 201) {
           print('Usuario registrado correctamente');
           var newResponse = await uploadSelfie();
+          print(newResponse);
           if (newResponse) {
+            _isLoggedIn = true;
+            notifyListeners();
+            print("logeo");
+            _saveUserData();
             return true;
           } else {
             return false;
@@ -216,23 +265,29 @@ class AuthService with ChangeNotifier {
       String userId = _userData.userId.toString();
       File selfie = _userData.selfie!;
 
-      FormData formData = FormData.fromMap({
-        'file': await MultipartFile.fromFile(selfie.path),
-      });
-
+      var data = {
+        'file': await MultipartFile.fromFile(
+          selfie.path,
+          contentType: MediaType(
+            'image',
+            'jpeg',
+          ),
+        ),
+      };
+      final formData = FormData.fromMap(data);
       final response = await _dio.post(
         'extraerAtributos/$userId/',
         data: formData,
-        options: Options(
-          headers: {'Content-Type': 'multipart/form-data'},
-        ),
       );
 
       print("response");
-      var data = response.data;
-      print(data);
-
-      return data['status_code'] == 200;
+      var dat = response.data;
+      print(dat);
+      if (dat['CaraOvalada'] == true || dat['CaraOvalada'] == false) {
+        return true;
+      } else {
+        return false;
+      }
     } catch (e) {
       print('Error during upload selfie request: $e');
       return false;
@@ -241,24 +296,40 @@ class AuthService with ChangeNotifier {
 
   Future<bool> validateFaces(File faceImage, File idImage) async {
     try {
-      FormData formData = FormData.fromMap({
-        'imagenRostro': await MultipartFile.fromFile(faceImage.path),
-        'imagenIdentificacion': await MultipartFile.fromFile(idImage.path),
-      });
+      if (!await faceImage.exists() || !await idImage.exists()) {
+        print("Uno o ambos archivos no existen.");
+        return false;
+      }
+
+      var data = {
+        'imagenRostro': await MultipartFile.fromFile(
+          faceImage.path,
+          contentType: MediaType(
+            'image',
+            'jpeg',
+          ),
+        ),
+        'imagenIdentificacion': await MultipartFile.fromFile(
+          idImage.path,
+          contentType: MediaType(
+            'image',
+            'jpeg',
+          ),
+        ),
+      };
+
+      final formData = FormData.fromMap(data);
 
       final response = await _dio.post(
-        'validarRostros/',
+        'validarRostros',
         data: formData,
-        options: Options(
-          headers: {'Content-Type': 'multipart/form-data'},
-        ),
       );
 
       print("response");
-      var data = response.data;
-      print(data);
+      var dat = response.data;
+      print(dat);
 
-      return data['status_code'] == 200;
+      return dat['is_valid'];
     } catch (e) {
       print('Error during validate faces request: $e');
       return false;
@@ -267,6 +338,8 @@ class AuthService with ChangeNotifier {
 
   Future<bool> saveFrontCredential(File file) async {
     try {
+      print("file");
+      print(file.path);
       _userData.front_credential = file;
       return true;
     } catch (e) {
@@ -312,7 +385,10 @@ class AuthService with ChangeNotifier {
       _userData.ubicacion = user.ubicacion;
       _userData.email = user.correo;
       _userData.password = user.password;
-
+      _userData.profilePicture = user.profilePicture;
+      print(user.profilePicture);
+      SharedPreferences pref = await SharedPreferences.getInstance();
+      pref.setBool('noProfiles', false);
       return true;
     } catch (e) {
       print('Error during login request: $e');
@@ -345,6 +421,9 @@ class AuthService with ChangeNotifier {
     await prefs.clear();
 
     _isLoggedIn = false;
+
+    await prefs.setBool('log', false);
+
     notifyListeners();
   }
 
@@ -368,8 +447,11 @@ class AuthService with ChangeNotifier {
     await prefs.setBool('log', _isLoggedIn!);
   }
 
-  Future<void> loadUserData() async {
+  Future<bool> loadUserData() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
+    _isLoggedIn = prefs.getBool('log') ?? false;
+    if (!_isLoggedIn) return false;
+
     _userData.userId = prefs.getInt('userId');
     _userData.userFullName = prefs.getString('userFullName');
     _userData.username = prefs.getString('username');
@@ -386,8 +468,9 @@ class AuthService with ChangeNotifier {
     _userData.userToken = prefs.getString('userToken');
     _userData.noProfiles = prefs.getBool('noProfiles');
 
-    _isLoggedIn = _userData.userId != null;
     notifyListeners();
+
+    return _isLoggedIn;
   }
 
   Future<bool> updateUser(UserUpdate userUpdate) async {

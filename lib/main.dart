@@ -11,25 +11,12 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'dart:async';
 import 'package:provider/provider.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
-
 import 'presentation/Home/Pages/Notifications/NotificationScreen.dart';
 import 'shared/services/ApiService.dart';
 import 'shared/services/AuthServices.dart';
 import 'package:web_socket_channel/status.dart' as status;
 
 Future<void> main() async {
-  // final wsUrl = Uri.parse(
-  //     'ws://better-ursola-jazael-26647204.koyeb.app/ws/notifications/${UserData().userId}/');
-  // final channel = WebSocketChannel.connect(wsUrl);
-  // await channel.ready;
-  //
-  // channel.stream.listen((message) {
-  //   print("socket");
-  //   channel.sink.add('received!');
-  //   channel.sink.close(status.goingAway);
-  //   print(message.toString());
-  // });
-
   runApp(
     MultiProvider(
       providers: [
@@ -49,32 +36,35 @@ class _MainAppState extends State<MainApp> with WidgetsBindingObserver {
   bool _hasInternet = false;
   bool _isLoading = true;
   late ApiService apiService;
-
   final GlobalKey<NavigatorState> _navigatorKey = GlobalKey<NavigatorState>();
   late WebSocketChannel channel;
   var userData = UserData();
   var userId = UserData().userId;
+  bool _webSocketInitialized = false;
 
   @override
   void initState() {
     super.initState();
     checkInternetConnection();
     apiService = ApiService();
-    WidgetsBinding.instance?.addPostFrameCallback((_) {
-      final authService = Provider.of<AuthService>(context, listen: false);
-      if (authService.isLoggedIn) {
-        _initializeWebSocket();
-      }
-      ;
-    });
+    WidgetsBinding.instance?.addObserver(this);
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance?.removeObserver(this);
+    channel.sink.close(status.goingAway);
+    super.dispose();
   }
 
   void _initializeWebSocket() {
-    print("inicio socler");
+    if (_webSocketInitialized) return;
+
+    print("inicio socket");
     final userId = UserData().userId;
     if (userId != null) {
-      final wsUrl = Uri.parse(
-          'wss://20.55.201.18:8000/ws/notifications/$userId/');
+      final wsUrl =
+          Uri.parse('wss://20.55.201.18:8000/ws/notifications/$userId/');
       channel = WebSocketChannel.connect(wsUrl);
 
       channel.stream.listen((message) {
@@ -85,6 +75,8 @@ class _MainAppState extends State<MainApp> with WidgetsBindingObserver {
       }, onError: (error) {
         print('WebSocket error: $error');
       });
+
+      _webSocketInitialized = true;
     } else {
       print('Error: User ID is null');
     }
@@ -102,27 +94,26 @@ class _MainAppState extends State<MainApp> with WidgetsBindingObserver {
   Widget build(BuildContext context) {
     print("wifi");
     print(_hasInternet);
-    return Consumer<AuthService>(builder: (context, authService, child) {
-      if (authService.isLoggedIn) {
-        final userId = UserData().userId;
-        if (userId != null) {
+    return Consumer<AuthService>(
+      builder: (context, authService, child) {
+        if (authService.isLoggedIn && !_webSocketInitialized) {
           _initializeWebSocket();
         }
-      }
 
-      return MaterialApp(
-        title: 'Digital Love',
-        debugShowCheckedModeBanner: false,
-        navigatorKey: _navigatorKey,
-        home: _isLoading
-            ? Center(child: CircularProgressIndicator())
-            : _hasInternet
-                ? (authService.isLoggedIn ? NavBar() : LoginScreen())
-                : WifiScreen(),
-        routes: {
-          '/notifications': (context) => NotificationsPage(),
-        },
-      );
-    });
+        return MaterialApp(
+          title: 'Digital Love',
+          debugShowCheckedModeBanner: false,
+          navigatorKey: _navigatorKey,
+          home: _isLoading
+              ? Center(child: CircularProgressIndicator())
+              : _hasInternet
+                  ? (authService.isLoggedIn ? NavBar() : LoginScreen())
+                  : WifiScreen(),
+          routes: {
+            '/notifications': (context) => NotificationsPage(),
+          },
+        );
+      },
+    );
   }
 }

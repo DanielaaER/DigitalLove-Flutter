@@ -26,6 +26,7 @@ class _CameraCredentialBackState extends State<CameraCredentialBack> {
   late CameraController _controller;
   late Future<void> _initializeControllerFuture;
 
+  bool _isLoading = false;
   @override
   void initState() {
     super.initState();
@@ -47,15 +48,11 @@ class _CameraCredentialBackState extends State<CameraCredentialBack> {
     super.dispose();
   }
 
-
   @override
   Widget build(BuildContext context) {
     var height = MediaQuery.of(context).size.height;
     return Scaffold(
-      body: Stack(
-        alignment: Alignment.center,
-
-          children: [
+      body: Stack(alignment: Alignment.center, children: [
         Container(
           height: height,
           child: FutureBuilder<void>(
@@ -74,16 +71,20 @@ class _CameraCredentialBackState extends State<CameraCredentialBack> {
           child: Container(
             alignment: Alignment.center,
             child: CustomButton(
+              loading: _isLoading,
               onPressed: () async {
                 try {
+                  setState(() {
+                    _isLoading = true;
+                  });
                   await _initializeControllerFuture;
                   final image = await _controller.takePicture();
                   print("image");
 
                   File picture = File(image.path);
+                  print(image.path);
 
-                  AuthService().saveFrontCredential(picture);
-
+                  await AuthService().saveBackCredential(picture);
 
                   print("credential back?");
                   Navigator.push(
@@ -104,7 +105,6 @@ class _CameraCredentialBackState extends State<CameraCredentialBack> {
       ]),
     );
   }
-
 
   Future<void> saveImageAsBase64(String base64Image) async {
     final prefs = await SharedPreferences.getInstance();
