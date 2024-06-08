@@ -140,6 +140,7 @@ class ApiService {
     try {
       final response =
           await _dio.get('encontrar_usuarios/${UserData().userId}/');
+      print(response.data);
       if (response.statusCode == 200) {
         List<dynamic> body = response.data;
         print(body);
@@ -149,9 +150,11 @@ class ApiService {
             body.map((dynamic item) => MatchUsuario.fromJson(item)).toList();
         return usuarios;
       } else {
+        return [];
         throw Exception('Failed to load usuarios');
       }
     } catch (error) {
+      return [];
       throw Exception('Failed to load usuarios: $error');
     }
   }

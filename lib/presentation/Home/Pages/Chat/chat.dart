@@ -36,7 +36,18 @@ class _ChatScreenState extends State<ChatScreen> {
             return Center(child: CircularProgressIndicator());
           } else if (snapshot.hasError) {
             return Center(child: Text('Error: ${snapshot.error}'));
-          } else if (snapshot.hasData) {
+          } else if (snapshot.hasData != "") {
+            print("Chat");
+            print(snapshot.data?.chats.length);
+            if (snapshot.data?.chats.length == 0) {
+              return Center(
+                child: CustomTextBold(
+                  textValue: "No tienes chats",
+                  size: 20,
+                  color: AppColors.backColor,
+                ),
+              );
+            }
             return ListView.builder(
               itemCount: snapshot.data?.chats.length ?? 0,
               itemBuilder: (context, index) {
@@ -56,14 +67,13 @@ class _ChatScreenState extends State<ChatScreen> {
                         context,
                         MaterialPageRoute(
                           builder: (context) => ChatWindow(
-                            id: chat.id,
-                            name: '${userChat.nombre}',
-                            idSender: userChat.id,
-                            profilePicture: userChat.fotos.isNotEmpty
-                                ? userChat.fotos[0]
-                                : null,
-                            age: userChat.edad
-                          ),
+                              id: chat.id,
+                              name: '${userChat.nombre}',
+                              idSender: userChat.id,
+                              profilePicture: userChat.fotos.isNotEmpty
+                                  ? userChat.fotos[0]
+                                  : null,
+                              age: userChat.edad),
                         ));
                   },
                   child: ChatPreviewWidget(
