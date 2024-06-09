@@ -185,31 +185,35 @@ class AuthService with ChangeNotifier {
         File back = _userData.back_credential!;
         File selfie = _userData.selfie!;
 
-        FormData formData = FormData.fromMap({
-          'edad': _userData.edad,
-          'estado': _userData.estado,
-          'sexo': _userData.sexo,
-          'nombre': _userData.userSingleName,
-          'usuario': _userData.username,
-          'apellidoMaterno': _userData.userLastName2,
-          'apellidoPaterno': _userData.userLastame,
-          'telefono': _userData.telefono,
-          'correo': _userData.email,
-          'orientacionSexual': _userData.orientacionSexual,
-          'password': _userData.password,
-          'ubicacion': _userData.ubicacion,
-          'fotos': [
-            {
-              'foto': await MultipartFile.fromFile(
-                _userData.profilePicture!.path,
-                contentType: MediaType(
-                  'image',
-                  'jpeg',
+        FormData formData = FormData.fromMap(
+          {
+            'edad': _userData.edad,
+            'estado': _userData.estado,
+            'sexo': _userData.sexo,
+            'nombre': _userData.userSingleName,
+            'usuario': _userData.username,
+            'apellidoMaterno': _userData.userLastName2,
+            'apellidoPaterno': _userData.userLastame,
+            'telefono': _userData.telefono,
+            'correo': _userData.email,
+            'orientacionSexual': _userData.orientacionSexual,
+            'password': _userData.password,
+            'ubicacion': _userData.ubicacion,
+            'fotos': [
+              {
+                'foto': await MultipartFile.fromFile(
+                  _userData.profilePicture!.path,
+                  filename:
+                      "profile.${_userData.profilePicture!.path.split('.').last}",
+                  contentType: MediaType(
+                    'image',
+                    'jpeg',
+                  ),
                 ),
-              ),
-            },
-          ]
-        });
+              }
+            ],
+          },
+        );
 
         final response = await _dio.post(
           'registrarUsuario/',
@@ -232,6 +236,8 @@ class AuthService with ChangeNotifier {
             _isLoggedIn = true;
             notifyListeners();
             print("logeo");
+            uploadProfile(_userData.profilePicture!);
+
             _saveUserData();
             return true;
           } else {
@@ -256,6 +262,35 @@ class AuthService with ChangeNotifier {
         return false;
       }
     }
+  }
+
+  Future<bool> uploadProfile(File profilePicture) async {
+    var data = {
+      'file': await MultipartFile.fromFile(
+        profilePicture.path,
+        filename: "profilePicture.jpg",
+        contentType: MediaType(
+          'image',
+          'jpeg',
+        ),
+      ),
+    };
+    final formD = FormData.fromMap(data);
+
+    print("formD");
+    print(formD);
+
+    final response = await _dio.post(
+      'usuario/agregar_foto/${_userData.userId}/',
+      data: formD,
+    );
+
+    print("response");
+    print(response);
+    if (response.data["message"] == "Foto registrada") {
+      return true;
+    }
+    return false;
   }
 
   Future<bool> uploadSelfie() async {

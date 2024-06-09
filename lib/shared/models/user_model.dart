@@ -61,7 +61,7 @@ class User {
       correo: json["correo"],
       password: json["password"],
       foto: (json["fotos"] != null && json["fotos"].isNotEmpty)
-          ? json["fotos"][0]
+          ? json["fotos"][0]["foto"]
           : "",
     );
   }
@@ -78,8 +78,5 @@ class User {
         "usuario": usuario,
         "estado": estado,
         "correo": correo,
-        "fotos": [
-          {"foto": foto},
-        ]
       };
 }

@@ -32,7 +32,8 @@ class ChatWindow extends StatefulWidget {
     required this.id,
     required this.name,
     required this.idSender,
-    this.profilePicture, required this.age,
+    this.profilePicture,
+    required this.age,
   });
 }
 
@@ -41,7 +42,9 @@ class _ChatWindowState extends State<ChatWindow> {
     Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => ReportScreen(usuarioRecibe: idSendUser,),
+          builder: (context) => ReportScreen(
+            usuarioRecibe: idSendUser,
+          ),
         ));
   }
 
@@ -73,9 +76,12 @@ class _ChatWindowState extends State<ChatWindow> {
 
   void _initializeWebSocket() {
     print("inicio socler chat");
+    print(widget.id);
     if (userId != null) {
-      final wsUrl = Uri.parse(
-          'wss://20.55.201.18:8000/ws/chat/${widget.id}/');
+      print("id user");
+      print(userId);
+      print("websocket");
+      final wsUrl = Uri.parse('ws://20.55.201.18:8000/ws/chat/${widget.id}/');
       channel = WebSocketChannel.connect(wsUrl);
       channel.stream.listen((message) {
         final data = jsonDecode(message);
@@ -130,12 +136,6 @@ class _ChatWindowState extends State<ChatWindow> {
             message: element.mensaje,
             idUser: element.usuarioId));
       });
-    });
-    setState(() async {
-      print("user send me");
-      print(idSendUser);
-      print("user me");
-      print(userId);
     });
   }
 
