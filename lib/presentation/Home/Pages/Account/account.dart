@@ -71,13 +71,12 @@ class _AccountScreenState extends State<AccountScreen> {
     var response = await AuthService().uploadProfile(File(filePath!));
     print("response: $response");
 
-    if (response){
+    if (response) {
       if (filePath != null) {
         setState(() {
           profilePicture = filePath;
         });
       }
-
     }
   }
 

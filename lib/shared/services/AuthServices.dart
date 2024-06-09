@@ -132,6 +132,7 @@ class AuthService with ChangeNotifier {
         print("foto");
         print("fot");
         print(user.foto);
+        _userData.foto = user.foto;
         notifyListeners();
         print("logeo");
         _saveUserData();
@@ -199,19 +200,6 @@ class AuthService with ChangeNotifier {
             'orientacionSexual': _userData.orientacionSexual,
             'password': _userData.password,
             'ubicacion': _userData.ubicacion,
-            'fotos': [
-              {
-                'foto': await MultipartFile.fromFile(
-                  _userData.profilePicture!.path,
-                  filename:
-                      "profile.${_userData.profilePicture!.path.split('.').last}",
-                  contentType: MediaType(
-                    'image',
-                    'jpeg',
-                  ),
-                ),
-              }
-            ],
           },
         );
 
@@ -266,15 +254,20 @@ class AuthService with ChangeNotifier {
 
   Future<bool> uploadProfile(File profilePicture) async {
     var data = {
-      'file': await MultipartFile.fromFile(
+      'foto': await MultipartFile.fromFile(
         profilePicture.path,
-        filename: "profilePicture.jpg",
+        filename: "profilePicture.${profilePicture.path.split('.').last}",
         contentType: MediaType(
           'image',
-          'jpeg',
+          '${profilePicture.path.split('.').last}',
         ),
       ),
     };
+    print("data");
+    print(data);
+    print("file name");
+    print(profilePicture.path.split('.').last);
+
     final formD = FormData.fromMap(data);
 
     print("formD");
@@ -283,6 +276,11 @@ class AuthService with ChangeNotifier {
     final response = await _dio.post(
       'usuario/agregar_foto/${_userData.userId}/',
       data: formD,
+      options: Options(
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      ),
     );
 
     print("response");
