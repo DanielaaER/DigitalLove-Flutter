@@ -226,6 +226,10 @@ class AuthService with ChangeNotifier {
             print("logeo");
             uploadProfile(_userData.profilePicture!);
 
+            _userData.foto =
+                "/media/uploads/${_userData.username}/profilePicture.${_userData.profilePicture!.path.split('.').last}";
+            print("foto");
+            print(_userData.foto);
             _saveUserData();
             return true;
           } else {
