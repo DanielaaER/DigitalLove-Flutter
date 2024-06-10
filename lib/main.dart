@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:another_flushbar/flushbar.dart';
 import 'package:connectivity/connectivity.dart';
+import 'package:digital_love/config/theme/app_colors.dart';
 import 'package:digital_love/presentation/Home/NavBar.dart';
 import 'package:digital_love/presentation/Home/Pages/Notifications/notificationWidget.dart';
 import 'package:digital_love/presentation/Home/Pages/Notifications/notificationfloting.dart';
@@ -97,12 +98,12 @@ class _MainAppState extends State<MainApp> with WidgetsBindingObserver {
   void showNotification(BuildContext context, String notification) {
     Flushbar(
       message: notification,
-      duration: Duration(seconds: 3),
+      duration: Duration(seconds: 5),
       flushbarPosition: FlushbarPosition.TOP,
       icon: Icon(
         Icons.notifications,
         size: 28.0,
-        color: Colors.blue,
+        color: AppColors.primaryColor,
       ),
       mainButton: TextButton(
         onPressed: () {
