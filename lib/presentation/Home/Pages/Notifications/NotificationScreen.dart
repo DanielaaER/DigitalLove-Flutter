@@ -1,3 +1,4 @@
+import 'package:digital_love/presentation/Home/Pages/Chat/chat.dart';
 import 'package:flutter/material.dart';
 import '../../../../shared/models/notification_model.dart';
 import '../../../../shared/services/ApiService.dart';
@@ -32,14 +33,23 @@ class _NotificationsPageState extends State<NotificationsPage> {
               itemBuilder: (context, index) {
                 AppNotification notification = snapshot.data![index];
                 return NotificationWidget(
-                  notificationTitle: 'Notificación',
-                  notificationMessage: notification.mensaje,
-                  time:
-                      '${notification.fechaEnvio.hour}:${notification.fechaEnvio.minute}',
-                  idUser: notification.usuario,
-                  onTap: () =>
-                      _showLikeDialog(context, idUser: notification.usuario),
-                );
+                    notificationTitle: 'Notificación',
+                    notificationMessage: notification.mensaje,
+                    time:
+                        '${notification.fechaEnvio.hour}:${notification.fechaEnvio.minute}',
+                    idUser: notification.usuario,
+                    onTap: () {
+                      print('Notificación pulsada');
+                      var noti =
+                          "${notification.mensaje.split(' ')[1]} ${notification.mensaje.split(' ')[2]} ${notification.mensaje.split(' ')[3]} ${notification.mensaje.split(' ')[4]}";
+                      print(noti);
+                      if (noti == 'te ha dado like!') {
+                        _showLikeDialog(context, idUser: notification.usuario);
+                      } else {
+                        Navigator.of(context).pop();
+                        print('Notificación no reconocida');
+                      }
+                    });
               },
             );
           }

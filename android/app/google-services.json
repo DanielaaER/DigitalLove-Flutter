@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "182923212766",
+    "project_id": "digitallove-49573",
+    "storage_bucket": "digitallove-49573.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:182923212766:android:a0f37ef7079af86d568f4f",
+        "android_client_info": {
+          "package_name": "com.android.application"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAzYmCL0fJ3n8PuqKZsGNSrRrXIBQVtAOg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:182923212766:android:43411274fc9e45ca568f4f",
+        "android_client_info": {
+          "package_name": "com.digital_love.digital_love"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAzYmCL0fJ3n8PuqKZsGNSrRrXIBQVtAOg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
