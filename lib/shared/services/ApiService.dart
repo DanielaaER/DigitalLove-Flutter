@@ -27,7 +27,8 @@ class ApiService {
       _notificationsController.stream;
 
   void _fetchNotificationsPeriodically() async {
-    List<AppNotification> notifications = await fetchNotifications();
+    var notifications = await fetchNotifications();
+
     _notificationsController.add(notifications);
   }
 
@@ -44,8 +45,11 @@ class ApiService {
       UserData userData = UserData();
       print("notificar");
       print(userData.userId);
-      final response = await _dio.get('/notificaciones/${userData.userId}');
+      final response = await _dio.get('/notificaciones/${userData.userId}/');
+      print("response");
+      print(response.data);
       List<dynamic> body = response.data;
+      print(body);
       List<AppNotification> notifications = body
           .map((dynamic item) => AppNotification.fromJson(item))
           .toList()
@@ -161,7 +165,7 @@ class ApiService {
 
   UserData userData = UserData();
 
-  Future<bool> newPreferences(List<String> selectedLabels) async {
+  Future<bool> newPreferences(var selectedLabels) async {
     try {
       print("newPreferences");
       print(userData.userFullName);
@@ -174,7 +178,7 @@ class ApiService {
                   'Content-Type': 'application/json',
                 },
               ),
-              data: {"etiquetas": selectedLabels});
+              data: selectedLabels);
       print("response");
       print(response);
       if (response.data["message"] == "Preferencias registradas") {

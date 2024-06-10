@@ -10,6 +10,9 @@ import 'package:flutter/rendering.dart';
 
 import '../../../../../config/theme/app_colors.dart';
 import '../../../../../shared/services/AuthServices.dart';
+import '../../../../../shared/widgets/HairColorDrop.dart';
+import '../../../../../shared/widgets/HairDrop.dart';
+import '../../../../../shared/widgets/SexPreferDrop.dart';
 import '../widgets/setting.dart';
 
 class LabelScreen extends StatefulWidget {
@@ -32,9 +35,22 @@ class _LabelScreenState extends State<LabelScreen> {
     super.initState();
   }
 
-  Future<bool> _update(List<String> selectedLabels) async {
-    bool response = await ApiService().newPreferences(selectedLabels);
+  Future<bool> _update(var data) async {
+    bool response = await ApiService().newPreferences(data);
     return response;
+  }
+
+  bool conLentes = false;
+  bool conCaraOvalada = false;
+  bool conPielBlanca = false;
+  String colorCabello = 'BLACK_HAIR';
+  String tipoCabello = 'STRAIGHT_HAIR';
+  String sexoPreferido = 'MASCULINO';
+
+  void _onHairSelected(String value) {
+    setState(() {
+      tipoCabello = value;
+    });
   }
 
   @override
@@ -48,98 +64,130 @@ class _LabelScreenState extends State<LabelScreen> {
     return Scaffold(
         backgroundColor: Colors.white,
         body: Container(
-          color: AppColors.whiteColor,
-          height: MediaQuery.of(context).size.height * .8,
-          width: width,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Padding(
-                  padding: EdgeInsets.only(top: height * .1, left: width * .1),
-                  child: GestureDetector(
-                      onTap: () {
-                        Navigator.pop(context);
-                      },
-                      child: Icon(
-                        Icons.arrow_back_ios,
-                        size: title,
-                      ))),
-              SizedBox(height: height * .05),
-              Container(
-                width: width,
-                decoration: const BoxDecoration(
-                  border: Border(
-                    top: BorderSide(
+          height: MediaQuery.of(context).size.height * .95,
+          child: SingleChildScrollView(
+            child: Padding(
+              padding: EdgeInsets.symmetric(
+                  vertical: height * .05, horizontal: width * .1),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  SizedBox(height: height * .02),
+                  Text(
+                    "Configura tus preferencias para una experiencia personalizada",
+                    style: TextStyle(
+                      fontSize: text,
                       color: AppColors.backColor,
-                      width: 1,
-                      style: BorderStyle.solid,
+                      fontWeight: FontWeight.w500,
                     ),
-                    bottom: BorderSide(
-                      color: AppColors.backColor,
-                      width: 1,
-                      style: BorderStyle.solid,
-                    ),
+                    textAlign: TextAlign.center,
                   ),
-                ),
-                child: Column(
-                  // crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Container(
-                      width: width * .8,
-                      transformAlignment: Alignment.topCenter,
-                      padding: EdgeInsets.only(
-                          top: height * .01, bottom: height * .02),
-                      child: CustomLabelAutocomplete(
-                        onSelected: _onLabelsSelected,
-                      ),
-                    ),
-                    // Container(
-                    //   width: width * .8,
-                    //   transformAlignment: Alignment.topCenter,
-                    //   padding: EdgeInsets.only(
-                    //       top: height * .02, bottom: height * .02),
-                    //   child: Wrap(
-                    //     spacing: 6.0,
-                    //     runSpacing: 6.0,
-                    //     children: selectedLabels
-                    //         .map((label) => Chip(
-                    //               label: Text(label),
-                    //               onDeleted: () {
-                    //                 setState(() {
-                    //                   selectedLabels.remove(label);
-                    //                 });
-                    //               },
-                    //             ))
-                    //         .toList(),
-                    //   ),
-                    // ),
-                    Container(
-                      width: width * .8,
-                      transformAlignment: Alignment.topCenter,
-                      padding: EdgeInsets.only(
-                          top: height * .02, bottom: height * .08),
-                      child: CustomButton(
-                        textValue: "Actualizar",
-                        onPressed: () async {
-                          bool response = await _update(selectedLabels);
-                          if (response) {
-                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                              content: Text('Etiquetas actualizadas'),
-                            ));
-                            Navigator.pop(context);
-                          } else {
-                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                              content: Text('Error al actualizar etiquetas'),
-                            ));
-                          }
-                        },
-                      ),
-                    ),
-                  ],
-                ),
+                  SizedBox(height: height * .03),
+                  CustomLabelAutocomplete(
+                    onSelected: _onLabelsSelected,
+                  ),
+                  SizedBox(height: height * .03),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      _buildChoiceChip('Usa Lentes', conLentes, (value) {
+                        setState(() {
+                          conLentes = value!;
+                        });
+                      }),
+                      _buildChoiceChip('Cara Ovalada', conCaraOvalada, (value) {
+                        setState(() {
+                          conCaraOvalada = value!;
+                        });
+                      }),
+                      _buildChoiceChip('Piel Blanca', conPielBlanca, (value) {
+                        setState(() {
+                          conPielBlanca = value!;
+                        });
+                      }),
+                    ],
+                  ),
+                  CustomLabelHairColorAutocomplete(onSelected: (value) {
+                    setState(() {
+                      colorCabello = value;
+                    });
+                  }),
+                  CustomLabelHairAutocomplete(onSelected: (value) {
+                    setState(() {
+                      tipoCabello = value;
+                    });
+                  }),
+                  CustomLabelSexAutocomplete(
+                    onSelected: (value) {
+                      setState(() {
+                        sexoPreferido = value;
+                      });
+                    },
+                  ),
+                  SizedBox(height: height * .05),
+                  CustomButton(
+                    textValue: "Guardar Preferencias",
+                    onPressed: () async {
+                      var data = {
+                        'etiquetas': selectedLabels,
+                        'conLentes': conLentes,
+                        'conCaraOvalada': conCaraOvalada,
+                        'conPielBlanca': conPielBlanca,
+                        'colorCabello': colorCabello,
+                        'tipoCabello': tipoCabello,
+                        'sexoPreferido': sexoPreferido,
+                      };
+                      bool response = await _update(data);
+                      if (response) {
+                        Navigator.pop(context);
+                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                          content: Text('Preferencias guardadas'),
+                        ));
+                      } else {
+                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                          content: Text('Error al guardar preferencias'),
+                        ));
+                      }
+                    },
+                  ),
+                ],
               ),
-            ],
+            ),
           ),
         ));
+  }
+}
+
+Widget _buildChoiceChip(
+    String title, bool value, ValueChanged<bool> onChanged) {
+  return Padding(
+    padding: const EdgeInsets.symmetric(vertical: 8.0),
+    child: ChoiceChip(
+      label: Text(
+        title,
+        style: TextStyle(
+          fontSize: 16,
+          fontWeight: FontWeight.w600,
+          color: value ? Colors.white : AppColors.primaryColor,
+        ),
+      ),
+      selected: value,
+      onSelected: onChanged,
+      selectedColor: AppColors.accentColor,
+      backgroundColor: AppColors.backgroundColor.withOpacity(0.1),
+      labelPadding: EdgeInsets.symmetric(horizontal: 5.0, vertical: 4.0),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(10.0),
+        side: BorderSide(
+          color: value ? AppColors.accentColor : AppColors.primaryColor,
+        ),
+      ),
+    ),
+  );
+}
+
+extension StringExtension on String {
+  String capitalize() {
+    return "${this[0].toUpperCase()}${this.substring(1).toLowerCase()}";
   }
 }

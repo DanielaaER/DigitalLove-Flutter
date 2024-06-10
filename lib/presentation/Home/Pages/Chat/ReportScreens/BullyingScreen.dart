@@ -27,8 +27,8 @@ class _BullyingScreenState extends State<BullyingScreen> {
 
   Future<bool> _update(String update) async {
     Reporte reporte = Reporte(
-      mensaje: update,
-      motivo: "BULLYING",
+      mensaje: "Bullying: ${update}",
+      motivo: "CONTENIDO_INAPROPIADO",
       usuarioRecibeId: widget.usuarioRecibe,
     );
     bool response = await ApiService().sendReport(reporte);

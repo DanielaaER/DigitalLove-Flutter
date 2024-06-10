@@ -27,8 +27,8 @@ class _IdentidadScreenState extends State<IdentidadScreen> {
 
   Future<bool> _update(String update) async {
     Reporte reporte = Reporte(
-      mensaje: update,
-      motivo: "SUPLANTACION DE IDENTIDAD",
+      mensaje: "Suplantación de identidad: ${update}",
+      motivo: "FRAUDE",
       usuarioRecibeId: widget.usuarioRecibe,
     );
     bool response = await ApiService().sendReport(reporte);

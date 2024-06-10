@@ -80,6 +80,7 @@ class _ChatWindowState extends State<ChatWindow> {
     if (userId != null) {
       print("id user");
       print(userId);
+      print(widget.idSender);
       print("websocket");
       final wsUrl = Uri.parse('ws://20.55.201.18:8000/ws/chat/${widget.id}/');
       channel = WebSocketChannel.connect(wsUrl);
@@ -228,7 +229,7 @@ class _ChatWindowState extends State<ChatWindow> {
                               CustomText(
                                 color: AppColors.whiteColor,
                                 size: textInfo,
-                                textValue: "${edad}, ${signo}",
+                                textValue: "${edad} años ${signo}",
                               )
                             ])),
                       ],
@@ -266,6 +267,8 @@ class _ChatWindowState extends State<ChatWindow> {
                 itemCount: messages.length,
                 itemBuilder: (context, index) {
                   Message message = messages[index];
+                  print("mensaje");
+                  print(message.idUser);
                   return Padding(
                     padding:
                         EdgeInsets.symmetric(vertical: 5.0, horizontal: 10.0),

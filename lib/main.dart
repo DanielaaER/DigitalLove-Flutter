@@ -57,11 +57,15 @@ class _MainAppState extends State<MainApp> with WidgetsBindingObserver {
     super.dispose();
   }
 
-  void _initializeWebSocket() {
+  void _initializeWebSocket() async {
+    await AuthService().loadUserData();
     if (_webSocketInitialized) return;
 
     print("inicio socket");
     final userId = UserData().userId;
+    print("id");
+    print(userId);
+    print("fin socket");
     if (userId != null) {
       final wsUrl =
           Uri.parse('ws://20.55.201.18:8000/ws/notifications/$userId/');
@@ -96,6 +100,8 @@ class _MainAppState extends State<MainApp> with WidgetsBindingObserver {
     print(_hasInternet);
     return Consumer<AuthService>(
       builder: (context, authService, child) {
+        print("auth");
+        print(authService.isLoggedIn);
         if (authService.isLoggedIn && !_webSocketInitialized) {
           _initializeWebSocket();
         }

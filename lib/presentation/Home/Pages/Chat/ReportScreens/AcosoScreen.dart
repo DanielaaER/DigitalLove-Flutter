@@ -28,6 +28,7 @@ class _AcosoScreenState extends State<AcosoScreen> {
   }
 
   Future<bool> _update(String update) async {
+    print("REPORTE");
     Reporte reporte = Reporte(
         mensaje: update,
         motivo: "ACOSO",

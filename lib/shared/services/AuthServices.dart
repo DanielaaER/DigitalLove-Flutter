@@ -453,6 +453,11 @@ class AuthService with ChangeNotifier {
     _userData.ubicacion = null;
     _userData.email = null;
     _userData.userToken = null;
+    _userData.noProfiles = null;
+    _userData.foto = null;
+    _userData.password = null;
+    _userData.profilePicture = null;
+    _userData.orientacionSexual = null;
 
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.clear();
@@ -482,6 +487,10 @@ class AuthService with ChangeNotifier {
     await prefs.setString('userToken', _userData.userToken!);
 
     await prefs.setBool('log', _isLoggedIn!);
+    await prefs.setBool('noProfiles', _noProfiles);
+    await prefs.setString('foto', _userData.foto!);
+    await prefs.setString('profilePicture', _userData.profilePicture!.path);
+    await prefs.setString('orientation', _userData.orientacionSexual!);
   }
 
   Future<bool> loadUserData() async {
@@ -504,6 +513,9 @@ class AuthService with ChangeNotifier {
     _userData.email = prefs.getString('email');
     _userData.userToken = prefs.getString('userToken');
     _userData.noProfiles = prefs.getBool('noProfiles');
+    _userData.foto = prefs.getString('foto');
+    _userData.password = prefs.getString('password');
+    _userData.orientacionSexual = prefs.getString('orientation');
 
     notifyListeners();
 
