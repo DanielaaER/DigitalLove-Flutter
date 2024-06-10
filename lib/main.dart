@@ -1,13 +1,17 @@
+import 'dart:convert';
+
+import 'package:another_flushbar/flushbar.dart';
 import 'package:connectivity/connectivity.dart';
 import 'package:digital_love/presentation/Home/NavBar.dart';
+import 'package:digital_love/presentation/Home/Pages/Notifications/notificationWidget.dart';
 import 'package:digital_love/presentation/Home/Pages/Notifications/notificationfloting.dart';
 import 'package:digital_love/presentation/Login/Login.dart';
 import 'package:digital_love/presentation/Wifi/wifi.dart';
 import 'package:digital_love/shared/models/notification_model.dart';
 import 'package:digital_love/shared/services/UserData.dart';
 import 'package:digital_love/shared/services/webSocket.dart';
+import 'package:digital_love/shared/widgets/Notification.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'dart:async';
 import 'package:provider/provider.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
@@ -73,7 +77,11 @@ class _MainAppState extends State<MainApp> with WidgetsBindingObserver {
 
       channel.stream.listen((message) {
         print("socket");
-        print(message.toString());
+        String notification = jsonDecode(message)['message'];
+        print(notification);
+        showNotification(_navigatorKey.currentContext!, notification);
+
+        print("socket");
       }, onDone: () {
         print('WebSocket connection closed');
       }, onError: (error) {
@@ -84,6 +92,31 @@ class _MainAppState extends State<MainApp> with WidgetsBindingObserver {
     } else {
       print('Error: User ID is null');
     }
+  }
+
+  void showNotification(BuildContext context, String notification) {
+    Flushbar(
+      message: notification,
+      duration: Duration(seconds: 3),
+      flushbarPosition: FlushbarPosition.TOP,
+      icon: Icon(
+        Icons.notifications,
+        size: 28.0,
+        color: Colors.blue,
+      ),
+      mainButton: TextButton(
+        onPressed: () {
+          Navigator.pushNamed(context, '/notifications');
+        },
+        child: Text(
+          'Ver',
+          style: TextStyle(color: Colors.white),
+        ),
+      ),
+      backgroundColor: Colors.black54,
+      margin: EdgeInsets.all(8.0),
+      borderRadius: BorderRadius.circular(8.0),
+    ).show(context);
   }
 
   Future<void> checkInternetConnection() async {

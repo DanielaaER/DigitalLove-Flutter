@@ -54,6 +54,8 @@ dependencies:
   image_picker: ^1.1.2
   file_picker: ^8.0.3
   firebase_messaging: ^15.0.0
+  flutter_foreground_task: ^6.4.0
+  another_flushbar: ^1.12.30
 
 dev_dependencies:
   flutter_test:
