@@ -177,6 +177,7 @@ class AuthService with ChangeNotifier {
       selfie = File("");
     }
 
+    print("going to validate faces");
     var response = await validateFaces(selfie, front);
     print("response");
     print(response);
@@ -203,6 +204,7 @@ class AuthService with ChangeNotifier {
           },
         );
 
+        print("going to register");
         final response = await _dio.post(
           'registrarUsuario/',
           data: formData,
@@ -218,6 +220,8 @@ class AuthService with ChangeNotifier {
 
         if (response.statusCode == 200 || response.statusCode == 201) {
           print('Usuario registrado correctamente');
+
+          print("going to upload selfie");
           var newResponse = await uploadSelfie();
           print(newResponse);
           if (newResponse) {
@@ -317,6 +321,7 @@ class AuthService with ChangeNotifier {
         data: formData,
       );
 
+      print("extraigo atributos");
       print("response");
       var dat = response.data;
       print(dat);
@@ -357,10 +362,15 @@ class AuthService with ChangeNotifier {
 
       final formData = FormData.fromMap(data);
 
+
+
+      print("valido rosto");
       final response = await _dio.post(
         'validarRostros',
         data: formData,
       );
+
+      print(_dio.httpClientAdapter);
 
       print("response");
       var dat = response.data;
