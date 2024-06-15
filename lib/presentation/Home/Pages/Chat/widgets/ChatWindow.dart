@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:digital_love/config/theme/app_colors.dart';
+import 'package:digital_love/presentation/Home/Pages/Chat/VideoCall/videocall.dart';
 import 'package:digital_love/presentation/Home/Pages/Chat/widgets/Report.dart';
 import 'package:digital_love/shared/models/chat_model.dart';
 import 'package:digital_love/shared/models/send_message_model.dart';
@@ -82,7 +83,7 @@ class _ChatWindowState extends State<ChatWindow> {
       print(userId);
       print(widget.idSender);
       print("websocket");
-      final wsUrl = Uri.parse('ws://20.55.201.18:8000/ws/chat/${widget.id}/');
+      final wsUrl = Uri.parse('ws://172.210.177.30:8000/ws/chat/${widget.id}/');
       channel = WebSocketChannel.connect(wsUrl);
       channel.stream.listen((message) {
         final data = jsonDecode(message);
@@ -248,6 +249,30 @@ class _ChatWindowState extends State<ChatWindow> {
                         ],
                       ),
                     ),
+                    GestureDetector(
+                      onTap: () {
+                        print("video call");
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => TypedVideoCallV2Example(
+                                nameUserCall: UserData().username.toString(),
+                                nameUserToCall: widget.name,
+                              ),
+                            ));
+                      },
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(
+                            Icons.video_call_rounded,
+                            size: height * 0.03,
+                            // Ajusta el tamaño según sea necesario
+                            color: AppColors.whiteColor,
+                          ),
+                        ],
+                      ),
+                    )
                   ],
                 ),
               ),

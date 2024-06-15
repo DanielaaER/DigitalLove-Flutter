@@ -48,7 +48,7 @@ class _MatchScreenState extends State<MatchScreen> {
                         decoration: BoxDecoration(
                           image: DecorationImage(
                             image: NetworkImage(
-                                "http://20.55.201.18:8000/api/v1${picture}/"),
+                                "http://172.210.177.30:8000/api/v1${picture}/"),
                             fit: BoxFit.cover,
                           ),
                         ),

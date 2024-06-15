@@ -121,7 +121,7 @@ class _AccountScreenState extends State<AccountScreen> {
                           radius: title * 3,
                           backgroundImage: profilePicture != null
                               ? NetworkImage(
-                                  "http://20.55.201.18:8000/api/v1${profilePicture}/")
+                                  "http://172.210.177.30:8000/api/v1${profilePicture}/")
                               : null,
                           backgroundColor: Colors.grey,
                           child: profilePicture == null

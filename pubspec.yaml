@@ -56,6 +56,9 @@ dependencies:
   firebase_messaging: ^15.0.0
   flutter_foreground_task: ^6.4.0
   another_flushbar: ^1.12.30
+  flutter_webrtc: ^0.10.8
+  janus_client: ^2.3.5
+  permission_handler: ^11.3.1
 
 dev_dependencies:
   flutter_test:
