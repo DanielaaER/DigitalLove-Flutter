@@ -36,19 +36,52 @@ class _ChatScreenState extends State<ChatScreen> {
             return Center(child: CircularProgressIndicator());
           } else if (snapshot.hasError) {
             return Center(child: Text('Error: ${snapshot.error}'));
-          } else if (snapshot.hasData) {
+          } else if (snapshot.hasData != "") {
+            print("Chat");
+            print(snapshot.data?.chats.length);
+            if (snapshot.data?.chats.length == 0) {
+              return Center(
+                child: CustomTextBold(
+                  textValue: "No tienes chats",
+                  size: 20,
+                  color: AppColors.backColor,
+                ),
+              );
+            }
             return ListView.builder(
               itemCount: snapshot.data?.chats.length ?? 0,
               itemBuilder: (context, index) {
                 var chat = snapshot.data!.chats[index];
-                print(chat.id);
+                print("user id");
+                print(UserData().userId);
+                print("id usuario");
+                print(chat.usuario.id);
+                print("id usuario match");
+                print(chat.usuarioMatch.id);
 
                 var userChat = chat.usuarioMatch;
+                print("userChat");
+                print(userChat.nombre);
+                print(userChat.id);
                 if (userChat.id == UserData().userId) {
+                  print("usuario");
                   userChat = chat.usuario;
+                } else {
+                  print("match");
+                  userChat = chat.usuarioMatch;
                 }
                 print("Chat");
+                print("userChat");
                 print(userChat.nombre);
+                print(userChat.id);
+                print(userChat.fotos.isNotEmpty
+                    ? userChat.fotos[0]["foto"]
+                    : null);
+                var foto = userChat.fotos.isNotEmpty
+                    ? userChat.fotos[0]["foto"]
+                        .replaceFirst('/media', '/api/v1/media')
+                    : null;
+                print(foto);
 
                 return GestureDetector(
                   onTap: () {
@@ -56,14 +89,11 @@ class _ChatScreenState extends State<ChatScreen> {
                         context,
                         MaterialPageRoute(
                           builder: (context) => ChatWindow(
-                            id: chat.id,
-                            name: '${userChat.nombre}',
-                            idSender: userChat.id,
-                            profilePicture: userChat.fotos.isNotEmpty
-                                ? userChat.fotos[0]
-                                : null,
-                            age: userChat.edad
-                          ),
+                              id: chat.id,
+                              name: '${userChat.nombre}',
+                              idSender: userChat.id,
+                              profilePicture: foto,
+                              age: userChat.edad),
                         ));
                   },
                   child: ChatPreviewWidget(
@@ -71,6 +101,7 @@ class _ChatScreenState extends State<ChatScreen> {
                     lastMessage: "",
                     time: "",
                     idChat: chat.id,
+                    profilePicture: foto,
                   ),
                 );
               },

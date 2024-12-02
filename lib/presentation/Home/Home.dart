@@ -58,6 +58,13 @@ class _HomeScreenState extends State<HomeScreen> {
       try {
         var users = await ApiService().fetchUsuarios();
         print("users");
+        if (users.isEmpty) {
+          setState(() {
+            hasError = true;
+            isLoading = false;
+          });
+          return;
+        }
         List<Profile> perfiles = [];
 
         users.forEach((usuario) {

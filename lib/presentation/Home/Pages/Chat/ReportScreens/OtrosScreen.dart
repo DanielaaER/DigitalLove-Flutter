@@ -26,8 +26,8 @@ class _OtroScreenState extends State<OtroScreen> {
 
   Future<bool> _update(String update) async {
     Reporte reporte = Reporte(
-      mensaje: update,
-      motivo: "OTRO",
+      mensaje: "OTRO: ${update}",
+      motivo: "SPAM",
       usuarioRecibeId: widget.usuarioRecibe,
     );
     bool response = await ApiService().sendReport(reporte);

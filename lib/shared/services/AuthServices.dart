@@ -66,7 +66,7 @@ class AuthService with ChangeNotifier {
   //     baseUrl: 'https://better-ursola-jazael-26647204.koyeb.app/api/v1/'));
   //
   final Dio _dio =
-      Dio(BaseOptions(baseUrl: 'http://20.55.201.18:8000/api/v1/'));
+      Dio(BaseOptions(baseUrl: 'http://172.210.177.30:8000/api/v1/'));
 
   set noProfiles(bool valor) {
     _noProfiles = valor;
@@ -132,6 +132,7 @@ class AuthService with ChangeNotifier {
         print("foto");
         print("fot");
         print(user.foto);
+        _userData.foto = user.foto;
         notifyListeners();
         print("logeo");
         _saveUserData();
@@ -176,6 +177,7 @@ class AuthService with ChangeNotifier {
       selfie = File("");
     }
 
+    print("going to validate faces");
     var response = await validateFaces(selfie, front);
     print("response");
     print(response);
@@ -185,32 +187,24 @@ class AuthService with ChangeNotifier {
         File back = _userData.back_credential!;
         File selfie = _userData.selfie!;
 
-        FormData formData = FormData.fromMap({
-          'edad': _userData.edad,
-          'estado': _userData.estado,
-          'sexo': _userData.sexo,
-          'nombre': _userData.userSingleName,
-          'usuario': _userData.username,
-          'apellidoMaterno': _userData.userLastName2,
-          'apellidoPaterno': _userData.userLastame,
-          'telefono': _userData.telefono,
-          'correo': _userData.email,
-          'orientacionSexual': _userData.orientacionSexual,
-          'password': _userData.password,
-          'ubicacion': _userData.ubicacion,
-          'fotos': [
-            {
-              'foto': await MultipartFile.fromFile(
-                _userData.profilePicture!.path,
-                contentType: MediaType(
-                  'image',
-                  'jpeg',
-                ),
-              ),
-            },
-          ]
-        });
+        FormData formData = FormData.fromMap(
+          {
+            'edad': _userData.edad,
+            'estado': _userData.estado,
+            'sexo': _userData.sexo,
+            'nombre': _userData.userSingleName,
+            'usuario': _userData.username,
+            'apellidoMaterno': _userData.userLastName2,
+            'apellidoPaterno': _userData.userLastame,
+            'telefono': _userData.telefono,
+            'correo': _userData.email,
+            'orientacionSexual': _userData.orientacionSexual,
+            'password': _userData.password,
+            'ubicacion': _userData.ubicacion,
+          },
+        );
 
+        print("going to register");
         final response = await _dio.post(
           'registrarUsuario/',
           data: formData,
@@ -226,12 +220,20 @@ class AuthService with ChangeNotifier {
 
         if (response.statusCode == 200 || response.statusCode == 201) {
           print('Usuario registrado correctamente');
+
+          print("going to upload selfie");
           var newResponse = await uploadSelfie();
           print(newResponse);
           if (newResponse) {
             _isLoggedIn = true;
             notifyListeners();
             print("logeo");
+            uploadProfile(_userData.profilePicture!);
+
+            _userData.foto =
+                "/media/uploads/${_userData.username}/profilePicture.${_userData.profilePicture!.path.split('.').last}";
+            print("foto");
+            print(_userData.foto);
             _saveUserData();
             return true;
           } else {
@@ -258,6 +260,45 @@ class AuthService with ChangeNotifier {
     }
   }
 
+  Future<bool> uploadProfile(File profilePicture) async {
+    var data = {
+      'foto': await MultipartFile.fromFile(
+        profilePicture.path,
+        filename: "profilePicture.${profilePicture.path.split('.').last}",
+        contentType: MediaType(
+          'image',
+          '${profilePicture.path.split('.').last}',
+        ),
+      ),
+    };
+    print("data");
+    print(data);
+    print("file name");
+    print(profilePicture.path.split('.').last);
+
+    final formD = FormData.fromMap(data);
+
+    print("formD");
+    print(formD);
+
+    final response = await _dio.post(
+      'usuario/agregar_foto/${_userData.userId}/',
+      data: formD,
+      options: Options(
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      ),
+    );
+
+    print("response");
+    print(response);
+    if (response.data["message"] == "Foto registrada") {
+      return true;
+    }
+    return false;
+  }
+
   Future<bool> uploadSelfie() async {
     if (_userData.userId == null || _userData.selfie == null) return false;
 
@@ -280,6 +321,7 @@ class AuthService with ChangeNotifier {
         data: formData,
       );
 
+      print("extraigo atributos");
       print("response");
       var dat = response.data;
       print(dat);
@@ -320,10 +362,15 @@ class AuthService with ChangeNotifier {
 
       final formData = FormData.fromMap(data);
 
+
+
+      print("valido rosto");
       final response = await _dio.post(
         'validarRostros',
         data: formData,
       );
+
+      print(_dio.httpClientAdapter);
 
       print("response");
       var dat = response.data;
@@ -416,6 +463,11 @@ class AuthService with ChangeNotifier {
     _userData.ubicacion = null;
     _userData.email = null;
     _userData.userToken = null;
+    _userData.noProfiles = null;
+    _userData.foto = null;
+    _userData.password = null;
+    _userData.profilePicture = null;
+    _userData.orientacionSexual = null;
 
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.clear();
@@ -445,6 +497,10 @@ class AuthService with ChangeNotifier {
     await prefs.setString('userToken', _userData.userToken!);
 
     await prefs.setBool('log', _isLoggedIn!);
+    await prefs.setBool('noProfiles', _noProfiles);
+    await prefs.setString('foto', _userData.foto!);
+    await prefs.setString('profilePicture', _userData.profilePicture!.path);
+    await prefs.setString('orientation', _userData.orientacionSexual!);
   }
 
   Future<bool> loadUserData() async {
@@ -467,6 +523,9 @@ class AuthService with ChangeNotifier {
     _userData.email = prefs.getString('email');
     _userData.userToken = prefs.getString('userToken');
     _userData.noProfiles = prefs.getBool('noProfiles');
+    _userData.foto = prefs.getString('foto');
+    _userData.password = prefs.getString('password');
+    _userData.orientacionSexual = prefs.getString('orientation');
 
     notifyListeners();
 

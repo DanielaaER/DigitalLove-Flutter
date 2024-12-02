@@ -26,8 +26,8 @@ class _EstafaScreenState extends State<EstafaScreen> {
 
   Future<bool> _update(String update) async {
     Reporte reporte = Reporte(
-      mensaje: update,
-      motivo: "ESTAFA",
+      mensaje: "${update}",
+      motivo: "FRAUDE",
       usuarioRecibeId: widget.usuarioRecibe,
     );
     bool response = await ApiService().sendReport(reporte);

@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:digital_love/config/theme/app_colors.dart';
+import 'package:digital_love/presentation/Home/Pages/Chat/VideoCall/videocall.dart';
 import 'package:digital_love/presentation/Home/Pages/Chat/widgets/Report.dart';
 import 'package:digital_love/shared/models/chat_model.dart';
 import 'package:digital_love/shared/models/send_message_model.dart';
@@ -32,7 +33,8 @@ class ChatWindow extends StatefulWidget {
     required this.id,
     required this.name,
     required this.idSender,
-    this.profilePicture, required this.age,
+    this.profilePicture,
+    required this.age,
   });
 }
 
@@ -41,7 +43,9 @@ class _ChatWindowState extends State<ChatWindow> {
     Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => ReportScreen(usuarioRecibe: idSendUser,),
+          builder: (context) => ReportScreen(
+            usuarioRecibe: idSendUser,
+          ),
         ));
   }
 
@@ -73,9 +77,13 @@ class _ChatWindowState extends State<ChatWindow> {
 
   void _initializeWebSocket() {
     print("inicio socler chat");
+    print(widget.id);
     if (userId != null) {
-      final wsUrl = Uri.parse(
-          'wss://20.55.201.18:8000/ws/chat/${widget.id}/');
+      print("id user");
+      print(userId);
+      print(widget.idSender);
+      print("websocket");
+      final wsUrl = Uri.parse('ws://172.210.177.30:8000/ws/chat/${widget.id}/');
       channel = WebSocketChannel.connect(wsUrl);
       channel.stream.listen((message) {
         final data = jsonDecode(message);
@@ -130,12 +138,6 @@ class _ChatWindowState extends State<ChatWindow> {
             message: element.mensaje,
             idUser: element.usuarioId));
       });
-    });
-    setState(() async {
-      print("user send me");
-      print(idSendUser);
-      print("user me");
-      print(userId);
     });
   }
 
@@ -228,7 +230,7 @@ class _ChatWindowState extends State<ChatWindow> {
                               CustomText(
                                 color: AppColors.whiteColor,
                                 size: textInfo,
-                                textValue: "${edad}, ${signo}",
+                                textValue: "${edad} años ${signo}",
                               )
                             ])),
                       ],
@@ -247,6 +249,30 @@ class _ChatWindowState extends State<ChatWindow> {
                         ],
                       ),
                     ),
+                    GestureDetector(
+                      onTap: () {
+                        print("video call");
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => TypedVideoCallV2Example(
+                                nameUserCall: UserData().username.toString(),
+                                nameUserToCall: widget.name,
+                              ),
+                            ));
+                      },
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(
+                            Icons.video_call_rounded,
+                            size: height * 0.03,
+                            // Ajusta el tamaño según sea necesario
+                            color: AppColors.whiteColor,
+                          ),
+                        ],
+                      ),
+                    )
                   ],
                 ),
               ),
@@ -266,6 +292,8 @@ class _ChatWindowState extends State<ChatWindow> {
                 itemCount: messages.length,
                 itemBuilder: (context, index) {
                   Message message = messages[index];
+                  print("mensaje");
+                  print(message.idUser);
                   return Padding(
                     padding:
                         EdgeInsets.symmetric(vertical: 5.0, horizontal: 10.0),

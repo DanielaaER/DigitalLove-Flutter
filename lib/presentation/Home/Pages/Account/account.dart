@@ -7,7 +7,9 @@ import 'package:digital_love/presentation/Home/Pages/Account/Pages/labels.dart';
 import 'package:digital_love/presentation/Home/Pages/Account/Pages/lastname.dart';
 import 'package:digital_love/presentation/Home/Pages/Account/Pages/name.dart';
 import 'package:digital_love/presentation/Home/Pages/Account/Pages/sex.dart';
+import 'package:digital_love/shared/services/AuthServices.dart';
 import 'package:digital_love/shared/services/UserData.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 
@@ -59,6 +61,25 @@ class _AccountScreenState extends State<AccountScreen> {
     }
   }
 
+  void _pickFile() async {
+    String? filePath = await FilePicker.platform
+        .pickFiles(
+          type: FileType.any,
+        )
+        .then((result) => result?.files.single.path);
+
+    var response = await AuthService().uploadProfile(File(filePath!));
+    print("response: $response");
+
+    if (response) {
+      if (filePath != null) {
+        setState(() {
+          profilePicture = filePath;
+        });
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     var height = MediaQuery.of(context).size.height;
@@ -76,17 +97,6 @@ class _AccountScreenState extends State<AccountScreen> {
           color: AppColors.whiteColor,
           height: MediaQuery.of(context).size.height * .8,
           width: width,
-          // child: NotificationListener<ScrollNotification>(
-          //   onNotification: (ScrollNotification scrollInfo) {
-          //     if (scrollInfo.metrics.axis == Axis.vertical) {
-          //       final double offset = scrollInfo.metrics.pixels;
-          //       final bool isVisible = offset < height - (title * 6);
-          //       showPicture = offset ==
-          //           0; // Mostrar imagen cuando el offset es cero (final del scroll hacia arriba)
-          //     }
-          //
-          //     return true;
-          //   },
           child: SingleChildScrollView(
             controller: _scrollController,
             child: Column(
@@ -102,23 +112,26 @@ class _AccountScreenState extends State<AccountScreen> {
                 ),
                 if (showPicture)
                   Center(
-                    child: AnimatedOpacity(
-                      duration: const Duration(milliseconds: 300),
-                      opacity: profilePicture != null ? 1.0 : 0.0,
-                      child: CircleAvatar(
-                        radius: title * 3,
-                        backgroundImage: profilePicture != null
-                            ? NetworkImage(
-                                "http://20.55.201.18:8000/api/v1${profilePicture}/")
-                            : null,
-                        backgroundColor: Colors.grey,
-                        child: profilePicture == null
-                            ? Icon(
-                                Icons.person,
-                                size: title * 3,
-                                color: Colors.white,
-                              )
-                            : null,
+                    child: GestureDetector(
+                      onTap: _pickFile,
+                      child: AnimatedOpacity(
+                        duration: const Duration(milliseconds: 300),
+                        opacity: profilePicture != null ? 1.0 : 0.0,
+                        child: CircleAvatar(
+                          radius: title * 3,
+                          backgroundImage: profilePicture != null
+                              ? NetworkImage(
+                                  "http://172.210.177.30:8000/api/v1${profilePicture}/")
+                              : null,
+                          backgroundColor: Colors.grey,
+                          child: profilePicture == null
+                              ? Icon(
+                                  Icons.person,
+                                  size: title * 3,
+                                  color: Colors.white,
+                                )
+                              : null,
+                        ),
                       ),
                     ),
                   ),

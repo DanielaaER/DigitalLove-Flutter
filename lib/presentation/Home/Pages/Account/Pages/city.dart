@@ -1,3 +1,4 @@
+import 'package:digital_love/shared/services/UserData.dart';
 import 'package:digital_love/shared/widgets/Button.dart';
 import 'package:digital_love/shared/widgets/CityDrop.dart';
 import 'package:digital_love/shared/widgets/TextBold.dart';
@@ -23,6 +24,7 @@ class _CityScreenState extends State<CityScreen> {
   @override
   void initState() {
     super.initState();
+    _textController.text = UserData().ubicacion.toString();
   }
 
   //void _update(String update) {}
@@ -89,7 +91,7 @@ class _CityScreenState extends State<CityScreen> {
                       padding: EdgeInsets.only(
                           top: height * .05, bottom: height * .05),
                       child: CustomCityAutocomplete(
-                        onSelected: (String value) {
+                        onSelected: (value) {
                           _textController.text = value;
                         },
                       ),

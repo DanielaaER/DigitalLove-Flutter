@@ -27,8 +27,8 @@ class _LenguajeScreenState extends State<LenguajeScreen> {
 
   Future<bool> _update(String update) async {
     Reporte reporte = Reporte(
-      mensaje: update,
-      motivo: "LENGUAJE INAPROPIADO",
+      mensaje: "Lenguaje inapropiado: ${update}",
+      motivo: "ACOSO",
       usuarioRecibeId: widget.usuarioRecibe,
     );
     bool response = await ApiService().sendReport(reporte);

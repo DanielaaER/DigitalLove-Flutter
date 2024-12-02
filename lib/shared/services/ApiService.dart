@@ -27,7 +27,8 @@ class ApiService {
       _notificationsController.stream;
 
   void _fetchNotificationsPeriodically() async {
-    List<AppNotification> notifications = await fetchNotifications();
+    var notifications = await fetchNotifications();
+
     _notificationsController.add(notifications);
   }
 
@@ -35,7 +36,7 @@ class ApiService {
   //     baseUrl: 'https://better-ursola-jazael-26647204.koyeb.app/api/v1/'));
 
   final Dio _dio =
-      Dio(BaseOptions(baseUrl: 'http://20.55.201.18:8000/api/v1/'));
+      Dio(BaseOptions(baseUrl: 'http://172.210.177.30:8000/api/v1/'));
 
   List<AppNotification> _notifications = [];
 
@@ -44,8 +45,11 @@ class ApiService {
       UserData userData = UserData();
       print("notificar");
       print(userData.userId);
-      final response = await _dio.get('/notificaciones/${userData.userId}');
+      final response = await _dio.get('/notificaciones/${userData.userId}/');
+      print("response");
+      print(response.data);
       List<dynamic> body = response.data;
+      print(body);
       List<AppNotification> notifications = body
           .map((dynamic item) => AppNotification.fromJson(item))
           .toList()
@@ -140,6 +144,7 @@ class ApiService {
     try {
       final response =
           await _dio.get('encontrar_usuarios/${UserData().userId}/');
+      print(response.data);
       if (response.statusCode == 200) {
         List<dynamic> body = response.data;
         print(body);
@@ -149,16 +154,18 @@ class ApiService {
             body.map((dynamic item) => MatchUsuario.fromJson(item)).toList();
         return usuarios;
       } else {
+        return [];
         throw Exception('Failed to load usuarios');
       }
     } catch (error) {
+      return [];
       throw Exception('Failed to load usuarios: $error');
     }
   }
 
   UserData userData = UserData();
 
-  Future<bool> newPreferences(List<String> selectedLabels) async {
+  Future<bool> newPreferences(var selectedLabels) async {
     try {
       print("newPreferences");
       print(userData.userFullName);
@@ -171,7 +178,7 @@ class ApiService {
                   'Content-Type': 'application/json',
                 },
               ),
-              data: {"etiquetas": selectedLabels});
+              data: selectedLabels);
       print("response");
       print(response);
       if (response.data["message"] == "Preferencias registradas") {

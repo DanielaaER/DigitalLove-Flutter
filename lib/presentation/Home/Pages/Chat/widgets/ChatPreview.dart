@@ -40,7 +40,7 @@ class ChatPreviewWidget extends StatelessWidget {
           backgroundImage:
               profilePicture != null ? NetworkImage(profilePicture!) : null,
           backgroundColor: AppColors.accentColor,
-          child: profilePicture == null || profilePicture == ""
+          child: profilePicture == null
               ? Icon(
                   Icons.person,
                   size: title * 1,
